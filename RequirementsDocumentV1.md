@@ -22,6 +22,7 @@ Version: V1—description of EZElectronics in CURRENT form (as received by teach
     - [Context Diagram](#context-diagram)
     - [Interfaces](#interfaces)
 - [Stories and personas](#stories-and-personas)
+- [Table of access rights](#table-of-access-rights)
 - [Functional and non functional requirements](#functional-and-non-functional-requirements)
     - [Functional Requirements](#functional-requirements)
     - [Non Functional Requirements](#non-functional-requirements)
@@ -129,33 +130,45 @@ Story:
   store, add new products, and fulfill orders, all while taking care of her children. EZElectronics has empowered Lisa
   to pursue her entrepreneurial dreams while balancing her family responsibilities.
 
+# Table of access rights
+
+|   Role    | FR1.1 | FR2.1 | FR2.2 | FR2.3 | FR2.4 | FR2.5 | FR2.6 | FR3 | FR4 |
+|:---------:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:---:|:---:|
+|  Manager  |   Y   |   N   |   N   |   N   |   Y   |   Y   |   N   |  Y  |  Y  |
+| Customer  |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   | 	Y  |  N  |
+| TechAdmin |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   | 	Y  |  Y  |
+
 # Functional and non functional requirements
 
 ## Functional Requirements
 
-|  ID   |                                  Description                                  |
-|:-----:|:-----------------------------------------------------------------------------:|
-|  FR1  |                                 Manage users                                  |
-| FR1.1 |                            create manager account                             |
-| FR1.2 |                            create customer account                            |
-|  FR2  |                                Manage products                                |
-| FR2.1 |                                Create product                                 |
-| FR2.2 |                               Register arrivals                               |
-| FR2.3 |                             Mark products as sold                             |
-| FR2.4 |                             Find product by code                              |
-| FR2.4 | List all products and filter products based on category model and sold status |
-| FR2.6 |                        Delete specific product by code                        | 
-|  FR3  |                       Authorization and authentication                        | 
-| FR3.1 |                                     Login                                     | 
-| FR3.2 |                                    Logout                                     | 
-| FR3.3 |                           Get current session info                            | 
-|  FR4  |                                Cart Management                                | 
-| FR4.1 |                Access and view current cart of logged in user                 | 
-| FR4.2 |                              Add product to cart                              |
-| FR4.3 |                           Delete product from cart                            |
-| FR4.4 |                                 Pay for cart                                  |
-| FR4.5 |                         List and access cart history                          |
-| FR4.6 |                         delete cart of logged in user                         |
+|   ID    |                        Description                         |
+|:-------:|:----------------------------------------------------------:|
+|   FR1   |                        Manage users                        |
+|  FR1.1  |                   create manager account                   |
+|  FR1.2  |                  create customer account                   |
+|  FR1.3  |                Validate create user fields                 |
+|   FR2   |                      Manage products                       |
+|  FR2.1  |                       Create product                       |
+|  FR2.1  |               validate create product fields               |
+|  FR2.2  |                     Register arrivals                      |
+|  FR2.3  |                   Mark products as sold                    |
+|  FR2.4  |                    Find product by code                    |
+| FR2.4.1 |  List all products and filter products based on category   |
+| FR2.4.2 |    List all products and filter products based on model    |
+| FR2.4.3 | List all products and filter products based on sold status |
+|  FR2.6  |              Delete specific product by code               | 
+|   FR3   |              Authorization and authentication              | 
+|  FR3.1  |                           Login                            | 
+|  FR3.2  |                           Logout                           | 
+|  FR3.3  |                  Get current session info                  | 
+|   FR4   |                      Cart Management                       | 
+|  FR4.1  |       Access and view current cart of logged in user       | 
+|  FR4.2  |                    Add product to cart                     |
+|  FR4.3  |                  Delete product from cart                  |
+|  FR4.4  |                        Pay for cart                        |
+|  FR4.5  |                List and access cart history                |
+|  FR4.6  |               delete cart of logged in user                |
 
 ## Non Functional Requirements
 
@@ -187,29 +200,29 @@ Story:
 
 ##### Scenario 1.1
 
-|  Scenario 1.1  |                                                                |
-|:--------------:|:--------------------------------------------------------------:|
-|  Precondition  |                   User does not have account                   |
-| Post condition |                        User has account                        |
-|     Step#      |                          Description                           |
-|       1        |                   user selects role customer                   |
-|       2        |   user inputs and enter username, name, surname and password   |
-|       3        |      database searched for username, duplicate not found       |
-|       4        | input fields are validated, they are conforming to constraints |
-|       5        |      FR1.1: A customer account gets created for the user       |
+|  Scenario 1.1  |                                                                       |
+|:--------------:|:---------------------------------------------------------------------:|
+|  Precondition  |                      User does not have account                       |
+| Post condition |                           User has account                            |
+|     Step#      |                              Description                              |
+|       1        |                      user selects role customer                       |
+|       2        |      user inputs and enter username, name, surname and password       |
+|       3        |          database searched for username, duplicate not found          |
+|       4        | FR1.3: input fields are validated, they are conforming to constraints |
+|       5        |          FR1.1: A customer account gets created for the user          |
 
 ##### Scenario 1.2 (create manager)
 
-|  Scenario 1.2  |                                                                |
-|:--------------:|:--------------------------------------------------------------:|
-|  Precondition  |                   User does not have account                   |
-| Post condition |                        User has account                        |
-|     Step#      |                          Description                           |
-|       1        |                   user selects role Manager                    |
-|       2        |   user inputs and enter username, name, surname and password   |
-|       3        |      database searched for username, duplicate not found       |
-|       4        | input fields are validated, they are conforming to constraints |
-|       5        |       FR1.2: A manager account gets created for the user       |
+|  Scenario 1.2  |                                                                       |
+|:--------------:|:---------------------------------------------------------------------:|
+|  Precondition  |                      User does not have account                       |
+| Post condition |                           User has account                            |
+|     Step#      |                              Description                              |
+|       1        |                       user selects role Manager                       |
+|       2        |      user inputs and enter username, name, surname and password       |
+|       3        |          database searched for username, duplicate not found          |
+|       4        | FR1.3: input fields are validated, they are conforming to constraints |
+|       5        |          FR1.2: A manager account gets created for the user           |
 
 ##### Scenario 1.3 (username exists)
 
@@ -226,17 +239,17 @@ Story:
 
 ##### Scenario 1.4 (invalid inputs)
 
-|  Scenario 1.4  |                                                                    |
-|:--------------:|:------------------------------------------------------------------:|
-|  Precondition  |                     User does not have account                     |
-| Post condition |                     User does not have account                     |
-|     Step#      |                            Description                             |
-|       1        |                     user selects role Manager                      |
-|       2        |     user inputs and enter username, name, surname and password     |
-|       3        |        database searched for username, duplicate not found         |
-|       4        | input fields are validated, they not are conforming to constraints |
-|       5        |   show error saying that the are problems with the input fields    |
-|       6        |               user remains in account creation page                |
+|  Scenario 1.4  |                                                                          |
+|:--------------:|:------------------------------------------------------------------------:|
+|  Precondition  |                        User does not have account                        |
+| Post condition |                        User does not have account                        |
+|     Step#      |                               Description                                |
+|       1        |                        user selects role Manager                         |
+|       2        |        user inputs and enter username, name, surname and password        |
+|       3        |           database searched for username, duplicate not found            |
+|       4        | FR1.3:input fields are validated, they not are conforming to constraints |
+|       5        |      show error saying that the are problems with the input fields       |
+|       6        |                  user remains in account creation page                   |
 
 ### Login, UC2 - FR3.1
 
@@ -282,13 +295,13 @@ Story:
 
 ##### Scenario 3.1
 
-|  Scenario 3.1  |                              |
-|:--------------:|:----------------------------:|
-|  Precondition  |        user logged in        |
-| Post condition |      user not logged in      |
-|     Step#      |         Description          |
-|       1        | user clicks on logout button |
-|       2        |     user gets logged out     |
+|  Scenario 3.1  |                            |
+|:--------------:|:--------------------------:|
+|  Precondition  |       user logged in       |
+| Post condition |     user not logged in     |
+|     Step#      |        Description         |
+|       1        | user asks to be logged out |
+|       2        |    user gets logged out    |
 
 ### Current session info, UC4 - FR3.3
 
@@ -307,18 +320,18 @@ Story:
 |  Precondition  |               user logged in               |
 | Post condition | user receives information on their session |
 |     Step#      |                Description                 |
-|       1        |          user clicks on Me button          |
+|       1        |   user asks to get current session info    |
 |       2        |  user receives their profile information   |
 
 ### Create Product , UC5 - FR2.1
 
-| Actors Involved  |                                      Manager                                       |
-|:----------------:|:----------------------------------------------------------------------------------:|
-|   Precondition   |                             user logged in as manager                              |
-|  Post condition  |                                                                                    |
-| Nominal Scenario |                                    Scenario 5.1                                    |
-|     Variants     |                        Scenario 5.2 (without arrival date)                         |
-|    Exceptions    | Scenario 5.3(already existing code), Scenario 5.4(arrival date after current date) |
+| Actors Involved  |                                                                                        Manager                                                                                         |
+|:----------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|   Precondition   |                                                                               user logged in as manager                                                                                |
+|  Post condition  |                                                                                                                                                                                        |
+| Nominal Scenario |                                                                                      Scenario 5.1                                                                                      |
+|     Variants     |                     Scenario 5.2 (create product, without arrival date), Scenario 5.3 (register arrivals), Scenario 5.4 (register arrivals, without arrival date)                      |
+|    Exceptions    | Scenario 5.5(create product, already existing code), Scenario 5.6(create product, arrival date after current date) , Scenario 5.7 (Register arrivals, arrival date after current date) |
 
 ##### Scenario 5.1
 
@@ -330,10 +343,10 @@ Story:
 |       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate |
 |       2        |                     system checks code, does not already exists                      |
 |       3        |                system checks arrival date, exists and is current date                |
-|       4        |                            system validates other fields                             |
+|       4        |          FR2.1: system validates other fields, they comply with constraints          |
 |       5        |                          product added, return product code                          |
 
-##### Scenario 5.2 (without arrival date)
+##### Scenario 5.2 (create product, without arrival date)
 
 |  Scenario 5.2  |                                                                         |
 |:--------------:|:-----------------------------------------------------------------------:|
@@ -344,47 +357,13 @@ Story:
 |       2        |               system checks code, does not already exists               |
 |       3        |               system checks arrival date, does not exist                |
 |       4        |                system sets arrival date to current date                 |
-|       5        |       system validates other fields, they comply with constraints       |
+|       5        |   FR2.1: system validates other fields, they comply with constraints    |
 |       6        |                   product added, return product code                    |
 
-##### Scenario 5.3 (already existing code)
 
-|  Scenario 5.3  |                                                                                      |
-|:--------------:|:------------------------------------------------------------------------------------:|
-|  Precondition  |                                    user logged in                                    |
-| Post condition |                                product is not created                                |
-|     Step#      |                                     Description                                      |
-|       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate |
-|       2        |                          system checks code, already exists                          |
-|       3        |              system shows error describing that the code already exists              |
-|       4        |                 product not added, user remains on add product page                  |
+##### Scenario 5.3 (register arrivals) - FR2.2
 
-##### Scenario 5.4 (arrival date after current date)
-
-|  Scenario 5.4  |                                                                                      |
-|:--------------:|:------------------------------------------------------------------------------------:|
-|  Precondition  |                                    user logged in                                    |
-| Post condition |                                product is not created                                |
-|     Step#      |                                     Description                                      |
-|       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate |
-|       2        |                     system checks code, does not already exists                      |
-|       3        |                  system checks arrival date, is after current date                   |
-|       4        |           system shows error describing that the arrivalDate is incorrect            |
-|       5        |                 product not added, user remains on add product page                  |
-
-### Register arrivals , UC6 - FR2.2
-
-| Actors Involved  |                    Manager                    |
-|:----------------:|:---------------------------------------------:|
-|   Precondition   |           user logged in as manager           |
-|  Post condition  |                       -                       |
-| Nominal Scenario |                 Scenario 6.1                  |
-|     Variants     |      Scenario 6.2 (without arrival date)      |
-|    Exceptions    | Scenario 6.3(arrival date after current date) |
-
-##### Scenario 6.1
-
-|  Scenario 6.1  |                                                                                                                      |
+|  Scenario 5.4  |                                                                                                                      |
 |:--------------:|:--------------------------------------------------------------------------------------------------------------------:|
 |  Precondition  |                                                    user logged in                                                    |
 | Post condition |                                                  products are added                                                  |
@@ -394,7 +373,7 @@ Story:
 |       4        |                             system validates other fields, they comply with constraints                              |
 |       5        |                                                    product added                                                     |
 
-##### Scenario 6.2 (without arrival date)
+##### Scenario 5.4 (register arrivals, without arrival date)
 
 |  Scenario 6.2  |                                                                                                         |
 |:--------------:|:-------------------------------------------------------------------------------------------------------:|
@@ -407,9 +386,35 @@ Story:
 |       5        |                       system validates other fields, they comply with constraints                       |
 |       6        |                                              product added                                              |
 
-##### Scenario 6.3 (arrival date after current date)
+##### Scenario 5.5 (create product, already existing code)
 
-|  Scenario 6.3  |                                                                                                                      |
+|  Scenario 5.5  |                                                                                      |
+|:--------------:|:------------------------------------------------------------------------------------:|
+|  Precondition  |                                    user logged in                                    |
+| Post condition |                                product is not created                                |
+|     Step#      |                                     Description                                      |
+|       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate |
+|       2        |                          system checks code, already exists                          |
+|       3        |              system shows error describing that the code already exists              |
+|       4        |                 product not added, user remains on add product page                  |
+
+##### Scenario 5.6 (create product, arrival date after current date)
+
+|  Scenario 5.6  |                                                                                      |
+|:--------------:|:------------------------------------------------------------------------------------:|
+|  Precondition  |                                    user logged in                                    |
+| Post condition |                                product is not created                                |
+|     Step#      |                                     Description                                      |
+|       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate |
+|       2        |                     system checks code, does not already exists                      |
+|       3        |                  system checks arrival date, is after current date                   |
+|       4        |           system shows error describing that the arrivalDate is incorrect            |
+|       5        |                 product not added, user remains on add product page                  |
+
+
+##### Scenario 5.7 (create product, arrival date after current date)
+
+|  Scenario 5.7  |                                                                                                                      |
 |:--------------:|:--------------------------------------------------------------------------------------------------------------------:|
 |  Precondition  |                                                    user logged in                                                    |
 | Post condition |                                                  products are added                                                  |
@@ -419,19 +424,19 @@ Story:
 |       4        |                           system shows error describing that the arrivalDate is incorrect                            |
 |       5        |                                 product not added, user remains on add product page                                  |
 
-### Mark product as sold, UC7 - FR2.3
+### Mark product as sold, UC6 - FR2.3
 
 | Actors Involved  |                                                                                  Manager                                                                                   |
 |:----------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 |   Precondition   |                                                                         user logged in as manager                                                                          |
 |  Post condition  |                                                                                     -                                                                                      |
-| Nominal Scenario |                                                                                Scenario 7.1                                                                                |
-|     Variants     |                                                                     Scenario 7.2(without selling date)                                                                     |
-|    Exceptions    | Scenario 7.3(product does not exist), Scenario 7.4 (selling date before arrival date), Scenario 7.5 (selling date after current date), Scenario 7.6 (product already sold) |
+| Nominal Scenario |                                                                                Scenario 6.1                                                                                |
+|     Variants     |                                                                     Scenario 6.2(without selling date)                                                                     |
+|    Exceptions    | Scenario 6.3(product does not exist), Scenario 6.4 (selling date before arrival date), Scenario 6.5 (selling date after current date), Scenario 6.6 (product already sold) |
 
-##### Scenario 7.1
+##### Scenario 6.1
 
-|  Scenario 7.1  |                                                                                    |
+|  Scenario 6.1  |                                                                                    |
 |:--------------:|:----------------------------------------------------------------------------------:|
 |  Precondition  |                             user logged in as manager                              |
 | Post condition |                               product marked as sold                               |
@@ -440,26 +445,26 @@ Story:
 |       2        |                    system checks if the product exists, it does                    |
 |       3        |                      system checks if the selling date exists                      |
 |       3        | system checks if selling date it is after arrival date and before the current date |
-|       4        |    system checks if the product sold field of the product, results as not sold     |
+|       4        |      the system checks that the product is not yet sold, results as not sold       |
 |       5        |                             product is marked as sold                              |
 
-##### Scenario 7.2 (without selling date)
+##### Scenario 6.2 (without selling date)
 
-|  Scenario 7.2  |                                                                             |
-|:--------------:|:---------------------------------------------------------------------------:|
-|  Precondition  |                          user logged in as manager                          |
-| Post condition |                           product marked as sold                            |
-|     Step#      |                                 Description                                 |
-|       1        |              manager attempts to sell a product via it’s code               |
-|       2        |                system checks if the product exists, it does                 |
-|       3        |            system checks if the selling date exists, it does not            |
-|       4        |                   system sets sellingDate to current date                   |
-|       5        | system checks if the product sold field of the product, results as not sold |
-|       6        |                          product is marked as sold                          |
+|  Scenario 6.2  |                                                                         |
+|:--------------:|:-----------------------------------------------------------------------:|
+|  Precondition  |                        user logged in as manager                        |
+| Post condition |                         product marked as sold                          |
+|     Step#      |                               Description                               |
+|       1        |            manager attempts to sell a product via it’s code             |
+|       2        |              system checks if the product exists, it does               |
+|       3        |          system checks if the selling date exists, it does not          |
+|       4        |                 system sets sellingDate to current date                 |
+|       5        | the system checks that the product is not yet sold, results as not sold |
+|       6        |                        product is marked as sold                        |
 
-##### Scenario 7.3 (product does not exist)
+##### Scenario 6.3 (product does not exist)
 
-|  Scenario 7.3  |                                                                                |
+|  Scenario 6.3  |                                                                                |
 |:--------------:|:------------------------------------------------------------------------------:|
 |  Precondition  |                           user logged in as manager                            |
 | Post condition |                           product not marked as sold                           |
@@ -469,9 +474,9 @@ Story:
 |       3        |               system shows error that the product does not exist               |
 |       4        |                         product is not marked as sold                          |
 
-##### Scenario 7.4 (selling date before arrival date)
+##### Scenario 6.4 (selling date before arrival date)
 
-|  Scenario 7.4  |                                                                                             |
+|  Scenario 6.4  |                                                                                             |
 |:--------------:|:-------------------------------------------------------------------------------------------:|
 |  Precondition  |                                  user logged in as manager                                  |
 | Post condition |                                    product mark as sold                                     |
@@ -483,9 +488,9 @@ Story:
 |       5        |               system shows error that the selling date is before arrival date               |
 |       6        |                                product is not marked as sold                                |
 
-##### Scenario 7.5 (selling date after current date)
+##### Scenario 6.5 (selling date after current date)
 
-|  Scenario 7.5  |                                                                                               |
+|  Scenario 6.5  |                                                                                               |
 |:--------------:|:---------------------------------------------------------------------------------------------:|
 |  Precondition  |                                   user logged in as manager                                   |
 | Post condition |                                     product mark as sold                                      |
@@ -497,9 +502,9 @@ Story:
 |       5        |                system shows error that the selling date is after current date                 |
 |       6        |                                 product is not marked as sold                                 |
 
-##### Scenario 7.6 (product already sold)
+##### Scenario 6.6 (product already sold)
 
-|  Scenario 7.5  |                                                                                    |
+|  Scenario 6.5  |                                                                                    |
 |:--------------:|:----------------------------------------------------------------------------------:|
 |  Precondition  |                             user logged in as manager                              |
 | Post condition |                                product mark as sold                                |
@@ -508,14 +513,98 @@ Story:
 |       2        |                    system checks if the product exists, it does                    |
 |       3        |                 system checks if the selling date exists, it does                  |
 |       4        | system checks if selling date it is after arrival date and before the current date |
-|       5        |  system checks if the product sold field of the product, results as already sold   |
+|       5        |    the system checks that the product is not yet sold, results as already sold     |
 |       6        |                           product is not marked as sold                            |
 
-### Get product info by code, UC8—FR2.4
 
-| Actors Involved  |      User (Customer or Manager)       |
+### Get Product(s), UC7 - FR2.5
+
+| Actors Involved  |                                                                                                                              User (Customer or Manager)                                                                                                                               |
+|:----------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|   Precondition   |                                                                                                                                    user logged in                                                                                                                                     |
+|  Post condition  |                                                                                                                                           -                                                                                                                                           |
+| Nominal Scenario |                                                                                                                              Scenario 7.1 (get products)                                                                                                                              |
+|     Variants     | , Scenario 7.2 (get product(s), filter by category) ,Scenario 7.3 (get product(s), filter by model), Scenario 7.3 (get product(s), filter by model), Scenario 7.6 (get product(s),filter by category and sold status), Scenario 7.7 (get product(s), filter by model and sold status) | 
+|    Exceptions    |                                                                                                            Scenario 7.7 (get product(s), by code, product does not exist)                                                                                                             |
+
+
+##### Scenario 7.1 (get product(s))
+
+|  Scenario 7.1  |                                   |
+|:--------------:|:---------------------------------:|
+|  Precondition  |          user logged in           |
+| Post condition |        get product(s) info        |
+|     Step#      |            Description            |
+|       1        | User requests to see all products |
+|       2        |    system returns all products    |
+
+##### Scenario 7.2 (get product(s), filter by category)
+
+|  Scenario 7.2  |                                                         |
+|:--------------:|:-------------------------------------------------------:|
+|  Precondition  |                     user logged in                      |
+| Post condition |                   get product(s) info                   |
+|     Step#      |                       Description                       |
+|       1        | User requests to see all products in a certain category |
+|       2        |      system returns all products in that category       |
+
+##### Scenario 7.3 (get product(s), filter by model)
+
+|  Scenario 7.3  |                                                      |
+|:--------------:|:----------------------------------------------------:|
+|  Precondition  |                    user logged in                    |
+| Post condition |                 get product(s) info                  |
+|     Step#      |                     Description                      |
+|       1        | User requests to see all products of a certain model |
+|       2        |      system returns all products of that model       |
+
+##### Scenario 7.4 (get product(s), filter by category and sold status)
+
+|  Scenario 7.4  |                                                                         |
+|:--------------:|:-----------------------------------------------------------------------:|
+|  Precondition  |                             user logged in                              |
+| Post condition |                           get product(s) info                           |
+|     Step#      |                               Description                               |
+|       1        | User requests to see all products in a certain category and sold status |
+|       2        |      system returns all products in that category and sold status       |
+
+##### Scenario 7.5 (get product(s), filter by model and sold status)
+
+|  Scenario 7.5  |                                                                      |
+|:--------------:|:--------------------------------------------------------------------:|
+|  Precondition  |                            user logged in                            |
+| Post condition |                         get product(s) info                          |
+|     Step#      |                             Description                              |
+|       1        | user requests to see all products of a certain model and sold status |
+|       2        |      system returns all products of that model and sold status       |
+
+##### Scenario 7.6 (get product(s), by code)
+
+|  Scenario 7.6  |                                                  |
+|:--------------:|:------------------------------------------------:|
+|  Precondition  |                  user logged in                  |
+| Post condition |               get product(s) info                |
+|     Step#      |                   Description                    |
+|       1        |             User inputs product code             |
+|       2        |       system searches for product by code        |
+|       3        | system finds product and returns product details |
+
+##### Scenario 7.7 (get product(s), by code, product does not exist)
+
+|  Scenario 7.7  |                                                        |
+|:--------------:|:------------------------------------------------------:|
+|  Precondition  |                     user logged in                     |
+| Post condition |                  get product(s) info                   |
+|     Step#      |                      Description                       |
+|       1        |                User inputs product code                |
+|       2        |          system searches for product by code           |
+|       3        | system does not find product and returns error message |
+
+### Delete Product, UC8 - FR2.6
+
+| Actors Involved  |                Manager                |
 |:----------------:|:-------------------------------------:|
-|   Precondition   |            user logged in             |
+|   Precondition   |       user logged in as manager       |
 |  Post condition  |                   -                   |
 | Nominal Scenario |             Scenario 8.1              |
 |     Variants     |                   -                   |
@@ -523,99 +612,7 @@ Story:
 
 ##### Scenario 8.1
 
-|  Scenario 8.1  |                                                  |
-|:--------------:|:------------------------------------------------:|
-|  Precondition  |                  user logged in                  |
-| Post condition |                 get product info                 |
-|     Step#      |                   Description                    |
-|       1        |             User inputs product code             |
-|       2        |       system searches for product by code        |
-|       3        | system finds product and returns product details |
-
-##### Scenario 8.2
-
-|  Scenario 8.2  |                                                        |
-|:--------------:|:------------------------------------------------------:|
-|  Precondition  |                     user logged in                     |
-| Post condition |                    get product info                    |
-|     Step#      |                      Description                       |
-|       1        |                User inputs product code                |
-|       2        |          system searches for product by code           |
-|       3        | system does not find product and returns error message |
-
-### List Products, UC9 - FR2.5
-
-| Actors Involved  |                                                                      User (Customer or Manager)                                                                      |
-|:----------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|   Precondition   |                                                                            user logged in                                                                            |
-|  Post condition  |                                                                             get products                                                                             |
-| Nominal Scenario |                                                                             Scenario 9.1                                                                             |
-|     Variants     | Scenario 9.2 (filter by category), Scenario 9.3 (filter by model), Scenario 9.4 (filter by category and sold status), Scenario 9.5 (filter by model and sold status) | 
-|    Exceptions    |                                                                                  -                                                                                   |
-
-##### Scenario 9.1
-
-|  Scenario 9.1  |                                   |
-|:--------------:|:---------------------------------:|
-|  Precondition  |          user logged in           |
-| Post condition |         get product info          |
-|     Step#      |            Description            |
-|       1        | User requests to see all products |
-|       2        |    system returns all products    |
-
-##### Scenario 9.2 (filter by category)
-
-|  Scenario 9.2  |                                                         |
-|:--------------:|:-------------------------------------------------------:|
-|  Precondition  |                     user logged in                      |
-| Post condition |                      get products                       |
-|     Step#      |                       Description                       |
-|       1        | User requests to see all products in a certain category |
-|       2        |      system returns all products in that category       |
-
-##### Scenario 9.3 (filter by model)
-
-|  Scenario 9.3  |                                                      |
-|:--------------:|:----------------------------------------------------:|
-|  Precondition  |                    user logged in                    |
-| Post condition |                     get products                     |
-|     Step#      |                     Description                      |
-|       1        | User requests to see all products of a certain model |
-|       2        |      system returns all products of that model       |
-
-##### Scenario 9.4 (filter by category and sold status)
-
-|  Scenario 9.4  |                                                                         |
-|:--------------:|:-----------------------------------------------------------------------:|
-|  Precondition  |                             user logged in                              |
-| Post condition |                              get products                               |
-|     Step#      |                               Description                               |
-|       1        | User requests to see all products in a certain category and sold status |
-|       2        |      system returns all products in that category and sold status       |
-
-##### Scenario 9.5 (filter by model and sold status)
-
-|  Scenario 9.5  |                                                                      |
-|:--------------:|:--------------------------------------------------------------------:|
-|  Precondition  |                            user logged in                            |
-| Post condition |                             get products                             |
-|     Step#      |                             Description                              |
-|       1        | user requests to see all products of a certain model and sold status |
-|       2        |      system returns all products of that model and sold status       |
-
-### Delete Product, UC10 - FR2.6
-
-| Actors Involved  |                Manager                 |
-|:----------------:|:--------------------------------------:|
-|   Precondition   |       user logged in as manager        |
-|  Post condition  |                   -                    |
-| Nominal Scenario |             Scenario 10.1              |
-|     Variants     |                   -                    |
-|    Exceptions    | Scenario 10.2 (product does not exist) |
-
-##### Scenario 10.1
-
-| Scenario 10.1  |                                           |
+|  Scenario 8.1  |                                           |
 |:--------------:|:-----------------------------------------:|
 |  Precondition  |         user logged in as manager         |
 | Post condition |            product is deleted             |
@@ -624,9 +621,9 @@ Story:
 |       2        |    system searches for product by code    |
 |       3        |    system finds product and deletes it    |
 
-##### Scenario 10.2 (product does not exist)
+##### Scenario 8.2 (product does not exist)
 
-| Scenario 10.2  |                                           |
+|  Scenario 8.2  |                                           |
 |:--------------:|:-----------------------------------------:|
 |  Precondition  |         user logged in as manager         |
 | Post condition |          product is not deleted           |
@@ -636,17 +633,17 @@ Story:
 |       3        |       system does not find product        |
 |       4        |       system returns error message        |
 
-### Get cart, UC11 - FR4.1
+### Manage cart, UC11 - FR4.1
 
-| Actors Involved  |          Customer          |
-|:----------------:|:--------------------------:|
-|   Precondition   | user logged in as customer |
-|  Post condition  |   cart info is returned    |
-| Nominal Scenario |       Scenario 11.1        |
-|     Variants     |             -              |
-|    Exceptions    |             -              |
+| Actors Involved  |                                                                                                                                                                                                                                                                                                 Customer                                                                                                                                                                                                                                                                                                 |
+|:----------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|   Precondition   |                                                                                                                                                                                                                                                                                        user logged in as customer                                                                                                                                                                                                                                                                                        |
+|  Post condition  |                                                                                                                                                                                                                                                                                                    -                                                                                                                                                                                                                                                                                                     |
+| Nominal Scenario |                                                                                                                                                                                                       Scenario 11.1 (get current cart info), Scenario 11.2 (add product to cart) ,Scenario 11.3 (delete product from cart) ,Scenario 11.4 (get cart history), Scenario 11.11(delete current cart)                                                                                                                                                                                                        |
+|     Variants     |                                                                                                                                                                                                                                                                                                    -                                                                                                                                                                                                                                                                                                     |
+|    Exceptions    |                Scenario 11.4 (product does not exist), Scenario 11.5 (add product to cart, product is in another cart), Scenario 11.6 (add product to cart, product is in another cart) , Scenario 11.7 (add product to cart, product is sold), Scenario 11.8 (delete product from cart, product does not exist), Scenario 11.9 (delete product from cart, customer does not have cart), Scenario 11.10 (delete product from cart, product does not exist in cart), , Scenario 11.12 (delete current cart, no cart to delete), Scenario 11.13 (delete product from cart, product is sold)                |
 
-##### Scenario 11.1
+##### Scenario 11.1 (get current cart info)
 
 | Scenario 11.1  |                                                |
 |:--------------:|:----------------------------------------------:|
@@ -654,22 +651,12 @@ Story:
 | Post condition |             cart info is returned              |
 |     Step#      |                  Description                   |
 |       1        |  customer requests to see their current cart   |
-|       2        | system checks customer cart and products in it |
-|       3        |            system returns cart info            |
+|       2        |            system returns cart info            |
 
-### Add product to cart, UC12—FR4.2
 
-| Actors Involved  |                                                      Customer                                                       |
-|:----------------:|:-------------------------------------------------------------------------------------------------------------------:|
-|   Precondition   |                                   user logged in as customer, customer has a cart                                   |
-|  Post condition  |                                        product is added to the customer cart                                        |
-| Nominal Scenario |                                                    Scenario 12.1                                                    |
-|     Variants     |                                                          -                                                          |
-|    Exceptions    | Scenario 12.2 (product does not exist), Scenario 12.3 (product is in another cart), Scenario 12.4 (product is sold) |
+##### Scenario 11.2 (add product to cart) — FR4.2
 
-##### Scenario 12.1
-
-| Scenario 12.1  |                                                        |
+| Scenario 11.2  |                                                        |
 |:--------------:|:------------------------------------------------------:|
 |  Precondition  |    user logged in as customer, customer has a cart     |
 | Post condition |         product is added to the customer cart          |
@@ -680,9 +667,35 @@ Story:
 |       4        |      system checks if product is sold, it is not       |
 |       5        |         product is added to the customer cart          |
 
-##### Scenario 12.2 (product does not exist)
+##### Scenario 11.3 (delete product from cart)- FR4.3
 
-| Scenario 12.2  |                                                              |
+| Scenario 11.3  |                                                                   |
+|:--------------:|:-----------------------------------------------------------------:|
+|  Precondition  |                    user logged in as customer                     |
+| Post condition |               product is deleted from customer cart               |
+|     Step#      |                            Description                            |
+|       1        | customer inputs product code to be deleted from the customer cart |
+|       2        |           system checks if customer has a cart, they do           |
+|       3        |   system checks if product with code exists in catalog, it does   |
+|       4        |         system checks that the product exists in the cart         |
+|       5        |   system checks that the product is not sold already, it is not   |
+|       6        |             product is deleted from the customer cart             |
+
+
+##### Scenario 11.4 (get cart history) — FR4.5
+
+| Scenario 11.4  |                                                                    |
+|:--------------:|:------------------------------------------------------------------:|
+|  Precondition  |                     user logged in as customer                     |
+| Post condition |                   customer cart history returned                   |
+|     Step#      |                            Description                             |
+|       1        |            customer requests to see their cart history             |
+|       2        | system checks that customer has previously paid for carts, they do |
+|       3        |                system returns customer cart history                |
+
+##### Scenario 11.5 (add product to cart, product does not exist) — FR4.2
+
+| Scenario 11.5  |                                                              |
 |:--------------:|:------------------------------------------------------------:|
 |  Precondition  |       user logged in as customer, customer has a cart        |
 | Post condition |            product is not added to customer cart             |
@@ -692,9 +705,9 @@ Story:
 |       3        | system returns error message that the product does not exist |
 |       4        |          product is not added to the customer cart           |
 
-##### Scenario 12.3 (product is in another cart)
+##### Scenario 11.6 (add product to cart, product is in another cart) — FR4.2
 
-| Scenario 12.3  |                                                                  |
+| Scenario 11.6  |                                                                  |
 |:--------------:|:----------------------------------------------------------------:|
 |  Precondition  |         user logged in as customer, customer has a cart          |
 | Post condition |              product is not added to customer cart               |
@@ -705,9 +718,9 @@ Story:
 |       4        | system returns error message that the product is in another cart |
 |       5        |            product is not added to the customer cart             |
 
-##### Scenario 12.4 (product is sold)
+##### Scenario 11.7 (add product to cart, product is sold)  — FR4.2
 
-| Scenario 12.4  |                                                               |
+| Scenario 11.7  |                                                               |
 |:--------------:|:-------------------------------------------------------------:|
 |  Precondition  |        user logged in as customer, customer has a cart        |
 | Post condition |             product is not added to customer cart             |
@@ -719,33 +732,9 @@ Story:
 |       6        | system returns error message that the product is already sold |
 |       7        |           product is not added to the customer cart           |
 
-### Delete product from cart, UC13
 
-| Actors Involved  |                                                                              Customer                                                                              |
-|:----------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|   Precondition   |                                                                     user logged in as customer                                                                     |
-|  Post condition  |                                                             product is deleted from the customer cart                                                              |
-| Nominal Scenario |                                                                           Scenario 13.1                                                                            |
-|     Variants     |                                                                                 -                                                                                  |
-|    Exceptions    | Scenario 13.2(product does not exist), Scenario 13.3(customer does not have cart), Scenario 13.4 (product does not exist in cart), Scenario 13.5 (product is sold) |
-
-##### Scenario 13.1
-
-| Scenario 13.1  |                                                                   |
-|:--------------:|:-----------------------------------------------------------------:|
-|  Precondition  |                    user logged in as customer                     |
-| Post condition |             no product is deleted from customer cart              |
-|     Step#      |                            Description                            |
-|       1        | customer inputs product code to be deleted from the customer cart |
-|       2        |           system checks if customer has a cart, they do           |
-|       3        |   system checks if product with code exists in catalog, it does   |
-|       4        |         system checks that the product exists in the cart         |
-|       5        |   system checks that the product is not sold already, it is not   |
-|       6        |             product is deleted from the customer cart             |
-
-##### Scenario 13.2 (product does not exist)
-
-| Scenario 13.2  |                                                                   |
+##### Scenario 11.8 (delete product from cart, product does not exist) - FR4.3
+| Scenario 11.8  |                                                                   |
 |:--------------:|:-----------------------------------------------------------------:|
 |  Precondition  |                    user logged in as customer                     |
 | Post condition |             no product is deleted from customer cart              |
@@ -756,9 +745,9 @@ Story:
 |       4        |   system returns error message that the product does not exist    |
 |       5        |             no product is deleted from customer cart              |
 
-##### Scenario 13.3 (customer does not have cart)
+##### Scenario 11.9 (delete product from cart, customer does not have cart) - FR4.3
 
-| Scenario 13.2  |                                                                   |
+| Scenario 11.9  |                                                                   |
 |:--------------:|:-----------------------------------------------------------------:|
 |  Precondition  |                    user logged in as customer                     |
 | Post condition |             no product is deleted from customer cart              |
@@ -768,9 +757,9 @@ Story:
 |       3        | system returns error message that the customer does not have cart |
 |       4        |             no product is deleted from customer cart              |
 
-##### Scenario 13.4 (product does not exist in cart)
+##### Scenario 11.10 (delete product from cart, product does not exist in cart) - FR4.3
 
-| Scenario 13.4  |                                                                               |
+| Scenario 11.10 |                                                                               |
 |:--------------:|:-----------------------------------------------------------------------------:|
 |  Precondition  |                          user logged in as customer                           |
 | Post condition |                   no product is deleted from customer cart                    |
@@ -782,9 +771,31 @@ Story:
 |       5        | system returns error message that the product does not exist in customer cart |
 |       6        |                   no product is deleted from customer cart                    |
 
-##### Scenario 13.5 (product is sold)
+##### Scenario 11.11(delete current cart) - FR4.6
 
-| Scenario 13.5  |                                                                     |
+| Scenario 11.11 |                                                 |
+|:--------------:|:-----------------------------------------------:|
+|  Precondition  |           user logged in as customer            |
+| Post condition |            customer cart is deleted             |
+|     Step#      |                   Description                   |
+|       1        | customer requests to delete their current cart  |
+|       2        | system checks that customer has a cart, they do |
+|       3        |        system deletes the customer cart         |
+
+##### Scenario 11.12 (no cart to delete) - FR4.6
+
+| Scenario 11.12 |                                                            |
+|:--------------:|:----------------------------------------------------------:|
+|  Precondition  |                 user logged in as customer                 |
+| Post condition |                customer cart is not deleted                |
+|     Step#      |                        Description                         |
+|       1        |       customer requests to delete their current cart       |
+|       2        |    system checks that customer has a cart, they do not     |
+|       3        | system returns error message that the customer has no cart |
+
+##### Scenario 11.13 (delete product from cart, product is sold) - FR4.3
+
+| Scenario 11.13 |                                                                     |
 |:--------------:|:-------------------------------------------------------------------:|
 |  Precondition  |                     user logged in as customer                      |
 | Post condition |              no product is deleted from customer cart               |
@@ -797,19 +808,19 @@ Story:
 |       6        | system returns error message that the product has already been sold |
 |       5        |              no product is deleted from customer cart               |
 
-### Pay for cart, UC14 - FR4.4
+### Pay for cart, UC12 - FR4.4
 
 | Actors Involved  |                             Customer                              |
 |:----------------:|:-----------------------------------------------------------------:|
 |   Precondition   |                    user logged in as customer                     |
 |  Post condition  |                                 -                                 |
-| Nominal Scenario |                           Scenario 14.1                           |
+| Nominal Scenario |                           Scenario 13.1                           |
 |     Variants     |                                 -                                 |
-|    Exceptions    | Scenario 14.2 (no cart to pay for), Scenario 14.3 (cart is empty) |
+|    Exceptions    | Scenario 13.2 (no cart to pay for), Scenario 13.3 (cart is empty) |
 
-##### Scenario 14.1
+##### Scenario 12.1 - FR4.4
 
-| Scenario 14.1  |                                                               |
+| Scenario 12.1  |                                                               |
 |:--------------:|:-------------------------------------------------------------:|
 |  Precondition  |                  user logged in as customer                   |
 | Post condition |                       cart is paid for                        |
@@ -820,9 +831,9 @@ Story:
 |       4        | system sets total as sum of all costs of products in the cart |
 |       5        |           system sets payment date as current date            |
 
-##### Scenario 14.2 (no cart to pay for)
+##### Scenario 12.2 (no cart to pay for) - FR4.4
 
-| Scenario 14.2  |                                                               |
+| Scenario 12.2  |                                                               |
 |:--------------:|:-------------------------------------------------------------:|
 |  Precondition  |                  user logged in as customer                   |
 | Post condition |                      no cart is paid for                      |
@@ -832,8 +843,8 @@ Story:
 |       3        |  system returns error message that the customer has no cart   |
 |       4        |                      no cart is paid for                      |
 
-##### Scenario 14.3 (cart is empty)
-| Scenario 14.3  |                                                               |
+##### Scenario 12.3 (cart is empty) - FR4.4
+| Scenario 12.3  |                                                               |
 |:--------------:|:-------------------------------------------------------------:|
 |  Precondition  |                  user logged in as customer                   |
 | Post condition |                     cart is not paid for                      |
@@ -843,59 +854,6 @@ Story:
 |       3        |        system checks if the cart is empty, it is empty        |
 |       4        |      system returns error message that the cart is empty      |
 |       5        |                     cart is not paid for                      |
-
-### Get customer cart history, UC15—FR4.5
-
-| Actors Involved  |          Customer          |
-|:----------------:|:--------------------------:|
-|   Precondition   | user logged in as customer |
-|  Post condition  |   customer cart history    |
-| Nominal Scenario |       Scenario 15.1        |
-|     Variants     |             -              |
-|    Exceptions    |             -              |
-
-##### Scenario 15.1
-
-| Scenario 15.1  |                                                                    |
-|:--------------:|:------------------------------------------------------------------:|
-|  Precondition  |                     user logged in as customer                     |
-| Post condition |                   customer cart history returned                   |
-|     Step#      |                            Description                             |
-|       1        |            customer requests to see their cart history             |
-|       2        | system checks that customer has previously paid for carts, they do |
-|       3        |                system returns customer cart history                |
-
-### Delete current customer cart, UC16 - FR4.6
-
-| Actors Involved  |             Customer             |
-|:----------------:|:--------------------------------:|
-|   Precondition   |    user logged in as customer    |
-|  Post condition  |                -                 |
-| Nominal Scenario |          Scenario 16.1           |
-|     Variants     |                -                 |
-|    Exceptions    | Scenario 16.2(no cart to delete) |
-
-##### Scenario 16.1
-
-| Scenario 16.1  |                                                 |
-|:--------------:|:-----------------------------------------------:|
-|  Precondition  |           user logged in as customer            |
-| Post condition |            customer cart is deleted             |
-|     Step#      |                   Description                   |
-|       1        | customer requests to delete their current cart  |
-|       2        | system checks that customer has a cart, they do |
-|       3        |        system deletes the customer cart         |
-
-##### Scenario 16.2 (no cart to delete)
-
-| Scenario 16.2  |                                                            |
-|:--------------:|:----------------------------------------------------------:|
-|  Precondition  |                 user logged in as customer                 |
-| Post condition |                customer cart is not deleted                |
-|     Step#      |                        Description                         |
-|       1        |       customer requests to delete their current cart       |
-|       2        |    system checks that customer has a cart, they do not     |
-|       3        | system returns error message that the customer has no cart |
 
 # Glossary
 
