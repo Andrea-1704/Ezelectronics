@@ -144,26 +144,27 @@ Story:
 
 |   ID    |                        Description                         |
 |:-------:|:----------------------------------------------------------:|
-|   FR1   |                        Manage users                        |
+|   FR1   |                        Create users                        |
 |  FR1.1  |                   create manager account                   |
 |  FR1.2  |                  create customer account                   |
 |  FR1.3  |                Validate create user fields                 |
 |   FR2   |                      Manage products                       |
 |  FR2.1  |                       Create product                       |
-|  FR2.1  |               validate create product fields               |
+| FR2.1.1 |               validate create product fields               |
 |  FR2.2  |                     Register arrivals                      |
 |  FR2.3  |                   Mark products as sold                    |
 |  FR2.4  |                    Find product by code                    |
-| FR2.4.1 |  List all products and filter products based on category   |
-| FR2.4.2 |    List all products and filter products based on model    |
-| FR2.4.3 | List all products and filter products based on sold status |
+|  FR2.5  |                     List all products                      |
+| FR2.5.1 |  List all products and filter products based on category   |
+| FR2.5.2 |    List all products and filter products based on model    |
+| FR2.5.3 | List all products and filter products based on sold status |
 |  FR2.6  |              Delete specific product by code               | 
 |   FR3   |              Authorization and authentication              | 
 |  FR3.1  |                           Login                            | 
 |  FR3.2  |                           Logout                           | 
 |  FR3.3  |                  Get current session info                  | 
 |   FR4   |                      Cart Management                       | 
-|  FR4.1  |       Access and view current cart of logged in user       | 
+|  FR4.1  |                         view cart                          | 
 |  FR4.2  |                    Add product to cart                     |
 |  FR4.3  |                  Delete product from cart                  |
 |  FR4.4  |                        Pay for cart                        |
@@ -343,7 +344,7 @@ Story:
 |       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate |
 |       2        |                     system checks code, does not already exists                      |
 |       3        |                system checks arrival date, exists and is current date                |
-|       4        |          FR2.1: system validates other fields, they comply with constraints          |
+|       4        |         FR2.1.1: system validates other fields, they comply with constraints         |
 |       5        |                          product added, return product code                          |
 
 ##### Scenario 5.2 (create product, without arrival date)
@@ -357,7 +358,7 @@ Story:
 |       2        |               system checks code, does not already exists               |
 |       3        |               system checks arrival date, does not exist                |
 |       4        |                system sets arrival date to current date                 |
-|       5        |   FR2.1: system validates other fields, they comply with constraints    |
+|       5        |  FR2.1.1: system validates other fields, they comply with constraints   |
 |       6        |                   product added, return product code                    |
 
 
@@ -370,7 +371,7 @@ Story:
 |     Step#      |                                                     Description                                                      |
 |       1        | manager inserts arrival product info: model, category, sellingPrice, model, category, details, arrivalDate, quantity |
 |       3        |                                system checks arrival date, exists and is current date                                |
-|       4        |                             system validates other fields, they comply with constraints                              |
+|       4        |                         FR2.1.1: system validates other fields, they comply with constraints                         |
 |       5        |                                                    product added                                                     |
 
 ##### Scenario 5.4 (register arrivals, without arrival date)
@@ -383,7 +384,7 @@ Story:
 |       1        | manager inserts arrival product info: model, category, sellingPrice, model, category, details, quantity |
 |       3        |                               system checks arrival date, does not exist                                |
 |       4        |                                system sets arrival date to current date                                 |
-|       5        |                       system validates other fields, they comply with constraints                       |
+|       5        |                  FR2.1.1: system validates other fields, they comply with constraints                   |
 |       6        |                                              product added                                              |
 
 ##### Scenario 5.5 (create product, already existing code)
