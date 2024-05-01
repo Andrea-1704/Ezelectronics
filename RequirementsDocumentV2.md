@@ -63,28 +63,89 @@ history of their past purchases.
 
 ## Context Diagram
 
-\<Define here Context diagram using UML use case diagram>
-
-\<actors are a subset of stakeholders>
+![Context Diagram](assets/img/V2/CDV2.png)
 
 ## Interfaces
 
-\<describe here each interface in the context diagram>
-
-\<GUIs will be described graphically in a separate document>
-
-|   Actor   | Logical Interface | Physical Interface |
-|:---------:|:-----------------:|:------------------:|
-| Actor x.. |                   |                    |
+|           Actor            | Logical Interface |                                                           Physical Interface                                                            |
+|:--------------------------:|:-----------------:|:---------------------------------------------------------------------------------------------------------------------------------------:|
+|          Customer          |  PC, Smartphone   |                                                                   GUI                                                                   |
+|          Manager           |  PC, Smartphone   |                                                                   GUI                                                                   |
+| Tech Admin, Business Admin |  PC, Smartphone   |                                                                   GUI                                                                   |
+|      Payment Service       |     Internet      | https://developer.paypal.com/api/rest/ , https://developer.visa.com/pages/working-with-visa-apis, https://developer.mastercard.com/apis |
+|      Shipping Service      |     Internet      |                                                 https://www.ufficiopostale.com/api.php                                                  |
 
 # Stories and personas
 
-\<A Persona is a realistic impersonation of an actor. Define here a few personas and describe in plain text how a
-persona interacts with the system>
+Persona 1:
 
-\<Persona is-an-instance-of actor>
+- Marco, 35 Male, with some computer science and tech background, store manager for over a decade
 
-\<stories will be formalized later as scenarios in use cases>
+Story:
+
+- Marco stumbled upon EZElectronics while searching for inventory management solutions. The user-friendly interface and
+  features like automatic website updates and purchase confirmation caught Marco’s attention. With EZElectronics, Marco
+  can now efficiently manage inventory, update the store's website, and provide a seamless shopping experience for
+  customers.
+
+Persona 2:
+
+- Anna, a 28 Female, newly opened her own electronics shop, has very little time on her hands.
+
+Story:
+
+- Anna heard about EZElectronics from a fellow business owner and decided to give it a try. The simplicity of the
+  application allowed Anna to quickly get up and running. Now, Anna can easily add new products, track inventory, and
+  manage customer orders without spending hours on paperwork. EZElectronics has become an invaluable tool in helping
+  Anna grow her business.
+
+Persona 3:
+
+- Emilia, 25 Female, a Frequent Online Shopper, is a tech enthusiast who loves to stay updated with the latest gadgets.
+  With a busy schedule, Emilia prefers shopping online for convenience.
+
+Story:
+
+- Emilia discovered EZElectronics while browsing for new gadgets online. The user-friendly website interface and wide
+  range of products caught Emilia’s attention. Now, Emilia can easily browse through available products, add them to her
+  cart, and track her purchase history. With EZElectronics, Emilia enjoys a hassle-free shopping experience and can
+  quickly get her hands on the latest tech gadgets.
+
+Persona 4:
+
+- Donald, 40 Male, Retail Operations Manager, oversees multiple electronics stores for a retail chain. With stores
+  located across different regions, keeping track of inventory and managing purchases manually has become a daunting
+  task.
+
+Story:
+
+- Donald was tasked with finding a centralized solution to streamline inventory management and online sales for the
+  retail chain. After researching various options, Donald chose EZElectronics for its comprehensive features and
+  scalability. With EZElectronics, Donald can now efficiently manage inventory across multiple stores, track sales
+  performance, and ensure a seamless shopping experience for customers.
+
+Persona 5:
+
+- Lisa, 32, a Female, Stay-at-home Parent Turned Entrepreneur, has recently become a stay-at-home parent after having
+  her second child. Wanting to contribute to the household income while taking care of her children, Lisa decided to
+  start an online electronics store.
+
+Story:
+
+- Lisa faced many challenges in setting up her online store, from managing inventory to attracting customers. However,
+  EZElectronics came to the rescue with its user-friendly platform and helpful features. Now, Lisa can easily manage her
+  store, add new products, and fulfill orders, all while taking care of her children. EZElectronics has empowered Lisa
+  to pursue her entrepreneurial dreams while balancing her family responsibilities.
+
+# Table of access rights
+
+|      Role      | FR1.1 | FR2.1 | FR2.2 | FR2.3 | FR2.4 | FR2.5 | FR2.6 | FR3 | FR4 | FR5 |
+|:--------------:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:---:|:---:|:---:|
+|    Manager     |   Y   |   N   |   N   |   N   |   Y   |   Y   |   N   |  Y  |  Y  |  N  |
+|    Customer    |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |  Y  |  N  |  N  |
+|   Tech Admin   |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |  Y  |  Y  |  Y  |
+| Business Admin |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |  Y  |  Y  |  Y  |
+
 
 # Functional and non functional requirements
 
@@ -134,31 +195,28 @@ persona interacts with the system>
 |  FR8.1  |             Change Account details             |
 |  FR8.2  |                Forgot Password                 |
 
-
 ## Non Functional Requirements
 
-\<Describe constraints on functional requirements>
-
-|   ID    | Type (efficiency, reliability, ..) | Description | Refers to |
-|:-------:|:----------------------------------:|:-----------:|:---------:|
-|  NFR1   |                                    |             |           |
-|  NFR2   |                                    |             |           |
-|  NFR3   |                                    |             |           |
-| NFRx .. |                                    |             |           |
+|  ID  | Type (efficiency, reliability, ..) |                                                                                                          Description                                                                                                          |     Refers to     |
+|:----:|:----------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------:|
+| NFR1 |             Usability              |                                The user interface should be friendly enough so that the customers become able to navigate around the website and use all the functionalities under 15 minutes                                 | FR1,FR2, FR3, FR4 |
+| NFR2 |             Efficiency             |                                                                    The page should respond and be navigable in 0.5 second regardless of network latencies.                                                                    | FR1,FR2, FR3, FR4 |
+| NFR3 |             Efficiency             |                                                                                             Ram occupation shold be under 300 MB.                                                                                             | FR1,FR2, FR3, FR4 |
+| NFR4 |            Reliability             |                                                          Number of defects and failures during transactions should be less than 1% of the total amount of tentative.                                                          |       FR4.4       |
+| NFR5 |            Portability             | Should be available as a web app (and have proper browser support and possibility to be viewed on old machines) Universal/legacy browser compatibility: Chrome 123.0.0, Firefox 125.0.1,  Safari 17.4.1, Internet explorer 11 | FR1,FR2, FR3, FR4 |
 
 # Use case diagram and use cases
 
 ## Use case diagram
 
-\<define here UML Use case diagram UCD summarizing all use cases, and their relationships>
+![Use Case Diagram](assets/img/V2/UCDV2.png)
 
 ## Use cases
 
 ### Forgot password, UC1
-
 | Actors Involved  |                      Customer, Manager                       |
 |------------------|:------------------------------------------------------------:| 
-| Precondition     |             User has an account on Ezelectronics             |
+| Precondition     |             User has an account on EZelectronics             |
 | Post condition   |                              -                               |
 | Nominal Scenario |                         Scenario 1.1                         |
 | Variants         |                         Scenario 1.2                         |
@@ -168,7 +226,7 @@ persona interacts with the system>
 
 | Scenario 1.1   |                                                                       |
 |----------------|:---------------------------------------------------------------------:| 
-| Precondition   |               Customer has an account on ezelectronics                |
+| Precondition   |               Customer has an account on EZelectronics                |
 | Post condition |                       Customer changed password                       |
 | Step#          |                              Description                              |
 | 1              |                       Customer provide username                       |  
@@ -185,7 +243,7 @@ persona interacts with the system>
 
 | Scenario 1.2   |                                                                      |
 |----------------|:--------------------------------------------------------------------:| 
-| Precondition   |               Manager has an account on ezelectronics                |
+| Precondition   |               Manager has an account on EZelectronics                |
 | Post condition |                       Manager changed password                       |
 | Step#          |                             Description                              |
 | 1              |                       Manager provide username                       |  
@@ -202,7 +260,7 @@ persona interacts with the system>
 
 | Scenario 1.3   |                                           |
 |----------------|:-----------------------------------------:| 
-| Precondition   |   User has an account on ezelectronics    |
+| Precondition   |   User has an account on EZelectronics    |
 | Post condition |        User didn't change password        |
 | Step#          |                Description                |
 | 1              |           User provide username           |  
@@ -217,7 +275,7 @@ persona interacts with the system>
 
 | Scenario 1.4   |                                      |
 |----------------|:------------------------------------:| 
-| Precondition   | User has an account on ezelectronics |
+| Precondition   | User has an account on EZelectronics |
 | Post condition |     User didn't change password      |
 | Step#          |             Description              |
 | 1              |        User provide username         |  
@@ -333,7 +391,6 @@ persona interacts with the system>
 | Precondition   |       User is authenticated        |
 | Post condition |        e-mail not modified         |
 | Step#          |            Description             |
-| Step#          |            Description             |
 | 1              |      User provide new e-amail      |  
 | 2              | search for email, not existing: ok | 
 | 3              |  Send verification email to User   |  
@@ -403,7 +460,7 @@ persona interacts with the system>
 | Actors Involved  |                     Manager                     |
 |------------------|:-----------------------------------------------:| 
 | Precondition     | User has an account and is logged in as Manager |
-| Post condition   |                                                 |
+| Post condition   |                        -                        |
 | Nominal Scenario |                  Scenario 4.1                   |
 | Variants         |                  Scenario 4.2                   |
 | Exceptions       |      Scenario 4.3(inexistent new address)       |
@@ -1046,11 +1103,20 @@ persona interacts with the system>
 
 # Glossary
 
-\<use UML class diagram to define important terms, or concepts in the domain of the application, and their
-relationships>
+![Class Diagram](/assets/img/V2/CLDV2.png)
 
-\<concepts must be used consistently all over the document, ex in use cases, requirements etc>
+- Account: An account belonging to either a customer or a manager.
+- User: user of application, could be a customer or a manager.
+- Customer: A user with the role of a customer.
+- Role: Specify the kind of user, either customer or manager.
+- Manager: A user with the role of manager, responsible for adding products to the platform.
+- Product: physical object that is added to the catalog from the manager and eventually sold to the user. A product
+  could be sold or not sold, if it gets sold, it will have a selling date.
+- Sell: manager sets the product’s selling date to current day.
+- Pay: customer informs the system that he wants to buy the product(s) in his current cart. Then the manager of each
+  product on that cart can allow or not allow the selling.
+- Cart: collection of the products the customer wants to buy.
 
 # Deployment Diagram
 
-\<describe here deployment diagram >
+![Deployment Diagram](/assets/img/V2/DDV2.png)
