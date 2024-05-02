@@ -10,7 +10,7 @@ Version: V1 - CURRENT
 |      1.0       | Add GUI based on use cases |
 
 
-### Create User, UC1
+### Create account, UC1
 
 ## Scenario 1.1, Scenario 1.2
 ![Create User](assets/img/V1/GUI/create-user.png)
