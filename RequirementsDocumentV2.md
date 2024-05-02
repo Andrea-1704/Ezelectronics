@@ -512,7 +512,7 @@ Story:
 | Post condition |                     Custemer changed address                     |
 | Step#          |                           Description                            |
 | 1              |                   Customer provide new address                   |  
-| 2              |                      address exixsting, ok                       | 
+| 2              |                      Check correctness of the address, ok                       | 
 | 3              | Show a message to User saying that the address has been modified |
 
 ##### Scenario 2.5
@@ -638,7 +638,7 @@ Story:
 
 | Actors Involved  |                     Manager                     |
 |------------------|:-----------------------------------------------:| 
-| Precondition     | User has an account and is logged in as Manager |
+| Precondition     | User has an account, is logged in as Manager and owns the store |
 | Post condition   |                        -                        |
 | Nominal Scenario |                  Scenario 4.1                   |
 | Variants         |                  Scenario 4.2                   |
@@ -648,7 +648,7 @@ Story:
 
 | Scenario 4.1   |                                                                    |
 |----------------|:------------------------------------------------------------------:| 
-| Precondition   |          User has an account and is logged in as Manager           |
+| Precondition   |          User has an account, is logged in as Manager and owns the store           |
 | Post condition |                      Store's name is modified                      |
 | Step#          |                            Description                             |
 | 1              |                Manager inputs the new store's name                 |  
@@ -659,7 +659,7 @@ Story:
 
 | Scenario 4.2   |                                                                    |
 |----------------|:------------------------------------------------------------------:| 
-| Precondition   |          User has an account and is logged in as Manager           |
+| Precondition   |          User has an account, is logged in as Manager and owns the store           |
 | Post condition |                    Store's address is modified                     |
 | Step#          |                            Description                             |
 | 1              |               Manager inputs the new store's address               |  
@@ -670,7 +670,7 @@ Story:
 
 | Scenario 4.3   |                                                 |
 |----------------|:-----------------------------------------------:| 
-| Precondition   | User has an account and is logged in as Manager |
+| Precondition   | User has an account, is logged in as Manager and owns the store |
 | Post condition |       The store's address is not modified       |
 | Step#          |                   Description                   |
 | 1              |       Manager inputs new store's address        |  
@@ -681,7 +681,7 @@ Story:
 
 | Actors Involved  |                     Manager                     |
 |------------------|:-----------------------------------------------:| 
-| Precondition     | User has an account and is logged in as Manager |
+| Precondition     | User has an account, is logged in as Manager and owns the store |
 | Post condition   |                        -                        |
 | Nominal Scenario |                  Scenario 5.1                   |
 | Variants         |                        -                        |
@@ -691,12 +691,14 @@ Story:
 
 | Scenario 5.1   |                                                    |
 |----------------|:--------------------------------------------------:| 
-| Precondition   |  User has an account and is logged in as Manager   |
+| Precondition   |  User has an account, is logged in as Manager and owns the store   |
 | Post condition |                  Store is deleted                  |
 | Step#          |                    Description                     |
 | 1              |         Manager request to delete a store          |  
 | 2              | the system retrives all the products of that store | 
 | 3              |    Each product of the store is deleted - F2.6     |
+| 4             |    The store is deleted      |
+
 
 ### Create Product , UC5
 
@@ -706,7 +708,7 @@ Story:
 |  Post condition  |                                                                             -                                                                             |
 | Nominal Scenario |                                                                       Scenario 5.1                                                                        |
 |     Variants     |                                                                       Scenario 5.2                                                                        |
-|    Exceptions    | Scenario 5.3(product's code alreasy exists), Scenario 5.4(inexistent store/manager does't possess store), Scenario 5.5 (Arrival date asfter current date) |
+|    Exceptions    | Scenario 5.3(product's code already exists), Scenario 5.4(inexistent store/manager does't possess store), Scenario 5.5 (Arrival date asfter current date) |
 
 ##### Scenario 5.1
 
@@ -715,27 +717,27 @@ Story:
 |  Precondition  |                                     user logged in as Manager                                      | 
 | Post condition |                                          Product created                                           |
 |     Step#      |                                            Description                                             |
-|       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate, store's code |
-|       2        |                            system checks code, does not already exists                             |
+|       1        | User inserts product info: sellingPrice, model, category, details, arrivalDate, store's code, image, color |
+|       2        |                            system checks store's code,  exists and the owner is the logged in manager, ok                           |
 |       3        |                       system checks arrival date, exists and is current date                       |
-|       4        |             system checks code's store is associated to current manager and exist ,ok              |
-|       5        |                                   system validates other fields                                    |
+|       4        |                                   system validates other fields                                    |
+|       5        |             system create a new Product code which is unique for the product             |
 |       6        |                                 product added, return product code                                 |
 
 ##### Scenario 5.2
 
 |  Scenario 5.2  |                                                                                        |
 |:--------------:|:--------------------------------------------------------------------------------------:|
-|  Precondition  |                               user logged in as Manager                                |
-| Post condition |                                    Product created                                     |
-|     Step#      |                                      Description                                       |
-|       1        | User inserts product info: code, sellingPrice, model, category, details,  store's code |
-|       2        |                      system checks code, does not already exists                       |
-|       3        |                       system checks arrival date, does not exist                       |
-|       4        |                        system sets arrival date to current date                        |
-|       5        |       system checks code's store is associated to current manager and exist ,ok        |
-|       6        |              system validates other fields, they comply with constraints               |
-|       7        |                           product added, return product code                           |
+|  Precondition  |                                     user logged in as Manager                                      | 
+| Post condition |                                          Product created                                           |
+|     Step#      |                                            Description                                             |
+|       1        | User inserts product info: sellingPrice, model, category, details, arrivalDate, store's code, image, color |
+|       2        |                            system checks store's code,  exists and the owner is the logged in manager, ok                           |
+|       3        |                       system checks arrival date, does not exist and system sets arrival date to current date                      |
+|       4        |                                   system validates other fields                                    |
+|       5        |             system create a new Product code which is unique for the product             |
+|       6        |                                 product added, return product code                                 |
+
 
 ##### Scenario 5.3
 
@@ -744,8 +746,8 @@ Story:
 |  Precondition  |                                     user logged in as Manager                                      | 
 | Post condition |                                        Product not created                                         |
 |     Step#      |                                            Description                                             |
-|       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate, store's code |
-|       2        |                                 system checks code, already exists                                 |
+|       1        | User inserts product info: sellingPrice, model, category, details, arrivalDate, store's code, image, color |
+|       2        |                                 system checks store's code, doesn't exists                                 |
 |       3        |                                             Show error                                             |
 
 ##### Scenario 5.4
@@ -755,11 +757,9 @@ Story:
 |  Precondition  |                                     user logged in as Manager                                      | 
 | Post condition |                                        Product not created                                         |
 |     Step#      |                                            Description                                             |
-|       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate, store's code |
-|       2        |                            system checks code, does not already exists                             |
-|       3        |                       system checks arrival date, exists and is current date                       |
-|       4        |           system checks code's store is associated to current manager and exist , not ok           |
-|       5        |                                             show error                                             |
+|       1        | User inserts product info: sellingPrice, model, category, details, arrivalDate, store's code, image, color |
+|       2        |                            system checks store's code,  exists but is not owned by the logged in manager                                   |
+|       3        |                                             show error                                             |
 
 ##### Scenario 5.5
 
@@ -768,8 +768,8 @@ Story:
 |  Precondition  |                                     user logged in as Manager                                      |
 | Post condition |                                        Product not created                                         |
 |     Step#      |                                            Description                                             |
-|       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate, store's code |
-|       2        |                            system checks code, does not already exists                             |
+|       1        | User inserts product info: sellingPrice, model, category, details, arrivalDate, store's code, image, color |
+|       2        |                            system checks store's code,  exists and the owner is the logged in manager, ok                           |
 |       3        |                         system checks arrival date, is after current date                          |
 |       4        |                  system shows error describing that the arrivalDate is incorrect                   |
 
