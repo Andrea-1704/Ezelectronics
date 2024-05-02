@@ -141,24 +141,28 @@ Story:
 |  FR1.1  |            Create customer account             |
 |  FR1.2  |             Create manager account             |
 |  FR1.3  |           Create tech admin account            |
-|  FR1.4  |         Create business admin account          |
 |   FR2   |                Manage products                 |
 |  FR2.1  |                 Create product                 |
 |  FR2.2  |               Register arrivals                |
-|  FR2.5  |               List all products                |
-| FR2.5.1 |       filter products based on category        |
-| FR2.5.1 |         filter products based on model         |
-| FR2.5.1 |      filter products based on sold status      |
+|  FR2.5  |               List all available products                 |
+| FR2.5.1 |       filter available products based on category        |
+| FR2.5.2 |         filter available products based on model         |
+| FR2.5.3 |      filter available products based on sold status      |
 |  FR2.6  |        Delete specific product by code         |
 |  FR2.7  |           Get store by product code            |
 |  FR2.8  |                  Change store                  |
+|  FR2.9  |               List all owned products                |
+| FR2.9.1 |       filter all owned products based on category        |
+| FR2.9.2 |         filter all owned products based on model         |
+| FR2.9.3 |      filter all owned products already sold    
+| FR2.9.4 |      filter all owned products available to sell    
 |   FR3   |        Authorization and authentication        |
 |  FR3.1  |                     login                      |
 |  FR3.2  |                     logout                     |
 |  FR3.3  |            Get current Session Info            |
 |   FR4   |                Cart Management                 |
 |  FR4.1  | Access and view current cart of logged in user |
-|  FR4.2  |    Add product to cart by productId (code)     |
+|  FR4.2  |    Add product to cart by code     |
 |  FR4.3  |            Delete product from cart            |
 |  FR4.4  |                Pay for the cart                |
 |  FR4.5  |          List and access cart history          |
@@ -168,7 +172,7 @@ Story:
 |  FR5.1  |               Create a new Store               |
 |  FR5.2  |          Change Store’s information's          |
 |  FR5.3  |                  Delete store                  |
-|   FR6   |         Manage Account’s information's         |
+|   FR6   |         Manage Account         |
 |  FR6.1  |             Change Account details             |
 |  FR6.2  |                Forgot Password                 |
 |   FR7   |                 Manage payment                 | 
@@ -176,7 +180,8 @@ Story:
 |  FR7.2  |                  Make payment                  |
 |   FR8   |                Manage shipping                 |
 |  FR8.1  |            calculate shipping cost             |
-|  FR8.2  |           add shipping cost to cart            |
+|  FR8.2  |            verify address             |
+|  FR8.3  |            submit shipping request to shipping service             |
 |   FR9   |                  Manage users                  |
 |  FR9.1  |              get user by username              |
 |  FR9.2  |            delete user by username             |
@@ -196,7 +201,7 @@ Story:
 | NFR3 |             Efficiency             |                                                                                            Ram occupation should be under 300 MB.                                                                                             | FR1,FR2, FR3, FR4 |
 | NFR4 |            Reliability             |                                                          Number of defects and failures during transactions should be less than 1% of the total amount of tentative.                                                          |   FR4.4, FR9.9    |
 | NFR5 |            Portability             | Should be available as a web app (and have proper browser support and possibility to be viewed on old machines) Universal/legacy browser compatibility: Chrome 123.0.0, Firefox 125.0.1,  Safari 17.4.1, Internet explorer 11 | FR1,FR2, FR3, FR4 |
-| NFR6 |              Security              |                         payments should be made through secure payment gateways, all the data should be encrypted, and the website should be protected against SQL injection, XSS, and CSRF attacks.                          |        FR9        |
+| NFR6 |              Security              |                         payments should be made through secure payment gateways, all the data should be encrypted, and the website should be protected against SQL injection, XSS, and CSRF attacks.                          |        FR7        |
 # Use case diagram and use cases
 
 ## Use case diagram
