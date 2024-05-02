@@ -25,13 +25,12 @@ Version: V1—description of EZElectronics in CURRENT form (as received by teach
 - [Table of access rights](#table-of-access-rights)
 - [Functional and non functional requirements](#functional-and-non-functional-requirements)
     - [Functional Requirements](#functional-requirements)
-      - [FR1- Create users]
+      - [FR1- Create account]
         - [FR1.1- Create manager account]
         - [FR1.2- Create customer account]
-        - [FR1.3- Validate create user fields]
+        - [FR1.3- Validate account creation fields]
       - [FR2- Manage products]
         - [FR2.1- Create product]
-          - [FR2.1.1- Validate product fields]
         - [FR2.2- Register arrivals]
         - [FR2.3- Mark products as sold]
         - [FR2.4- Find product by code]
@@ -40,6 +39,7 @@ Version: V1—description of EZElectronics in CURRENT form (as received by teach
           - [FR2.5.2- Get all products and filter products based on model]
           - [FR2.5.3- Get all products and filter products based on sold status]
         - [FR2.6- Delete product by code]
+        - [FR2.7- Validate product creation fields]
       - [FR3- Authorization and authentication]
         - [FR3.1- Login]
         - [FR3.2- Logout]
@@ -201,11 +201,11 @@ Story:
 
 # Table of access rights
 
-|   Role    | FR1.1 | FR2.1 | FR2.2 | FR2.3 | FR2.4 | FR2.5 | FR2.6 | FR3 | FR4 |
-|:---------:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:---:|:---:|
-|  Manager  |   Y   |   N   |   N   |   N   |   Y   |   Y   |   N   |  Y  |  Y  |
-| Customer  |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   | 	Y  |  N  |
-| TechAdmin |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   | 	Y  |  Y  |
+|   Role    | FR1 | FR2.1 | FR2.2 | FR2.3 | FR2.4 | FR2.5 | FR2.6 | FR3 | FR4 |
+|:---------:|:---:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:---:|:---:|
+|  Manager  |  Y  |   N   |   N   |   N   |   Y   |   Y   |   N   |  Y  |  Y  |
+| Customer  |  Y  |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   | 	Y  |  N  |
+| TechAdmin |  Y  |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   | 	Y  |  Y  |
 
 # Functional and non functional requirements
 
@@ -213,13 +213,12 @@ Story:
 
 |   ID    |                        Description                        |
 |:-------:|:---------------------------------------------------------:|
-|   FR1   |                       Create users                        |
+|   FR1   |                      Create account                       |
 |  FR1.1  |                  create manager account                   |
 |  FR1.2  |                  create customer account                  |
-|  FR1.3  |                Validate create user fields                |
+|  FR1.3  |             Validate account creation fields              |
 |   FR2   |                      Manage products                      |
 |  FR2.1  |                      Create product                       |
-| FR2.1.1 |                  validate product fields                  |
 |  FR2.2  |                     Register arrivals                     |
 |  FR2.3  |                   Mark products as sold                   |
 |  FR2.4  |                   Find product by code                    |
@@ -228,6 +227,7 @@ Story:
 | FR2.5.2 |    get all products and filter products based on model    |
 | FR2.5.3 | get all products and filter products based on sold status |
 |  FR2.6  |                  Delete product by code                   | 
+|  FR2.7  |             validate product creation fields              |
 |   FR3   |             Authorization and authentication              | 
 |  FR3.1  |                           Login                           | 
 |  FR3.2  |                          Logout                           | 
@@ -238,7 +238,7 @@ Story:
 |  FR4.3  |                 Delete product from cart                  |
 |  FR4.4  |                       Pay for cart                        |
 |  FR4.5  |               List and access cart history                |
-|  FR4.6  |               delete cart of logged in user               |
+|  FR4.6  |                      Delete the cart                      |
 |   FR5   |                      List all users                       |
 |  FR5.1  |        List all user and filter them based on role        |
 |  FR5.2  |                   List user by username                   |
@@ -262,22 +262,22 @@ Story:
 
 ## Use cases
 
-### Create User, UC1 - FR1
+### Create Account user, UC1 - FR1
 
 | Actors Involved  |                             User                              |
 |:----------------:|:-------------------------------------------------------------:|
 |   Precondition   |                  User does not have account                   |
 |  Post condition  |                               -                               |
-| Nominal Scenario |                         Scenario 1.1                          |
-|     Variants     |                 Scenario 1.2(create manager)                  |
+| Nominal Scenario |            Scenario 1.1 (create customer account)             |
+|     Variants     |             Scenario 1.2 (create manager account)             |
 |    Exceptions    | Scenario 1.3 (username exists), Scenario 1.4 (invalid inputs) |
 
-##### Scenario 1.1
+##### Scenario 1.1 (create customer account) - FR1.2
 
 |  Scenario 1.1  |                                                                       |
 |:--------------:|:---------------------------------------------------------------------:|
 |  Precondition  |                      User does not have account                       |
-| Post condition |                           User has account                            |
+| Post condition |                       User has customer account                       |
 |     Step#      |                              Description                              |
 |       1        |                      user selects role customer                       |
 |       2        |      user inputs and enter username, name, surname and password       |
@@ -285,12 +285,12 @@ Story:
 |       4        | FR1.3: input fields are validated, they are conforming to constraints |
 |       5        |          FR1.1: A customer account gets created for the user          |
 
-##### Scenario 1.2 (create manager)
+##### Scenario 1.2 (create manager account) - FR1.1
 
 |  Scenario 1.2  |                                                                       |
 |:--------------:|:---------------------------------------------------------------------:|
 |  Precondition  |                      User does not have account                       |
-| Post condition |                           User has account                            |
+| Post condition |                       User has manager account                        |
 |     Step#      |                              Description                              |
 |       1        |                       user selects role Manager                       |
 |       2        |      user inputs and enter username, name, surname and password       |
@@ -417,7 +417,7 @@ Story:
 |       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate |
 |       2        |                     system checks code, does not already exists                      |
 |       3        |                system checks arrival date, exists and is current date                |
-|       4        |            FR2.1.1: system validates fields, they comply with constraints            |
+|       4        |             FR2.7: system validates fields, they comply with constraints             |
 |       5        |                                FR2.1:product created                                 |
 
 ##### Scenario 5.2 (create product, without arrival date)
@@ -431,7 +431,7 @@ Story:
 |       2        |               system checks code, does not already exists               |
 |       3        |               system checks arrival date, does not exist                |
 |       4        |                system sets arrival date to current date                 |
-|       5        |     FR2.1.1: system validates fields, they comply with constraints      |
+|       5        |      FR2.7: system validates fields, they comply with constraints       |
 |       6        |                          FR2.1:product created                          |
 
 ##### Scenario 5.3 (register arrivals) - FR2.2
@@ -443,7 +443,7 @@ Story:
 |     Step#      |                                             Description                                             |
 |       1        | manager inserts arrival product info: model, sellingPrice, category, details, arrivalDate, quantity |
 |       3        |                       system checks arrival date, exists and is current date                        |
-|       4        |                   FR2.1.1: system validates fields, they comply with constraints                    |
+|       4        |                    FR2.7: system validates fields, they comply with constraints                     |
 |       5        |                                      FR2.2:arrival registered                                       |
 
 ##### Scenario 5.4 (register arrivals, without arrival date)
@@ -456,7 +456,7 @@ Story:
 |       1        | manager inserts arrival product info: model, category, sellingPrice, details, quantity |
 |       3        |                       system checks arrival date, does not exist                       |
 |       4        |                        system sets arrival date to current date                        |
-|       5        |             FR2.1.1: system validates fields, they comply with constraints             |
+|       5        |              FR2.7: system validates fields, they comply with constraints              |
 |       6        |                               FR2.2:arrivals registered                                |
 
 ##### Scenario 5.5 (create product, already existing code)
@@ -668,7 +668,6 @@ Story:
 |       1        |         User inputs product code          |
 |       2        |    system searches for product by code    |
 |       3        | system finds product and returns its info |
-
 
 ### Delete product by code, UC8 - FR2.6
 
@@ -932,9 +931,9 @@ Story:
 |  Post condition  |                      -                       |
 | Nominal Scenario |                Scenario 11.1                 |
 |     Variants     | Scenario 11.2, Scenario 11.3 , Scenario 11.4 |
-|    Exceptions    | Scenario 11.5, Scenario 11.6 (cart is empty) |
+|    Exceptions    |         Scenario 11.5, Scenario 11.6         |
 
-##### Scenario 11.1 - FR5
+##### Scenario 11.1(list all users) - FR5
 
 | Scenario 11.1  |                                     |
 |:--------------:|:-----------------------------------:|
@@ -944,7 +943,7 @@ Story:
 |       1        | customer requests to list all users |
 |       2        |     FR5: system list all users      |
 
-##### Scenario 11.2 - FR5.1
+##### Scenario 11.2(list user by role) - FR5.1
 
 | Scenario 11.2  |                                                            |
 |:--------------:|:----------------------------------------------------------:|
@@ -954,7 +953,7 @@ Story:
 |       1        | customer requests to list all users filtered based on role |
 |       2        |    FR5.1: system list all users with the specified role    |
 
-##### Scenario 11.3 - FR5.2
+##### Scenario 11.3(get user by username) - FR5.2
 
 | Scenario 11.3  |                                               |
 |:--------------:|:---------------------------------------------:|
@@ -965,7 +964,7 @@ Story:
 |       2        |   System checks if username exists, it does   |
 |       3        |          FR5.2: system list the user          |
 
-##### Scenario 11.4 - FR6
+##### Scenario 11.4 (delete user by username) - FR6
 
 | Scenario 11.4  |                                                    |
 |:--------------:|:--------------------------------------------------:|
@@ -976,7 +975,7 @@ Story:
 |       2        |     System checks if username exists, it does      |
 |       3        |           FR5.2: system delete the user            |
 
-##### Scenario 11.5
+##### Scenario 11.5 (delete user by username, user does not exist)
 
 | Scenario 11.5  |                                                    |
 |:--------------:|:--------------------------------------------------:|
@@ -987,7 +986,7 @@ Story:
 |       2        |   System checks if username exists, it does not    |
 |       3        |                     Show error                     |
 
-##### Scenario 11.6
+##### Scenario 11.6 (get user by username, user does not exist)
 
 | Scenario 11.6  |                                                  |
 |:--------------:|:------------------------------------------------:|
