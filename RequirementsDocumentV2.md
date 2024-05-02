@@ -236,10 +236,13 @@ Story:
 | Post condition |                       User has customer account                       |
 |     Step#      |                              Description                              |
 |       1        |                      user selects role customer                       |
-|       2        |      user inputs and enter username, name, surname and password       |
+|       2        |      user inputs and enter username, name, email, surname and password       |
 |       3        |          database searched for username, duplicate not found          |
 |       4        | FR1.3: input fields are validated, they are conforming to constraints |
-|       5        |          FR1.1: A customer account gets created for the user          |
+|       5        |          database searched for email, duplicate not found         |
+|       6       |          System sends a verification code to the specified email and ask it to user        |
+|       7       |          user sends the code, right code       |
+|       8        |          FR1.1: A customer account gets created for the user          |
 
 ##### Scenario 1.2 (create manager account) - FR1.1
 
@@ -247,12 +250,15 @@ Story:
 |:--------------:|:---------------------------------------------------------------------:|
 |  Precondition  |                      User does not have account                       |
 | Post condition |                       User has manager account                        |
-|     Step#      |                              Description                              |
-|       1        |                       user selects role Manager                       |
-|       2        |      user inputs and enter username, name, surname and password       |
+|     Step#      |                                                            Description                              |
+|       1        |                      user selects role Manager                       |
+|       2        |      user inputs and enter username, name, email, surname and password       |
 |       3        |          database searched for username, duplicate not found          |
 |       4        | FR1.3: input fields are validated, they are conforming to constraints |
-|       5        |          FR1.2: A manager account gets created for the user           |
+|       5        |          database searched for email, duplicate not found         |
+|       6       |          System sends a verification code to the specified email and ask it to user        |
+|       7       |          user sends the code, right code       |
+|       8        |          FR1.2: A Manager account gets created for the user          |
 
 ##### Scenario 1.3 (username exists)
 
@@ -262,7 +268,7 @@ Story:
 | Post condition |                 User does not have account                 |
 |     Step#      |                        Description                         |
 |       1        |                 user selects role Manager                  |
-|       2        | user inputs and enter username, name, surname and password |
+|       2        | user inputs and enter username, name, email, surname and password |
 |       3        |      database searched for username, duplicate found       |
 |       4        |     show error saying that the username already exists     |
 |       5        |           user remains in account creation page            |
@@ -275,11 +281,44 @@ Story:
 | Post condition |                        User does not have account                        |
 |     Step#      |                               Description                                |
 |       1        |                        user selects role Manager                         |
-|       2        |        user inputs and enter username, name, surname and password        |
+|       2        |        user inputs and enter username, name, email, surname and password        |
 |       3        |           database searched for username, duplicate not found            |
 |       4        | FR1.3:input fields are validated, they not are conforming to constraints |
 |       5        |      show error saying that the are problems with the input fields       |
 |       6        |                  user remains in account creation page                   |
+
+
+##### Scenario 1.5 (email already exists) 
+
+|  Scenario 1.5  |                                                                       |
+|:--------------:|:---------------------------------------------------------------------:|
+|  Precondition  |                      User does not have account                       |
+| Post condition |                       User does not have account                       |
+|     Step#      |                              Description                              |
+|       1        |                      user selects role customer                       |
+|       2        |      user inputs and enter username, name, email, surname and password       |
+|       3        |          database searched for username, duplicate not found          |
+|       4        | FR1.3: input fields are validated, they are conforming to constraints |
+|       5        |          database searched for email, duplicate found         |
+|       6        |      show error saying that the are problems with the input fields       |
+|       7       |                  user remains in account creation page 
+
+##### Scenario 1.6 (wrong verification code) 
+
+|  Scenario 1.6  |                                                                       |
+|:--------------:|:---------------------------------------------------------------------:|
+|  Precondition  |                      User does not have account                       |
+| Post condition |                       User does not have account                       |
+|     Step#      |                              Description                              |
+|       1        |                      user selects role customer                       |
+|       2        |      user inputs and enter username, name, email, surname and password       |
+|       3        |          database searched for username, duplicate not found          |
+|       4        | FR1.3: input fields are validated, they are conforming to constraints |
+|       5        |          database searched for email, duplicate not found         |
+|       6       |          System sends a verification code to the specified email and ask it to user        |
+|       7       |          user sends the code, right code       |
+|       8        |      show error saying that the are problems with the input fields       |
+|       9       |                  user remains in account creation page 
 
 ### Login, UC2 - FR3.1
 
