@@ -235,10 +235,6 @@ Story:
 |  FR4.4  |                       Pay for cart                        |
 |  FR4.5  |               List and access cart history                |
 |  FR4.6  |                      Delete the cart                      |
-|   FR5   |                      List all users                       |
-|  FR5.1  |        List all user and filter them based on role        |
-|  FR5.2  |                   List user by username                   |
-|   FR6   |                  Delete user by username                  |
 
 ## Non Functional Requirements
 
@@ -270,29 +266,29 @@ Story:
 
 ##### Scenario 1.1 (create customer account) - FR1.2
 
-|  Scenario 1.1  |                                                                       |
-|:--------------:|:---------------------------------------------------------------------:|
-|  Precondition  |                      User does not have account                       |
-| Post condition |                       User has customer account                       |
-|     Step#      |                              Description                              |
-|       1        |                      user selects role customer                       |
-|       2        |      user inputs and enter username, name, surname and password       |
-|       3        |          database searched for username, duplicate not found          |
+|  Scenario 1.1  |                                                                |
+|:--------------:|:--------------------------------------------------------------:|
+|  Precondition  |                   User does not have account                   |
+| Post condition |                   User has customer account                    |
+|     Step#      |                          Description                           |
+|       1        |                   user selects role customer                   |
+|       2        |   user inputs and enter username, name, surname and password   |
+|       3        |      database searched for username, duplicate not found       |
 |       4        | input fields are validated, they are conforming to constraints |
-|       5        |          FR1.1: A customer account gets created for the user          |
+|       5        |      FR1.1: A customer account gets created for the user       |
 
 ##### Scenario 1.2 (create manager account) - FR1.1
 
-|  Scenario 1.2  |                                                                       |
-|:--------------:|:---------------------------------------------------------------------:|
-|  Precondition  |                      User does not have account                       |
-| Post condition |                       User has manager account                        |
-|     Step#      |                              Description                              |
-|       1        |                       user selects role Manager                       |
-|       2        |      user inputs and enter username, name, surname and password       |
-|       3        |          database searched for username, duplicate not found          |
-|       4        |  input fields are validated, they are conforming to constraints |
-|       5        |          FR1.2: A manager account gets created for the user           |
+|  Scenario 1.2  |                                                                |
+|:--------------:|:--------------------------------------------------------------:|
+|  Precondition  |                   User does not have account                   |
+| Post condition |                    User has manager account                    |
+|     Step#      |                          Description                           |
+|       1        |                   user selects role Manager                    |
+|       2        |   user inputs and enter username, name, surname and password   |
+|       3        |      database searched for username, duplicate not found       |
+|       4        | input fields are validated, they are conforming to constraints |
+|       5        |       FR1.2: A manager account gets created for the user       |
 
 ##### Scenario 1.3 (username exists)
 
@@ -309,17 +305,17 @@ Story:
 
 ##### Scenario 1.4 (invalid inputs)
 
-|  Scenario 1.4  |                                                                          |
-|:--------------:|:------------------------------------------------------------------------:|
-|  Precondition  |                        User does not have account                        |
-| Post condition |                        User does not have account                        |
-|     Step#      |                               Description                                |
-|       1        |                        user selects role Manager                         |
-|       2        |        user inputs and enter username, name, surname and password        |
-|       3        |           database searched for username, duplicate not found            |
-|       4        |  input fields are validated, they not are conforming to constraints |
-|       5        |      show error saying that the are problems with the input fields       |
-|       6        |                  user remains in account creation page                   |
+|  Scenario 1.4  |                                                                    |
+|:--------------:|:------------------------------------------------------------------:|
+|  Precondition  |                     User does not have account                     |
+| Post condition |                     User does not have account                     |
+|     Step#      |                            Description                             |
+|       1        |                     user selects role Manager                      |
+|       2        |     user inputs and enter username, name, surname and password     |
+|       3        |        database searched for username, duplicate not found         |
+|       4        | input fields are validated, they not are conforming to constraints |
+|       5        |   show error saying that the are problems with the input fields    |
+|       6        |               user remains in account creation page                |
 
 ### Login, UC2 - FR3.1
 
@@ -918,80 +914,6 @@ Story:
 |       3        |        system checks if the cart is empty, it is empty        |
 |       4        |      system returns error message that the cart is empty      |
 |       5        |                     cart is not paid for                      |
-
-### Manage users, UC11 - FR5, FR6
-
-| Actors Involved  |                   Customer                   |
-|:----------------:|:--------------------------------------------:|
-|   Precondition   |          user logged in as customer          |
-|  Post condition  |                      -                       |
-| Nominal Scenario |                Scenario 11.1                 |
-|     Variants     | Scenario 11.2, Scenario 11.3 , Scenario 11.4 |
-|    Exceptions    |         Scenario 11.5, Scenario 11.6         |
-
-##### Scenario 11.1(list all users) - FR5
-
-| Scenario 11.1  |                                     |
-|:--------------:|:-----------------------------------:|
-|  Precondition  |     user logged in as customer      |
-| Post condition |           list all users            |
-|     Step#      |             Description             |
-|       1        | customer requests to list all users |
-|       2        |     FR5: system list all users      |
-
-##### Scenario 11.2(list user by role) - FR5.1
-
-| Scenario 11.2  |                                                            |
-|:--------------:|:----------------------------------------------------------:|
-|  Precondition  |                 user logged in as customer                 |
-| Post condition |                       list all users                       |
-|     Step#      |                        Description                         |
-|       1        | customer requests to list all users filtered based on role |
-|       2        |    FR5.1: system list all users with the specified role    |
-
-##### Scenario 11.3(get user by username) - FR5.2
-
-| Scenario 11.3  |                                               |
-|:--------------:|:---------------------------------------------:|
-|  Precondition  |          user logged in as customer           |
-| Post condition |             list user by username             |
-|     Step#      |                  Description                  |
-|       1        | customer requests list the user by a username |
-|       2        |   System checks if username exists, it does   |
-|       3        |          FR5.2: system list the user          |
-
-##### Scenario 11.4 (delete user by username) - FR6
-
-| Scenario 11.4  |                                                    |
-|:--------------:|:--------------------------------------------------:|
-|  Precondition  |             user logged in as customer             |
-| Post condition |              delete user by username               |
-|     Step#      |                    Description                     |
-|       1        | customer requests to delete the user by a username |
-|       2        |     System checks if username exists, it does      |
-|       3        |           FR5.2: system delete the user            |
-
-##### Scenario 11.5 (delete user by username, user does not exist)
-
-| Scenario 11.5  |                                                    |
-|:--------------:|:--------------------------------------------------:|
-|  Precondition  |             user logged in as customer             |
-| Post condition |                  user not deleted                  |
-|     Step#      |                    Description                     |
-|       1        | customer requests to delete the user by a username |
-|       2        |   System checks if username exists, it does not    |
-|       3        |                     Show error                     |
-
-##### Scenario 11.6 (get user by username, user does not exist)
-
-| Scenario 11.6  |                                                  |
-|:--------------:|:------------------------------------------------:|
-|  Precondition  |            user logged in as customer            |
-| Post condition |                user not returned                 |
-|     Step#      |                   Description                    |
-|       1        | customer requests to list the user by a username |
-|       2        |  System checks if username exists, it does not   |
-|       3        |                    Show error                    |
 
 # Glossary
 
