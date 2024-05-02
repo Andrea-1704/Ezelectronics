@@ -24,6 +24,7 @@ Version: V1—description of EZElectronics in FUTURE form (as proposed by the te
 - [Stories and personas](#stories-and-personas)
 - [Functional and non functional requirements](#functional-and-non-functional-requirements)
     - [Functional Requirements](#functional-requirements)
+    - 
     - [Non Functional Requirements](#non-functional-requirements)
 - [Use case diagram and use cases](#use-case-diagram-and-use-cases)
     - [Use case diagram](#use-case-diagram)
@@ -139,25 +140,25 @@ Story:
 
 # Table of access rights
 
-|      Role      | FR1.1 | FR2.1 | FR2.2 | FR2.3 | FR2.4 | FR2.5 | FR2.6 | FR3 | FR4 | FR5 |
-|:--------------:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:---:|:---:|:---:|
-|    Manager     |   Y   |   N   |   N   |   N   |   Y   |   Y   |   N   |  Y  |  Y  |  N  |
-|    Customer    |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |  Y  |  N  |  N  |
-|   Tech Admin   |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |  Y  |  Y  |  Y  |
-| Business Admin |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |  Y  |  Y  |  Y  |
-
+|      Role      | FR1 | FR2.1 | FR2.2 | FR2.3 | FR2.4 | FR2.5 | FR2.6 | FR3 | FR4 | FR5 |
+|:--------------:|:---:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:---:|:---:|:---:|
+|    Manager     |  Y  |   N   |   N   |   N   |   Y   |   Y   |   N   |  Y  |  Y  |  N  |
+|    Customer    |  Y  |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |  Y  |  N  |  N  |
+|   Tech Admin   |  Y  |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |  Y  |  Y  |  Y  |
+| Business Admin |  Y  |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   |  Y  |  Y  |  Y  |
 
 # Functional and non functional requirements
 
 ## Functional Requirements
 |   ID    |                  Description                   |
 |:-------:|:----------------------------------------------:|
-|   FR1   |            Manage Account Customer             |
-|  FR1.1  |            Create account Customer             |
-|  FR1.2  |                Validate fields                 |
-|   FR2   |                Manage Products                 |
-|  FR2.1  |                 Create Product                 |
-|  FR2.2  |               Register Arrivals                |
+|   FR1   |                 Create account                 |
+|  FR1.1  |             Create manager account             |
+|  FR1.2  |            Create customer account             |
+|  FR1.3  |        Validate account creation fields        |
+|   FR2   |                Manage products                 |
+|  FR2.1  |                 Create product                 |
+|  FR2.2  |               Register arrivals                |
 |  FR2.3  |              Approve Transaction               |
 |  FR2.4  |              Find product by code              |
 |  FR2.5  |               List all products                |
@@ -176,9 +177,7 @@ Story:
 |  FR4.2  |    Add product to cart by productId (code)     |
 |  FR4.3  |            Delete product from cart            |
 |  FR4.4  |                Pay for the cart                |
-| FR4.4.1 |      Sum cost of all products in the cart      |
 |  FR4.5  |          List and access cart history          |
-| FR4.5.1 |            Find all previous carts             |
 |  FR4.6  |                Delete the cart                 |
 |  FR4.7  |                  Request cart                  |
 |   FR5   |             Manage Account Manager             |
@@ -194,6 +193,12 @@ Story:
 |   FR8   |         Manage Account’s information's         |
 |  FR8.1  |             Change Account details             |
 |  FR8.2  |                Forgot Password                 |
+|   FR9   |                 Manage payment                 | 
+|  FR9.1  |               Add payment method               |
+|  FR9.2  |                  Make payment                  | 
+|  FR10   |                Manage shipping                 |
+| FR10.1  |            calculate shipping cost             |
+| FR10.2  |           add shipping cost to cart            |
 
 ## Non Functional Requirements
 
@@ -201,10 +206,10 @@ Story:
 |:----:|:----------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------:|
 | NFR1 |             Usability              |                                The user interface should be friendly enough so that the customers become able to navigate around the website and use all the functionalities under 15 minutes                                 | FR1,FR2, FR3, FR4 |
 | NFR2 |             Efficiency             |                                                                    The page should respond and be navigable in 0.5 second regardless of network latencies.                                                                    | FR1,FR2, FR3, FR4 |
-| NFR3 |             Efficiency             |                                                                                             Ram occupation shold be under 300 MB.                                                                                             | FR1,FR2, FR3, FR4 |
-| NFR4 |            Reliability             |                                                          Number of defects and failures during transactions should be less than 1% of the total amount of tentative.                                                          |       FR4.4       |
+| NFR3 |             Efficiency             |                                                                                            Ram occupation should be under 300 MB.                                                                                             | FR1,FR2, FR3, FR4 |
+| NFR4 |            Reliability             |                                                          Number of defects and failures during transactions should be less than 1% of the total amount of tentative.                                                          |   FR4.4, FR9.9    |
 | NFR5 |            Portability             | Should be available as a web app (and have proper browser support and possibility to be viewed on old machines) Universal/legacy browser compatibility: Chrome 123.0.0, Firefox 125.0.1,  Safari 17.4.1, Internet explorer 11 | FR1,FR2, FR3, FR4 |
-
+| NFR6 |              Security              |                         payments should be made through secure payment gateways, all the data should be encrypted, and the website should be protected against SQL injection, XSS, and CSRF attacks.                          |        FR9        |
 # Use case diagram and use cases
 
 ## Use case diagram
@@ -213,14 +218,149 @@ Story:
 
 ## Use cases
 
+### Create Account user, UC1 - FR1
+
+| Actors Involved  |                             User                              |
+|:----------------:|:-------------------------------------------------------------:|
+|   Precondition   |                  User does not have account                   |
+|  Post condition  |                               -                               |
+| Nominal Scenario |                         Scenario 1.1                          |
+|     Variants     |                 Scenario 1.2(create manager)                  |
+|    Exceptions    | Scenario 1.3 (username exists), Scenario 1.4 (invalid inputs) |
+
+##### Scenario 1.1 (create customer account) - FR1.2
+
+|  Scenario 1.1  |                                                                       |
+|:--------------:|:---------------------------------------------------------------------:|
+|  Precondition  |                      User does not have account                       |
+| Post condition |                       User has customer account                       |
+|     Step#      |                              Description                              |
+|       1        |                      user selects role customer                       |
+|       2        |      user inputs and enter username, name, surname and password       |
+|       3        |          database searched for username, duplicate not found          |
+|       4        | FR1.3: input fields are validated, they are conforming to constraints |
+|       5        |          FR1.1: A customer account gets created for the user          |
+
+##### Scenario 1.2 (create manager account) - FR1.1
+
+|  Scenario 1.2  |                                                                       |
+|:--------------:|:---------------------------------------------------------------------:|
+|  Precondition  |                      User does not have account                       |
+| Post condition |                       User has manager account                        |
+|     Step#      |                              Description                              |
+|       1        |                       user selects role Manager                       |
+|       2        |      user inputs and enter username, name, surname and password       |
+|       3        |          database searched for username, duplicate not found          |
+|       4        | FR1.3: input fields are validated, they are conforming to constraints |
+|       5        |          FR1.2: A manager account gets created for the user           |
+
+##### Scenario 1.3 (username exists)
+
+|  Scenario 1.3  |                                                            |
+|:--------------:|:----------------------------------------------------------:|
+|  Precondition  |                 User does not have account                 |
+| Post condition |                 User does not have account                 |
+|     Step#      |                        Description                         |
+|       1        |                 user selects role Manager                  |
+|       2        | user inputs and enter username, name, surname and password |
+|       3        |      database searched for username, duplicate found       |
+|       4        |     show error saying that the username already exists     |
+|       5        |           user remains in account creation page            |
+
+##### Scenario 1.4 (invalid inputs)
+
+|  Scenario 1.4  |                                                                          |
+|:--------------:|:------------------------------------------------------------------------:|
+|  Precondition  |                        User does not have account                        |
+| Post condition |                        User does not have account                        |
+|     Step#      |                               Description                                |
+|       1        |                        user selects role Manager                         |
+|       2        |        user inputs and enter username, name, surname and password        |
+|       3        |           database searched for username, duplicate not found            |
+|       4        | FR1.3:input fields are validated, they not are conforming to constraints |
+|       5        |      show error saying that the are problems with the input fields       |
+|       6        |                  user remains in account creation page                   |
+
+### Login, UC2 - FR3.1
+
+| Actors Involved  |                       User                       |
+|:----------------:|:------------------------------------------------:|
+|   Precondition   |                user not logged in                |
+|  Post condition  |                        -                         |
+| Nominal Scenario |                   Scenario 2.1                   |
+|     Variants     |                        -                         |
+|    Exceptions    | Scenario 2.2 (username and password don't match) |
+
+##### Scenario 2.1
+
+|  Scenario 2.1  |                                                                  |
+|:--------------:|:----------------------------------------------------------------:|
+|  Precondition  |                        user not logged in                        |
+| Post condition |                          user logged in                          |
+|     Step#      |                           Description                            |
+|       1        |                user inputs username and password                 |
+|       2        | database searched for username, check password, password matched |
+|       3        |                    FR3.1: user gets logged in                    |
+
+##### Scenario 2.2 (username and password don't match)
+
+|  Scenario 2.2  |                                                                        |
+|:--------------:|:----------------------------------------------------------------------:|
+|  Precondition  |                           user not logged in                           |
+| Post condition |                           user not logged in                           |
+|     Step#      |                              Description                               |
+|       1        |                   user inputs username and password                    |
+|       2        | database searched for username, check password, password doesn't match |
+|       3        |                      user does not get logged in                       |
+
+### Logout, UC3 - FR3.2
+
+| Actors Involved  |        User        |
+|:----------------:|:------------------:|
+|   Precondition   |   user logged in   |
+|  Post condition  | user not logged in |
+| Nominal Scenario |    Scenario 3.1    |
+|     Variants     |         -          |
+|    Exceptions    |         -          |
+
+##### Scenario 3.1 - FR3.2
+
+|  Scenario 3.1  |                            |
+|:--------------:|:--------------------------:|
+|  Precondition  |       user logged in       |
+| Post condition |     user not logged in     |
+|     Step#      |        Description         |
+|       1        | user asks to be logged out |
+|       2        | FR3.2:user gets logged out |
+
+### Current session info, UC4 - FR3.3
+
+| Actors Involved  |                    User                    |
+|:----------------:|:------------------------------------------:|
+|   Precondition   |               user logged in               |
+|  Post condition  | user receives information on their session |
+| Nominal Scenario |                Scenario 4.1                |
+|     Variants     |                     -                      |
+|    Exceptions    |                     -                      |
+
+##### Scenario 4.1 - FR3.3
+
+|  Scenario 4.1  |                                               |
+|:--------------:|:---------------------------------------------:|
+|  Precondition  |                user logged in                 |
+| Post condition |  user receives information on their session   |
+|     Step#      |                  Description                  |
+|       1        |     user asks to get current session info     |
+|       2        | FR3.3:user receives their profile information |
+
 ### Forgot password, UC1
-| Actors Involved  |                      Customer, Manager                       |
-|------------------|:------------------------------------------------------------:| 
-| Precondition     |             User has an account on EZelectronics             |
-| Post condition   |                              -                               |
-| Nominal Scenario |                         Scenario 1.1                         |
-| Variants         |                         Scenario 1.2                         |
-| Exceptions       | Scenario 1.3(incorrect code), Scenario 1.4(user not founded) |
+| Actors Involved  |                     Customer, Manager                      |
+|------------------|:----------------------------------------------------------:| 
+| Precondition     |            User has an account on EZelectronics            |
+| Post condition   |                             -                              |
+| Nominal Scenario |                        Scenario 1.1                        |
+| Variants         |                        Scenario 1.2                        |
+| Exceptions       | Scenario 1.3(incorrect code), Scenario 1.4(user not found) |
 
 ##### Scenario 1.1
 
@@ -253,7 +393,7 @@ Story:
 | 5              |                  Manager input a verification code                   |
 | 6              |                        Check correctness, ok                         |
 | 7              |                         Request new Password                         |
-| 8              |             Validate the password, successful validation             |
+| 8              |         FR1.3: Validate the password, successful validation          |
 | 9              | Show a message to Manager saying that the password has been modified |
 
 ##### Scenario 1.3
@@ -359,7 +499,7 @@ Story:
 | Post condition |                       User changed password                       |
 | Step#          |                            Description                            |
 | 1              |                     User provide new password                     |  
-| 2              |              validate password with safety rules, ok              | 
+| 2              |          FR1.3: validate password with safety rules, ok           | 
 | 3              | Show a message to User saying that the password has been modified |
 
 ##### Scenario 2.7
@@ -413,14 +553,14 @@ Story:
 
 ##### Scenario 2.11
 
-| Scenario 2.11  |                                                          |
-|----------------|:--------------------------------------------------------:| 
-| Precondition   |                  User is authenticated                   |
-| Post condition |                  password not modified                   |
-| Step#          |                       Description                        |
-| 1              |                User provide new password                 |  
-| 2              | validate password with safety rules, rules not satisfied | 
-| 3              |                        Show error                        |
+| Scenario 2.11  |                                                                 |
+|----------------|:---------------------------------------------------------------:| 
+| Precondition   |                      User is authenticated                      |
+| Post condition |                      password not modified                      |
+| Step#          |                           Description                           |
+| 1              |                    User provide new password                    |  
+| 2              | FR1.3: validate password with safety rules, rules not satisfied | 
+| 3              |                           Show error                            |
 
 ### Create new Store, UC3
 
@@ -1100,6 +1240,137 @@ Story:
 |       2        |               system checks if the cart is empty, it is not                |
 |       3        |       system checks if the user has enough money to pay, he has not        |
 |       4        |                    show error, don't allow transaction                     |
+
+### Manage users, UC18 - FR5, FR6
+
+| Actors Involved  |                   Customer                   |
+|:----------------:|:--------------------------------------------:|
+|   Precondition   |          user logged in as customer          |
+|  Post condition  |                      -                       |
+| Nominal Scenario |                Scenario 18.1                 |
+|     Variants     | Scenario 18.2, Scenario 18.3 , Scenario 18.4 |
+|    Exceptions    |         Scenario 18.5, Scenario 18.6         |
+
+##### Scenario 18.1(list all users) - FR5
+
+| Scenario 18.1  |                                     |
+|:--------------:|:-----------------------------------:|
+|  Precondition  |     user logged in as customer      |
+| Post condition |           list all users            |
+|     Step#      |             Description             |
+|       1        | customer requests to list all users |
+|       2        |     FR5: system list all users      |
+
+##### Scenario 18.2(list user by role)
+
+| Scenario 18.2  |                                                            |
+|:--------------:|:----------------------------------------------------------:|
+|  Precondition  |                 user logged in as customer                 |
+| Post condition |                       list all users                       |
+|     Step#      |                        Description                         |
+|       1        | customer requests to list all users filtered based on role |
+|       2        |   system list all users with the specified role    |
+
+##### Scenario 18.3(get user by username) - FR5.2
+
+| Scenario 18.3  |                                               |
+|:--------------:|:---------------------------------------------:|
+|  Precondition  |          user logged in as customer           |
+| Post condition |             list user by username             |
+|     Step#      |                  Description                  |
+|       1        | customer requests list the user by a username |
+|       2        |   System checks if username exists, it does   |
+|       3        |          FR5.2: system list the user          |
+
+##### Scenario 18.4 (delete user by username) - FR6
+
+| Scenario 18.4  |                                                    |
+|:--------------:|:--------------------------------------------------:|
+|  Precondition  |             user logged in as customer             |
+| Post condition |              delete user by username               |
+|     Step#      |                    Description                     |
+|       1        | customer requests to delete the user by a username |
+|       2        |     System checks if username exists, it does      |
+|       3        |           FR5.2: system delete the user            |
+
+##### Scenario 18.5 (delete user by username, user does not exist)
+
+| Scenario 18.5  |                                                    |
+|:--------------:|:--------------------------------------------------:|
+|  Precondition  |             user logged in as customer             |
+| Post condition |                  user not deleted                  |
+|     Step#      |                    Description                     |
+|       1        | customer requests to delete the user by a username |
+|       2        |   System checks if username exists, it does not    |
+|       3        |                     Show error                     |
+
+##### Scenario 18.6 (get user by username, user does not exist)
+
+| Scenario 18.6  |                                                  |
+|:--------------:|:------------------------------------------------:|
+|  Precondition  |            user logged in as customer            |
+| Post condition |                user not returned                 |
+|     Step#      |                   Description                    |
+|       1        | customer requests to list the user by a username |
+|       2        |  System checks if username exists, it does not   |
+|       3        |                    Show error                    |
+
+### Manage shipping, UC19 - FR10
+| Actors Involved  |                       Customer                        |
+|:----------------:|:-----------------------------------------------------:|
+|   Precondition   | user logged in as customer, user has checked cart out |
+|  Post condition  |                           -                           |
+| Nominal Scenario |                     Scenario 19.1                     |
+|     Variants     |                           -                           |
+|    Exceptions    |                           -                           |
+
+##### Scenario 19.1 - FR10
+
+| Scenario 19.1  |                                                         |
+|:--------------:|:-------------------------------------------------------:|
+|  Precondition  |  user logged in as customer, user has checked cart out  |
+| Post condition |               shipping cost added to cart               |
+|     Step#      |                       Description                       |
+|       1        |            customer requests to pay for cart            |
+|       2        |          customer inputs the shipping address           |
+|       3        | system contacts shipping service and gets shipping cost |
+|       4        |        system returns shipping cost to customer         |
+|       5        |             customer accepts shipping price             |
+|       6        |              shipping price added to cart               |
+
+#### Manage Payment, UC20 - FR9
+| Actors Involved  |                       Customer                        |
+|:----------------:|:-----------------------------------------------------:|
+|   Precondition   | user logged in as customer, user has checked cart out |
+|  Post condition  |                           -                           |
+| Nominal Scenario |                     Scenario 20.1                     |
+|     Variants     |                           -                           |
+|    Exceptions    |                     Scenario 20.2                     |
+
+
+##### Scenario 20.1 - FR9.1
+| Scenario 20.1  |                                                                  |
+|:--------------:|:----------------------------------------------------------------:|
+|  Precondition  | user logged in as customer, user has added shipping cost to cart |
+| Post condition |                       payment method added                       |
+|     Step#      |                           Description                            |
+|       1        |          customer requests to pay for cart and shipping          |
+|       2        |          customer inputs the payment method and details          |
+|       3        | system contacts payment service and gets payment method approved |
+|       4        |         system returns added payment method to customer          |
+
+##### Scenario 20.2 - FR9.1
+| Scenario 20.2  |                                                                  |
+|:--------------:|:----------------------------------------------------------------:|
+|  Precondition  | user logged in as customer, user has added shipping cost to cart |
+| Post condition |                     payment method not added                     |
+|     Step#      |                           Description                            |
+|       1        |          customer requests to pay for cart and shipping          |
+|       2        |          customer inputs the payment method and details          |
+|       3        |  system contacts payment service and gets payment method denied  |
+|       4        |      system returns error message, payment method not added      |
+
+
 
 # Glossary
 
