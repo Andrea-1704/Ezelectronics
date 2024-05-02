@@ -781,7 +781,7 @@ Story:
 |  Post condition  |                                                                                                             |
 | Nominal Scenario |                                                Scenario 6.1                                                 |
 |     Variants     |                                                Scenario 6.2                                                 |
-|    Exceptions    | Scenario 6.3(Arrival date asfter current date), Scenario 6.4(inexistent store/manager does't possess store) |
+|    Exceptions    | Scenario 6.3(Arrival date after current date), Scenario 6.4(store doesn't exists), Scenario 6.5(store not owned by manager) |
 
 ##### Scenario 6.1
 
@@ -790,11 +790,11 @@ Story:
 |  Precondition  |                                                    user logged in as manager                                                    |
 | Post condition |                                                       arrivals registered                                                       |
 |     Step#      |                                                           Description                                                           |
-|       1        | User inserts arrival product info: model, category, sellingPrice, model, category, details, arrivalDate, quantity, store's code |
+|       1        | User inserts arrival product info: model, category, sellingPrice, model, category, details, arrivalDate, quantity, store's code, image, color |
 |       2        |                                   system checks arrival date exists and is current date , ok                                    |
 |       3        |                           system checks code's store is associated to current manager and exist,  ok                            |
 |       4        |                                   system validates other fields, they comply with constraints                                   |
-|       5        |                                                       arrival registered                                                        |
+|       5        |                                                       arrival registered, each product is created with it's own unique code, return the list of products created, with the code.                                               |
 
 ##### Scenario 6.2
 
@@ -803,12 +803,12 @@ Story:
 |  Precondition  |                                             user logged in as manager                                              |
 | Post condition |                                                arrivals registered                                                 |
 |     Step#      |                                                    Description                                                     |
-|       1        | User inserts arrival product info: model, category, sellingPrice, model, category, details, quantity, store's code |
+|       1        | User inserts arrival product info: model, category, sellingPrice, model, category, details, quantity, store's code, image, color |
 |       2        |                                     system checks arrival date, does not exist                                     |
 |       3        |                                      system sets arrival date to current date                                      |
 |       4        |                     system checks code's store is associated to current manager and exist,  ok                     |
 |       5        |                            system validates other fields, they comply with constraints                             |
-|       6        |                                                 arrival registered                                                 |
+|       6        |                                                 arrival registered, each product is created with it's own unique code, return the list of products created, with the code.                                                 |
 
 ##### Scenario 6.3
 
@@ -817,7 +817,7 @@ Story:
 |  Precondition  |                                                    user logged in as manager                                                    |
 | Post condition |                                                     arrivals not registered                                                     |
 |     Step#      |                                                           Description                                                           |
-|       1        | User inserts arrival product info: model, category, sellingPrice, model, category, details, arrivalDate, quantity, store's code |
+|       1        | User inserts arrival product info: model, category, sellingPrice, model, category, details, arrivalDate, quantity, store's code, image and color |
 |       2        |                                  system checks arrival date, exists and is after current date                                   |
 |       3        |                                 system shows error describing that the arrivalDate is incorrect                                 |
 
@@ -828,9 +828,21 @@ Story:
 |  Precondition  |                                                    user logged in as manager                                                    |
 | Post condition |                                                     arrivals not registered                                                     |
 |     Step#      |                                                           Description                                                           |
-|       1        | User inserts arrival product info: model, category, sellingPrice, model, category, details, arrivalDate, quantity, store's code |
+|       1        | User inserts arrival product info: model, category, sellingPrice, model, category, details, arrivalDate, quantity, store's code, image, color |
 |       2        |                                   system checks arrival date exists and is current date , ok                                    |
-|       3        |                         system checks code's store is associated to current manager and exist,  not ok                          |
+|       3        |                         system checks code's store is associated to current manager and exist,  store doesn't exists                         |
+|       4        |                                                           Show error                                                            |
+
+##### Scenario 6.5
+
+|  Scenario 6.5  |                                                                                                                                 |
+|:--------------:|:-------------------------------------------------------------------------------------------------------------------------------:|
+|  Precondition  |                                                    user logged in as manager                                                    |
+| Post condition |                                                     arrivals not registered                                                     |
+|     Step#      |                                                           Description                                                           |
+|       1        | User inserts arrival product info: model, category, sellingPrice, model, category, details, arrivalDate, quantity, store's code, image, color |
+|       2        |                                   system checks arrival date exists and is current date , ok                                    |
+|       3        |                         system checks code's store is associated to current manager and exist,  store is not owned by current logged in manager                        |
 |       4        |                                                           Show error                                                            |
 
 ### Approve transaction, UC7
@@ -1085,8 +1097,8 @@ Story:
 |  Precondition  |       user logged in as customer,product exists        |
 | Post condition |         product is added to the customer cart          |
 |     Step#      |                      Description                       |
-|       1        |      User inputs product code to be added to cart      |
-|       2        |          system searches for product by code           |
+|       1        |      User choose a product to add to his card      |
+|       2        |          system verify the product exists           |
 |       3        | system checks if product is in another cart, it is not |
 |       4        |      system checks if product is sold, it is not       |
 |       5        |         product is added to the customer cart          |
