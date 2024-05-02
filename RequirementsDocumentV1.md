@@ -28,7 +28,6 @@ Version: V1—description of EZElectronics in CURRENT form (as received by teach
       - [FR1- Create account]
         - [FR1.1- Create manager account]
         - [FR1.2- Create customer account]
-        - [FR1.3- Validate account creation fields]
       - [FR2- Manage products]
         - [FR2.1- Create product]
         - [FR2.2- Register arrivals]
@@ -119,9 +118,7 @@ history of their past purchases.
 |                 Customer                 |     People using the website to buy electronics products from electronics store managers      |
 |                 Manager                  | People who are electronics store managers and showcase their products online and manage sales |
 |         EZElectronics Employees          |                      (TechAdmin, Investors, Legal team, Marketing Team)                       |
-| Regulatory agencies/ Compliance agencies |       Partner agencies that EZElectronics consults in order to comply with regulations        |
-|   Product suppliers and manufacturers    |   Manufacturers of electronics products from whom the store managers obtain their products    |
-|               Competitors                |                  Similar companies that have a software with the same scope                   |
+
 
 # Context Diagram and interfaces
 
@@ -216,7 +213,6 @@ Story:
 |   FR1   |                      Create account                       |
 |  FR1.1  |                  create manager account                   |
 |  FR1.2  |                  create customer account                  |
-|  FR1.3  |             Validate account creation fields              |
 |   FR2   |                      Manage products                      |
 |  FR2.1  |                      Create product                       |
 |  FR2.2  |                     Register arrivals                     |
@@ -282,7 +278,7 @@ Story:
 |       1        |                      user selects role customer                       |
 |       2        |      user inputs and enter username, name, surname and password       |
 |       3        |          database searched for username, duplicate not found          |
-|       4        | FR1.3: input fields are validated, they are conforming to constraints |
+|       4        | input fields are validated, they are conforming to constraints |
 |       5        |          FR1.1: A customer account gets created for the user          |
 
 ##### Scenario 1.2 (create manager account) - FR1.1
@@ -295,7 +291,7 @@ Story:
 |       1        |                       user selects role Manager                       |
 |       2        |      user inputs and enter username, name, surname and password       |
 |       3        |          database searched for username, duplicate not found          |
-|       4        | FR1.3: input fields are validated, they are conforming to constraints |
+|       4        |  input fields are validated, they are conforming to constraints |
 |       5        |          FR1.2: A manager account gets created for the user           |
 
 ##### Scenario 1.3 (username exists)
@@ -321,7 +317,7 @@ Story:
 |       1        |                        user selects role Manager                         |
 |       2        |        user inputs and enter username, name, surname and password        |
 |       3        |           database searched for username, duplicate not found            |
-|       4        | FR1.3:input fields are validated, they not are conforming to constraints |
+|       4        |  input fields are validated, they not are conforming to constraints |
 |       5        |      show error saying that the are problems with the input fields       |
 |       6        |                  user remains in account creation page                   |
 
@@ -1008,7 +1004,7 @@ Story:
 - Manager: A user with the role of manager, responsible for adding products to the platform.
 - Product: physical object that is added to the catalog from the manager and eventually sold to the user. A product
   could be sold or not sold, if it gets sold, it will have a selling date.
-- Sell: manager sets the product’s selling date to current day.
+- Sell: manager marks a product as sold.
 - Pay: customer informs the system that he wants to buy the product(s) in his current cart. Then the manager of each
   product on that cart can allow or not allow the selling.
 - Cart: collection of the products the customer wants to buy.
