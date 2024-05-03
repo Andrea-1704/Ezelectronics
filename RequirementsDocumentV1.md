@@ -196,14 +196,6 @@ Story:
   store, add new products, and fulfill orders, all while taking care of her children. EZElectronics has empowered Lisa
   to pursue her entrepreneurial dreams while balancing her family responsibilities.
 
-# Table of access rights
-
-|   Role    | FR1 | FR2.1 | FR2.2 | FR2.3 | FR2.4 | FR2.5 | FR2.6 | FR3 | FR4 |
-|:---------:|:---:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:---:|:---:|
-|  Manager  |  Y  |   N   |   N   |   N   |   Y   |   Y   |   N   |  Y  |  Y  |
-| Customer  |  Y  |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   | 	Y  |  N  |
-| TechAdmin |  Y  |   Y   |   Y   |   Y   |   Y   |   Y   |   Y   | 	Y  |  Y  |
-
 # Functional and non functional requirements
 
 ## Functional Requirements
