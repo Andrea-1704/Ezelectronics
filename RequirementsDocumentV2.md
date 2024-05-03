@@ -146,19 +146,17 @@ Story:
 |   FR2   |                Manage products                 |
 |  FR2.1  |                 Create product                 |
 |  FR2.2  |               Register arrivals                |
-|  FR2.3  |          List all available products           |
-| FR2.3.1 |  filter available products based on category   |
-| FR2.3.2 |    filter available products based on model    |
-| FR2.3.3 | filter available products based on sold status |
-| FR2.4   |            get product by code                 |
-|  FR2.5  |        Delete specific product by code         |
+|  FR2.5  |          List all available products           |
+| FR2.5.1 |  filter available products based on category   |
+| FR2.5.2 |    filter available products based on model    |
+|  FR2.6  |        Delete specific product by code         |
 |  FR2.7  |           Get store by product code            |
 |  FR2.8  |                  Change store                  |
 |  FR2.9  |            List all owned products             |
 | FR2.9.1 |  filter all owned products based on category   |
 | FR2.9.2 |    filter all owned products based on model    |
 | FR2.9.3 |     filter all owned products already sold     |
-| FR2.9.4 |  filter all owned products available to sell   |
+| FR2.9.4 |       filter all owned products not sold       |
 |   FR3   |        Authorization and authentication        |
 |  FR3.1  |                     login                      |
 |  FR3.2  |                     logout                     |
@@ -486,87 +484,155 @@ Story:
 |       4        |                   system shows error describing that the arrivalDate is invalid                   |
 |       5        |                      arrivals not registered, user remains on add product page                      |
 
-### Get products, UC6 - FR2.3
+### Get products, UC6
+| Actors Involved  |                                                              User                                                               |
+|:----------------:|:-------------------------------------------------------------------------------------------------------------------------------:|
+|   Precondition   |                                                       User not logged in                                                        |
+|  Post condition  |                                                                -                                                                |
+| Nominal Scenario |                                            Scenario 6.1, Scenario 6.2, Scenario 6.3                                             |
+|     Variants     | Scenario 6.4, Scenario 6.5, Scenario 6.6, Scenario 6.7, Scenario 6.8, Scenario 6.9, Scenario 6.10, Scenario 6.11, Scenario 6.12 |
+|    Exceptions    |                                                                -                                                                |
 
-| Actors Involved  |  User (Customer or Manager)     |
-|:----------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|   Precondition   |                                                                                                                                                    user logged in                                                                                                                                                    |
-|  Post condition  |                                                                                                                                                          -                                                                                                                                                           |
-| Nominal Scenario |                                                               Scenario 6.1 (get all products)                                                                                                                                            |
-|     Variants     | Scenario 6.2 (filter all products based on category) ,Scenario 6.3 (filter all products based on model), Scenario 6.4 (filter all products based on category and sold status), Scenario 6.5 (filter all products based on model and sold status) | Scenario 6.6 (get product by code)
-|    Exceptions    |                                                                                                                                        Scenario 6.7 (product does not exist)                                                                                                                                        |
 
-##### Scenario 6.1 (get all products)
+##### Scenario 6.1 - FR2.5
+|  Scenario 6.1  |                                              |
+|:--------------:|:--------------------------------------------:|
+|  Precondition  |              user not logged in              |
+| Post condition |            products are returned             |
+|     Step#      |                 Description                  |
+|       1        | user requests to see all available products  |
+|       2        | FR2.5: system returns all available products |
 
-|  Scenario 6.1  |                                   |
-|:--------------:|:---------------------------------:|
-|  Precondition  |          user logged in           |
-| Post condition |         List all products         |
-|     Step#      |            Description            |
-|       1        | User requests to get all products |
-|       2        | FR2.3: system returns all products |
+#### Scenario 6.2 - FR2.5
+|  Scenario 6.2  |                                                 |
+|:--------------:|:-----------------------------------------------:|
+|  Precondition  |               user not logged in                |
+| Post condition |              products are returned              |
+|     Step#      |                   Description                   |
+|       1        |           user logs in as a customer            |
+|       2        | customer requests to see all available products |
+|       3        |  FR2.5: system returns all available products   |
 
-##### Scenario 6.2 (get all products and filter products based on category)
+#### Scenario 6.3 - FR2.5
+|  Scenario 6.3  |                                                |
+|:--------------:|:----------------------------------------------:|
+|  Precondition  |               user not logged in               |
+| Post condition |             products are returned              |
+|     Step#      |                  Description                   |
+|       1        |           user logs in as a manager            |
+|       2        | manager requests to see all available products |
+|       3        |  FR2.5: system returns all available products  |
 
-|  Scenario 6.2  |                                                         |
-|:--------------:|:-------------------------------------------------------:|
-|  Precondition  |                     user logged in                      |
-| Post condition |       list all products filtered based on category       |
-|     Step#      |                       Description                       |
-|       1        | user requests to get all products in a certain category |
-|       2        |  FR2.3.1: system returns all products in that category   |
+#### Scenario 6.4 - FR2.9
+|  Scenario 6.4  |                                                     |
+|:--------------:|:---------------------------------------------------:|
+|  Precondition  |                 user not logged in                  |
+| Post condition |                products are returned                |
+|     Step#      |                     Description                     |
+|       1        |              user logs in as a manager              |
+|       2        |     manager requests to see all owned products      |
+|       3        | FR2.5: system returns products owned by the manager |
 
-##### Scenario 6.3 (get all products and filter products based on model)
 
-|  Scenario 6.3  |                                                      |
-|:--------------:|:----------------------------------------------------:|
-|  Precondition  |                    user logged in                    |
-| Post condition |      list all products filtered based on model       |
-|     Step#      |                     Description                      |
-|       1        | User requests to see all products of a certain model |
-|       2        |  FR2.3.2: system returns all products of that model   |
+##### Scenario 6.5 - FR2.5.1
+|  Scenario 6.5  |                                                                   |
+|:--------------:|:-----------------------------------------------------------------:|
+|  Precondition  |                        user not logged in                         |
+| Post condition |                       products are returned                       |
+|     Step#      |                            Description                            |
+|       1        | user requests to see all available products in a certain category |
+|       2        |  FR2.5.1: system returns all available products in that category  |
 
-##### Scenario 6.4 (get all products and filter products based on category and sold status)
 
-|  Scenario 6.4  |                                                                         |
-|:--------------:|:-----------------------------------------------------------------------:|
-|  Precondition  |                             user logged in                              |
-| Post condition |      list all products filtered based on category and sold status       |
-|     Step#      |                               Description                               |
-|       1        | User requests to see all products in a certain category and sold status |
-|       2        |     FR2.3.3: system returns all products in that category and sold status       |
+##### Scenario 6.6 - FR2.5.1
+|  Scenario 6.6  |                                                                       |
+|:--------------:|:---------------------------------------------------------------------:|
+|  Precondition  |                          user not logged in                           |
+| Post condition |                         products are returned                         |
+|     Step#      |                              Description                              |
+|       1        |                       user logs in as customer                        |
+|       2        | customer requests to see all available products in a certain category |
+|       3        |    FR2.5.1: system returns all available products in that category    |
 
-##### Scenario 6.5 (get all products and filter products based on model and sold status)
-
-|  Scenario 6.5  |                                                                      |
+##### Scenario 6.7 - FR2.5.1
+|  Scenario 6.7  |                                                                      |
 |:--------------:|:--------------------------------------------------------------------:|
-|  Precondition  |                            user logged in                            |
-| Post condition |      list all products filtered based on model and sold status       |
+|  Precondition  |                          user not logged in                          |
+| Post condition |                        products are returned                         |
 |     Step#      |                             Description                              |
-|       1        | user requests to see all products of a certain model and sold status |
-|       2        |FR2.3.3: system returns all products of that model and sold status    |
+|       1        |                       user logs in as manager                        |
+|       2        | manager requests to see all available products in a certain category |
+|       3        |   FR2.5.1: system returns all available products in that category    |
 
-##### Scenario 6.6 (get product by code)
+##### Scenario 6.8 - FR2.9.1
+|  Scenario 6.8  |                                                                            |
+|:--------------:|:--------------------------------------------------------------------------:|
+|  Precondition  |                             user not logged in                             |
+| Post condition |                           products are returned                            |
+|     Step#      |                                Description                                 |
+|       1        |                          user logs in as manager                           |
+|       2        |      manager requests to see all owned products in a certain category      |
+|       3        | FR2.9.1: system returns all products owned by the manager in that category |
 
-|  Scenario 6.6  |                                                        |
-|:--------------:|:------------------------------------------------------:|
-|  Precondition  |                     user logged in                     |
-| Post condition |                 products not returned                  |
-|     Step#      |                      Description                       |
-|       1        |                User enters product code                |
-|       2        |       system searches for product by code, finds it    |
-|       3        |       FR2.4: system returns product and its info       |
+##### Scenario 6.9 - FR2.5.2
+|  Scenario 6.9  |                                                                |
+|:--------------:|:--------------------------------------------------------------:|
+|  Precondition  |                       user not logged in                       |
+| Post condition |                     products are returned                      |
+|     Step#      |                          Description                           |
+|       1        | user requests to see all available products in a certain model |
+|       2        |  FR2.5.2: system returns all available products in that model  |
 
-##### Scenario 6.7 (product does not exists)
 
-|  Scenario 6.6  |                                                        |
-|:--------------:|:------------------------------------------------------:|
-|  Precondition  |                     user logged in                     |
-| Post condition |                 products not returned                  |
-|     Step#      |                      Description                       |
-|       1        |                User enters product code                |
-|       2        |          system searches for product by code           |
-|       3        | system does not find product and returns error message |
+##### Scenario 6.10 - FR2.5.2
+| Scenario 6.10  |                                                                    |
+|:--------------:|:------------------------------------------------------------------:|
+|  Precondition  |                         user not logged in                         |
+| Post condition |                       products are returned                        |
+|     Step#      |                            Description                             |
+|       1        |                      user logs in as customer                      |
+|       2        | customer requests to see all available products in a certain model |
+|       3        |    FR2.5.1: system returns all available products in that model    |
+
+##### Scenario 6.11 - FR2.5.1
+| Scenario 6.11  |                                                                   |
+|:--------------:|:-----------------------------------------------------------------:|
+|  Precondition  |                        user not logged in                         |
+| Post condition |                       products are returned                       |
+|     Step#      |                            Description                            |
+|       1        |                      user logs in as manager                      |
+|       2        | manager requests to see all available products in a certain model |
+|       3        |   FR2.5.1: system returns all available products in that model    |
+
+##### Scenario 6.12 - FR2.9.2
+| Scenario 6.12  |                                                                         |
+|:--------------:|:-----------------------------------------------------------------------:|
+|  Precondition  |                           user not logged in                            |
+| Post condition |                          products are returned                          |
+|     Step#      |                               Description                               |
+|       1        |                         user logs in as manager                         |
+|       2        |      manager requests to see all owned products in a certain model      |
+|       3        | FR2.9.2: system returns all products owned by the manager in that model |
+
+##### Scenario 6.13 - FR2.9.3
+| Scenario 6.13  |                                                                             |
+|:--------------:|:---------------------------------------------------------------------------:|
+|  Precondition  |                             user not logged in                              |
+| Post condition |                            products are returned                            |
+|     Step#      |                                 Description                                 |
+|       1        |                           user logs in as manager                           |
+|       2        |           manager requests to see all owned products already sold           |
+|       3        | FR2.9.3: system returns all products owned by manager that are already sold |
+
+##### Scenario 6.14 - FR2.9.4
+| Scenario 6.14  |                                                                         |
+|:--------------:|:-----------------------------------------------------------------------:|
+|  Precondition  |                           user not logged in                            |
+| Post condition |                          products are returned                          |
+|     Step#      |                               Description                               |
+|       1        |                         user logs in as manager                         |
+|       2        |           manager requests to see all owned products not sold           |
+|       3        | FR2.9.3: system returns all products owned by manager that are not sold |
 
 ### Delete Product, UC7
 
@@ -1104,7 +1170,6 @@ Story:
 | 1              |                User provide new password                 |  
 | 2              | validate password with safety rules, rules not satisfied | 
 | 3              |                        Show error                        |
-
 
 ### Create new Store, UC13
 | Actors Involved  |                     Manager                     |
