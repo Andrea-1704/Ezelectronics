@@ -191,7 +191,7 @@ Story:
 |   F10   |               Privacy Management               |
 |  F10.1  |             Show legal constraints             |
 |  F10.2  |              Ask user permissions              |
-|  F10.3  | Allow user to modify permissions at any moment |
+|  F10.3  | Allow user to change permissions at any moment |
 
 
 ## Non Functional Requirements
@@ -220,7 +220,7 @@ Story:
 |  Post condition  |                               -                               |
 | Nominal Scenario |            Scenario 1.1 (create customer account)             |
 |     Variants     |             Scenario 1.2 (create manager account)             |
-|    Exceptions    | Scenario 1.3 (username exists), Scenario 1.4 (invalid inputs) |
+|    Exceptions    | Scenario 1.3 (username exists), Scenario 1.4 (invalid fields) |
 
 ##### Scenario 1.1 (create customer account) - FR1.2
 
@@ -230,7 +230,7 @@ Story:
 | Post condition |                         User has customer account                          |
 |     Step#      |                                Description                                 |
 |       1        |                         user selects role customer                         |
-|       2        |     user inputs and enter username, name, email, surname and password      |
+|       2        |          user enters username, name, email, surname and password           |
 |       3        |            database searched for username, duplicate not found             |
 |       4        |       input fields are validated, they are conforming to constraints       |
 |       5        |              database searched for email, duplicate not found              |
@@ -246,7 +246,7 @@ Story:
 | Post condition |                          User has manager account                          |
 |     Step#      |                                Description                                 |
 |       1        |                         user selects role Manager                          |
-|       2        |     user inputs and enter username, name, email, surname and password      |
+|       2        |          user enters username, name, email, surname and password           |
 |       3        |            database searched for username, duplicate not found             |
 |       4        |       input fields are validated, they are conforming to constraints       |
 |       5        |              database searched for email, duplicate not found              |
@@ -256,18 +256,18 @@ Story:
 
 ##### Scenario 1.3 (username exists)
 
-|  Scenario 1.3  |                                                                   |
-|:--------------:|:-----------------------------------------------------------------:|
-|  Precondition  |                    User does not have account                     |
-| Post condition |                    User does not have account                     |
-|     Step#      |                            Description                            |
-|       1        |                     user selects role Manager                     |
-|       2        | user inputs and enter username, name, email, surname and password |
-|       3        |          database searched for username, duplicate found          |
-|       4        |        show error saying that the username already exists         |
-|       5        |               user remains in account creation page               |
+|  Scenario 1.3  |                                                         |
+|:--------------:|:-------------------------------------------------------:|
+|  Precondition  |               User does not have account                |
+| Post condition |               User does not have account                |
+|     Step#      |                       Description                       |
+|       1        |                user selects role Manager                |
+|       2        | user enters username, name, email, surname and password |
+|       3        |     database searched for username, duplicate found     |
+|       4        |   show error saying that the username already exists    |
+|       5        |          user remains in account creation page          |
 
-##### Scenario 1.4 (invalid inputs)
+##### Scenario 1.4 (invalid fields)
 
 |  Scenario 1.4  |                                                                    |
 |:--------------:|:------------------------------------------------------------------:|
@@ -275,7 +275,7 @@ Story:
 | Post condition |                     User does not have account                     |
 |     Step#      |                            Description                             |
 |       1        |                     user selects role Manager                      |
-|       2        | user inputs and enter username, name, email, surname and password  |
+|       2        |      user enters username, name, email, surname and password       |
 |       3        |        database searched for username, duplicate not found         |
 |       4        | input fields are validated, they not are conforming to constraints |
 |       5        |   show error saying that the are problems with the input fields    |
@@ -284,18 +284,18 @@ Story:
 
 ##### Scenario 1.5 (email already exists) 
 
-|  Scenario 1.5  |                                                                   |
-|:--------------:|:-----------------------------------------------------------------:|
-|  Precondition  |                    User does not have account                     |
-| Post condition |                    User does not have account                     |
-|     Step#      |                            Description                            |
-|       1        |                    user selects role customer                     |
-|       2        | user inputs and enter username, name, email, surname and password |
-|       3        |        database searched for username, duplicate not found        |
-|       4        |  input fields are validated, they are conforming to constraints   |
-|       5        |           database searched for email, duplicate found            |
-|       6        |   show error saying that the are problems with the input fields   |
-|       7        |               user remains in account creation page               |
+|  Scenario 1.5  |                                                                |
+|:--------------:|:--------------------------------------------------------------:|
+|  Precondition  |                   User does not have account                   |
+| Post condition |                   User does not have account                   |
+|     Step#      |                          Description                           |
+|       1        |                   user selects role customer                   |
+|       2        |    user enters username, name, email, surname and password     |
+|       3        |      database searched for username, duplicate not found       |
+|       4        | input fields are validated, they are conforming to constraints |
+|       5        |          database searched for email, duplicate found          |
+|       6        | show error saying that the are problems with the input fields  |
+|       7        |             user remains in account creation page              |
 
 ##### Scenario 1.6 (wrong verification code) 
 
@@ -305,7 +305,7 @@ Story:
 | Post condition |                         User does not have account                         |
 |     Step#      |                                Description                                 |
 |       1        |                         user selects role customer                         |
-|       2        |     user inputs and enter username, name, email, surname and password      |
+|       2        |          user enters username, name, email, surname and password           |
 |       3        |            database searched for username, duplicate not found             |
 |       4        |   FR1.3: input fields are validated, they are conforming to constraints    |
 |       5        |              database searched for email, duplicate not found              |
@@ -331,7 +331,7 @@ Story:
 |  Precondition  |                        user not logged in                        |
 | Post condition |                          user logged in                          |
 |     Step#      |                           Description                            |
-|       1        |                user inputs username and password                 |
+|       1        |                user enters username and password                 |
 |       2        | database searched for username, check password, password matched |
 |       3        |                    FR3.1: user gets logged in                    |
 
@@ -342,7 +342,7 @@ Story:
 |  Precondition  |                           user not logged in                           |
 | Post condition |                           user not logged in                           |
 |     Step#      |                              Description                               |
-|       1        |                   user inputs username and password                    |
+|       1        |                   user enters username and password                    |
 |       2        | database searched for username, check password, password doesn't match |
 |       3        |                      user does not get logged in                       |
 
@@ -485,7 +485,7 @@ Story:
 |       4        |                   system shows error describing that the arrivalDate is incorrect                   |
 |       5        |                      arrivals not registered, user remains on add product page                      |
 
-### Get products, UC7 - FR2.5
+### Get products, UC6 - FR2.5
 
 | Actors Involved  |                                                                                                                                              User (Customer or Manager)                                                                                                                                              |
 |:----------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
@@ -495,9 +495,9 @@ Story:
 |     Variants     | Scenario 7.2 (get all products and filter products based on category) ,Scenario 7.3 (get all products and filter products based on model), Scenario 7.4 (get all products and filter products based on category and sold status), Scenario 7.5 (get all products and filter products based on model and sold status) | 
 |    Exceptions    |                                                                                                                                        Scenario 7.6 (product does not exists)                                                                                                                                        |
 
-##### Scenario 7.1 (get all products)
+##### Scenario 6.1 (get all products)
 
-|  Scenario 7.1  |                                   |
+|  Scenario 6.1  |                                   |
 |:--------------:|:---------------------------------:|
 |  Precondition  |          user logged in           |
 | Post condition |         List all products         |
@@ -505,9 +505,9 @@ Story:
 |       1        | User requests to get all products |
 |       2        | FR2.5:system returns all products |
 
-##### Scenario 7.2 (get all products and filter products based on category)
+##### Scenario 6.2 (get all products and filter products based on category)
 
-|  Scenario 7.2  |                                                         |
+|  Scenario 6.2  |                                                         |
 |:--------------:|:-------------------------------------------------------:|
 |  Precondition  |                     user logged in                      |
 | Post condition |       get all products filtered based on category       |
@@ -515,9 +515,9 @@ Story:
 |       1        | User requests to get all products in a certain category |
 |       2        |  FR2.5.1:system returns all products in that category   |
 
-##### Scenario 7.3 (get all products and filter products based on model)
+##### Scenario 6.3 (get all products and filter products based on model)
 
-|  Scenario 7.3  |                                                      |
+|  Scenario 6.3  |                                                      |
 |:--------------:|:----------------------------------------------------:|
 |  Precondition  |                    user logged in                    |
 | Post condition |       get all products filtered based on model       |
@@ -525,9 +525,9 @@ Story:
 |       1        | User requests to see all products of a certain model |
 |       2        |  FR2.5.2:system returns all products of that model   |
 
-##### Scenario 7.4 (get all products and filter products based on category and sold status)
+##### Scenario 6.4 (get all products and filter products based on category and sold status)
 
-|  Scenario 7.4  |                                                                         |
+|  Scenario 6.4  |                                                                         |
 |:--------------:|:-----------------------------------------------------------------------:|
 |  Precondition  |                             user logged in                              |
 | Post condition |       get all products filtered based on category and sold status       |
@@ -535,9 +535,9 @@ Story:
 |       1        | User requests to see all products in a certain category and sold status |
 |       2        |      system returns all products in that category and sold status       |
 
-##### Scenario 7.5 (get all products and filter products based on model and sold status)
+##### Scenario 6.5 (get all products and filter products based on model and sold status)
 
-|  Scenario 7.5  |                                                                      |
+|  Scenario 6.5  |                                                                      |
 |:--------------:|:--------------------------------------------------------------------:|
 |  Precondition  |                            user logged in                            |
 | Post condition |       get all products filtered based on model and sold status       |
@@ -545,74 +545,74 @@ Story:
 |       1        | user requests to see all products of a certain model and sold status |
 |       2        |      system returns all products of that model and sold status       |
 
-##### Scenario 7.6 (product does not exists)
+##### Scenario 6.6 (product does not exists)
 
-|  Scenario 7.6  |                                                        |
+|  Scenario 6.6  |                                                        |
 |:--------------:|:------------------------------------------------------:|
 |  Precondition  |                     user logged in                     |
 | Post condition |                 products not returned                  |
 |     Step#      |                      Description                       |
-|       1        |                User inputs product code                |
+|       1        |                User enters product code                |
 |       2        |          system searches for product by code           |
 |       3        | system does not find product and returns error message |
 
-##### Scenario 7.7 (get product by code) - FR2.4
-|  Scenario 7.7  |                                           |
+##### Scenario 6.7 (get product by code) - FR2.4
+|  Scenario 6.7  |                                           |
 |:--------------:|:-----------------------------------------:|
 |  Precondition  |              user logged in               |
 | Post condition |           products not returned           |
 |     Step#      |                Description                |
-|       1        |         User inputs product code          |
+|       1        |         User enters product code          |
 |       2        |    system searches for product by code    |
 |       3        | system finds product and returns its info |
 
-### Delete Product, UC9
+### Delete Product, UC7
 
 | Actors Involved  |          Manager          |
 |:----------------:|:-------------------------:|
 |   Precondition   | user logged in as manager |
 |  Post condition  |                           |
-| Nominal Scenario |       Scenario 9.1        |
+| Nominal Scenario |       Scenario 7.1        |
 |     Variants     |             -             |
-|    Exceptions    |       Scenario 9.2        |
+|    Exceptions    |       Scenario 7.2        |
 
-##### Scenario 9.1
+##### Scenario 7.1
 
-|  Scenario 9.1  |                                           |
-|:--------------:|:-----------------------------------------:|
-|  Precondition  |         user logged in as manager         |
-| Post condition |            product is deleted             |
-|     Step#      |                Description                |
-|       1        | Manager inputs product code to be deleted |
-|       2        |    system searches for product by code    |
-|       3        |    system verify the product is located in a store owned by the manager, ok    |
-|       4        |    system deletes the product   |
+|  Scenario 7.1  |                                                                          |
+|:--------------:|:------------------------------------------------------------------------:|
+|  Precondition  |                        user logged in as manager                         |
+| Post condition |                            product is deleted                            |
+|     Step#      |                               Description                                |
+|       1        |                Manager enters product code to be deleted                 |
+|       2        |                   system searches for product by code                    |
+|       3        | system verify the product is located in a store owned by the manager, ok |
+|       4        |                        system deletes the product                        |
 
-##### Scenario 9.2
+##### Scenario 7.2
 
-|  Scenario 9.2  |                                           |
+|  Scenario 7.2  |                                           |
 |:--------------:|:-----------------------------------------:|
 |  Precondition  |         user logged in as manager         |
 | Post condition |          product is not deleted           |
 |     Step#      |                Description                |
-|       1        | Manager inputs product code to be deleted |
+|       1        | Manager enters product code to be deleted |
 |       2        |    system searches for product by code    |
 |       3        |       system does not find product        |
 |       4        |       system returns error message        |
 
-### Manage cart, UC9 - FR4.1
+### Manage cart, UC8 - FR4.1
 
 | Actors Involved  |                                                                                                                                                                                                                                                                             Customer                                                                                                                                                                                                                                                                              |
 |:----------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 |   Precondition   |                                                                                                                                                                                                                                                                    user logged in as customer                                                                                                                                                                                                                                                                     |
 |  Post condition  |                                                                                                                                                                                                                                                                                 -                                                                                                                                                                                                                                                                                 |
-| Nominal Scenario |                                                                                                                                                                                                                                                                     Scenario 9.1 (View cart)                                                                                                                                                                                                                                                                      |
-|     Variants     |                                                                                                                                                                                                        Scenario 9.2 (add product to cart) ,Scenario 9.3 (delete product from cart) ,Scenario 9.4 (list and access cart history), Scenario 9.9(delete cart)                                                                                                                                                                                                        |
-|    Exceptions    | Scenario 9.4 (product does not exist), Scenario 9.5 (add product to cart, product is in another cart), Scenario 9.6 (add product to cart, product is in another cart) , Scenario 9.7 (add product to cart, product is sold), Scenario 9.8 (delete product from cart, product does not exist), Scenario 9.9 (delete product from cart, customer does not have cart), Scenario 9.10 (delete product from cart, product does not exist in cart), , Scenario 9.12 (delete current cart, no cart to delete), Scenario 9.13 (delete product from cart, product is sold) |
+| Nominal Scenario |                                                                                                                                                                                                                                                                     Scenario 8.1 (View cart)                                                                                                                                                                                                                                                                      |
+|     Variants     |                                                                                                                                                                                                        Scenario 8.2 (add product to cart) ,Scenario 8.3 (delete product from cart) ,Scenario 8.4 (list and access cart history), Scenario 8.8(delete cart)                                                                                                                                                                                                        |
+|    Exceptions    | Scenario 8.4 (product does not exist), Scenario 8.5 (add product to cart, product is in another cart), Scenario 8.6 (add product to cart, product is in another cart) , Scenario 8.7 (add product to cart, product is sold), Scenario 8.8 (delete product from cart, product does not exist), Scenario 8.9 (delete product from cart, customer does not have cart), Scenario 8.10 (delete product from cart, product does not exist in cart), , Scenario 8.12 (delete current cart, no cart to delete), Scenario 8.13 (delete product from cart, product is sold) |
 
-##### Scenario 9.1 (get current cart info)
+##### Scenario 8.1 (get current cart info)
 
-|  Scenario 9.1  |                                             |
+|  Scenario 8.1  |                                             |
 |:--------------:|:-------------------------------------------:|
 |  Precondition  |         user logged in as customer          |
 | Post condition |            cart info is returned            |
@@ -620,36 +620,36 @@ Story:
 |       1        | customer requests to see their current cart |
 |       2        |          system returns cart info           |
 
-##### Scenario 9.2 (add product to cart) — FR4.2
+##### Scenario 8.2 (add product to cart) — FR4.2
 
-|  Scenario 9.2  |                                                        |
+|  Scenario 8.2  |                                                        |
 |:--------------:|:------------------------------------------------------:|
 |  Precondition  |    user logged in as customer, customer has a cart     |
 | Post condition |         product is added to the customer cart          |
 |     Step#      |                      Description                       |
-|       1        |    customer inputs product code to be added to cart    |
+|       1        |    customer enters product code to be added to cart    |
 |       2        |  system searches for product by code, product exists   |
 |       3        | system checks if product is in another cart, it is not |
 |       4        |      system checks if product is sold, it is not       |
 |       5        |         product is added to the customer cart          |
 
-##### Scenario 9.3 (delete product from cart)- FR4.3
+##### Scenario 8.3 (delete product from cart)- FR4.3
 
-|  Scenario 9.3  |                                                                   |
+|  Scenario 8.3  |                                                                   |
 |:--------------:|:-----------------------------------------------------------------:|
 |  Precondition  |                    user logged in as customer                     |
 | Post condition |               product is deleted from customer cart               |
 |     Step#      |                            Description                            |
-|       1        | customer inputs product code to be deleted from the customer cart |
+|       1        | customer enters product code to be deleted from the customer cart |
 |       2        |           system checks if customer has a cart, they do           |
 |       3        |   system checks if product with code exists in catalog, it does   |
 |       4        |         system checks that the product exists in the cart         |
 |       5        |   system checks that the product is not sold already, it is not   |
 |       6        |             product is deleted from the customer cart             |
 
-##### Scenario 9.4 (get cart history) — FR4.5
+##### Scenario 8.4 (get cart history) — FR4.5
 
-|  Scenario 9.4  |                                                                    |
+|  Scenario 8.4  |                                                                    |
 |:--------------:|:------------------------------------------------------------------:|
 |  Precondition  |                     user logged in as customer                     |
 | Post condition |                   customer cart history returned                   |
@@ -658,87 +658,87 @@ Story:
 |       2        | system checks that customer has previously paid for carts, they do |
 |       3        |                system returns customer cart history                |
 
-##### Scenario 9.5 (add product to cart, product does not exist) — FR4.2
+##### Scenario 8.5 (add product to cart, product does not exist) — FR4.2
 
-|  Scenario 9.5  |                                                              |
+|  Scenario 8.5  |                                                              |
 |:--------------:|:------------------------------------------------------------:|
 |  Precondition  |       user logged in as customer, customer has a cart        |
 | Post condition |            product is not added to customer cart             |
 |     Step#      |                         Description                          |
-|       1        |       customer inputs product code to be added to cart       |
+|       1        |       customer enters product code to be added to cart       |
 |       2        | system searches for product by code, product does not exist  |
 |       3        | system returns error message that the product does not exist |
 |       4        |          product is not added to the customer cart           |
 
-##### Scenario 9.6 (add product to cart, product is in another cart) — FR4.2
+##### Scenario 8.6 (add product to cart, product is in another cart) — FR4.2
 
-|  Scenario 9.6  |                                                                  |
+|  Scenario 8.6  |                                                                  |
 |:--------------:|:----------------------------------------------------------------:|
 |  Precondition  |         user logged in as customer, customer has a cart          |
 | Post condition |              product is not added to customer cart               |
 |     Step#      |                           Description                            |
-|       1        |         customer inputs product code to be added to cart         |
+|       1        |         customer enters product code to be added to cart         |
 |       2        |       system searches for product by code, product exists        |
 |       3        |        system checks if product is in another cart, it is        |
 |       4        | system returns error message that the product is in another cart |
 |       5        |            product is not added to the customer cart             |
 
-##### Scenario 9.7 (add product to cart, product is sold)  — FR4.2
+##### Scenario 8.7 (add product to cart, product is sold)  — FR4.2
 
-|  Scenario 9.7  |                                                               |
+|  Scenario 8.7  |                                                               |
 |:--------------:|:-------------------------------------------------------------:|
 |  Precondition  |        user logged in as customer, customer has a cart        |
 | Post condition |             product is not added to customer cart             |
 |     Step#      |                          Description                          |
-|       1        |       customer inputs product code to be added to cart        |
+|       1        |       customer enters product code to be added to cart        |
 |       2        |      system searches for product by code, product exists      |
 |       4        |    system checks if product is in another cart, it is not     |
 |       5        |            system checks if product is sold, it is            |
 |       6        | system returns error message that the product is already sold |
 |       7        |           product is not added to the customer cart           |
 
-##### Scenario 9.8 (delete product from cart, product does not exist) - FR4.3
+##### Scenario 8.8 (delete product from cart, product does not exist) - FR4.3
 
-|  Scenario 9.8  |                                                                   |
+|  Scenario 8.8  |                                                                   |
 |:--------------:|:-----------------------------------------------------------------:|
 |  Precondition  |                    user logged in as customer                     |
 | Post condition |             no product is deleted from customer cart              |
 |     Step#      |                            Description                            |
-|       1        | customer inputs product code to be deleted from the customer cart |
+|       1        | customer enters product code to be deleted from the customer cart |
 |       2        |           system checks if customer has a cart, they do           |
 |       3        | system checks if product with code exists in catalog, it does not |
 |       4        |   system returns error message that the product does not exist    |
 |       5        |             no product is deleted from customer cart              |
 
-##### Scenario 9.9 (delete product from cart, customer does not have cart) - FR4.3
+##### Scenario 8.9 (delete product from cart, customer does not have cart) - FR4.3
 
-|  Scenario 9.9  |                                                                   |
+|  Scenario 8.9  |                                                                   |
 |:--------------:|:-----------------------------------------------------------------:|
 |  Precondition  |                    user logged in as customer                     |
 | Post condition |             no product is deleted from customer cart              |
 |     Step#      |                            Description                            |
-|       1        | customer inputs product code to be deleted from the customer cart |
+|       1        | customer enters product code to be deleted from the customer cart |
 |       2        |         system checks if customer has a cart, they do not         |
 |       3        | system returns error message that the customer does not have cart |
 |       4        |             no product is deleted from customer cart              |
 
-##### Scenario 9.10 (delete product from cart, product does not exist in cart) - FR4.3
+##### Scenario 8.10 (delete product from cart, product does not exist in cart) - FR4.3
 
-| Scenario 9.10  |                                                                               |
+| Scenario 8.10  |                                                                               |
 |:--------------:|:-----------------------------------------------------------------------------:|
 |  Precondition  |                          user logged in as customer                           |
 | Post condition |                   no product is deleted from customer cart                    |
 |     Step#      |                                  Description                                  |
-|       1        |       customer inputs product code to be deleted from the customer cart       |
+|       1        |       customer enters product code to be deleted from the customer cart       |
 |       2        |                 system checks if customer has a cart, they do                 |
 |       3        |         system checks if product with code exists in catalog, it not          |
 |       4        |   system returns checks if the product exists in customer cart, it does not   |
 |       5        | system returns error message that the product does not exist in customer cart |
 |       6        |                   no product is deleted from customer cart                    |
 
-##### Scenario 9.11(delete current cart) - FR4.6
+##### Scenario 8.11(delete current cart) - FR4.6
 
-| Scenario 9.11  |                                                 |
+| Scenario 8.11  |                                                 |
 |:--------------:|:-----------------------------------------------:|
 |  Precondition  |           user logged in as customer            |
 | Post condition |            customer cart is deleted             |
@@ -747,9 +747,9 @@ Story:
 |       2        | system checks that customer has a cart, they do |
 |       3        |        system deletes the customer cart         |
 
-##### Scenario 9.12 (no cart to delete) - FR4.6
+##### Scenario 8.12 (no cart to delete) - FR4.6
 
-| Scenario 9.12  |                                                            |
+| Scenario 8.12  |                                                            |
 |:--------------:|:----------------------------------------------------------:|
 |  Precondition  |                 user logged in as customer                 |
 | Post condition |                customer cart is not deleted                |
@@ -758,14 +758,14 @@ Story:
 |       2        |    system checks that customer has a cart, they do not     |
 |       3        | system returns error message that the customer has no cart |
 
-##### Scenario 9.13 (delete product from cart, product is sold) - FR4.3
+##### Scenario 8.13 (delete product from cart, product is sold) - FR4.3
 
-| Scenario 9.13  |                                                                     |
+| Scenario 8.13  |                                                                     |
 |:--------------:|:-------------------------------------------------------------------:|
 |  Precondition  |                     user logged in as customer                      |
 | Post condition |              no product is deleted from customer cart               |
 |     Step#      |                             Description                             |
-|       1        |  customer inputs product code to be deleted from the customer cart  |
+|       1        |  customer enters product code to be deleted from the customer cart  |
 |       2        |            system checks if customer has a cart, they do            |
 |       3        |    system checks if product with code exists in catalog, it does    |
 |       4        |    system returns error message that the product does not exist     |
@@ -773,7 +773,7 @@ Story:
 |       6        | system returns error message that the product has already been sold |
 |       5        |              no product is deleted from customer cart               |
 
-### Payment of the cart, UC17
+### Payment of the cart, UC9
 
 | Actors Involved  |                            Customer, Manager                             |
 |:----------------:|:------------------------------------------------------------------------:|
@@ -783,9 +783,9 @@ Story:
 |     Variants     |                                    -                                     |
 |    Exceptions    |                       Scenario 17.2, Scenario 17.3                       |
 
-##### Scenario 17.1
+##### Scenario 9.1
 
-|    Scenario    |                                   17.1                                   |
+|    Scenario    |                                   9.1                                    |
 |:--------------:|:------------------------------------------------------------------------:|
 |  Precondition  |                       	User logged in as customer                        |
 | Post condition |                              	Cart is sold                               |
@@ -793,13 +793,13 @@ Story:
 |       1        |        	User requests to pay for the products in the current cart        |
 |       2        |             	System checks if the cart is empty (it is not)              |
 |       3        |            	System prompts the user to input shipping address            |
-|       4        |                      	User inputs shipping address                       |
+|       4        |                      	User enters shipping address                       |
 |       5        |              system checks if the shipping address is valid              |
 |       6        |                	System asks user to confirm the purchase                 |
 |       7        |                       	User confirms the purchase                        |
 |       8        |                      	User selects payment platform                      |
 |       9        |              	System prompts user to input payment details               |
-|       10       |                       	User inputs payment details                       |
+|       10       |                       	User enters payment details                       |
 |       11       |           	System sends payment details to the payment service           |
 |       12       |               	System checks if the payment is successful                |
 |       13       |    	System shows the user a message confirming the successful payment    |
@@ -811,11 +811,11 @@ Story:
 |                |         repeats steps 17 and 18 each store manager in the groups         |
 |       20       |                      	System marks the cart as sold                      |
 
-### Manage users
+### Manage users - UC10
 
-##### Scenario 11.1(list all users) - FR5
+##### Scenario 10.1(list all users) - FR5
 
-| Scenario 11.1  |                                       |
+| Scenario 10.1  |                                       |
 |:--------------:|:-------------------------------------:|
 |  Precondition  |     user logged in as tech admin      |
 | Post condition |            list all users             |
@@ -823,9 +823,9 @@ Story:
 |       1        | tech admin requests to list all users |
 |       2        |      FR5: system list all users       |
 
-##### Scenario 11.2(list user by role) - FR5.1
+##### Scenario 10.2(list user by role) - FR5.1
 
-| Scenario 11.2  |                                                              |
+| Scenario 10.2  |                                                              |
 |:--------------:|:------------------------------------------------------------:|
 |  Precondition  |                 user logged in as tech admin                 |
 | Post condition |                        list all users                        |
@@ -833,9 +833,9 @@ Story:
 |       1        | tech admin requests to list all users filtered based on role |
 |       2        |     FR5.1: system list all users with the specified role     |
 
-##### Scenario 11.3(get user by username) - FR5.2
+##### Scenario 10.3(get user by username) - FR5.2
 
-| Scenario 11.3  |                                                 |
+| Scenario 10.3  |                                                 |
 |:--------------:|:-----------------------------------------------:|
 |  Precondition  |          user logged in as tech admin           |
 | Post condition |              list user by username              |
@@ -844,9 +844,9 @@ Story:
 |       2        |    System checks if username exists, it does    |
 |       3        |           FR5.2: system list the user           |
 
-##### Scenario 11.4 (delete user by username) - FR6
+##### Scenario 10.4 (delete user by username) - FR6
 
-| Scenario 11.4  |                                                      |
+| Scenario 10.4  |                                                      |
 |:--------------:|:----------------------------------------------------:|
 |  Precondition  |             user logged in as tech admin             |
 | Post condition |               delete user by username                |
@@ -855,9 +855,9 @@ Story:
 |       2        |      System checks if username exists, it does       |
 |       3        |            FR5.2: system delete the user             |
 
-##### Scenario 11.5 (delete user by username, user does not exist)
+##### Scenario 10.5 (delete user by username, user does not exist)
 
-| Scenario 11.5  |                                                      |
+| Scenario 10.5  |                                                      |
 |:--------------:|:----------------------------------------------------:|
 |  Precondition  |             user logged in as tech admin             |
 | Post condition |                   user not deleted                   |
@@ -866,9 +866,9 @@ Story:
 |       2        |    System checks if username exists, it does not     |
 |       3        |                      Show error                      |
 
-##### Scenario 11.6 (get user by username, user does not exist)
+##### Scenario 10.6 (get user by username, user does not exist)
 
-| Scenario 11.6  |                                                    |
+| Scenario 10.6  |                                                    |
 |:--------------:|:--------------------------------------------------:|
 |  Precondition  |            user logged in as tech admin            |
 | Post condition |                 user not returned                  |
@@ -877,302 +877,324 @@ Story:
 |       2        |   System checks if username exists, it does not    |
 |       3        |                     Show error                     |
 
-### Forgot password, UC1
-| Actors Involved  |                     Customer, Manager                      |
-|------------------|:----------------------------------------------------------:| 
-| Precondition     |            User has an account on EZelectronics            |
-| Post condition   |                             -                              |
-| Nominal Scenario |                        Scenario 1.1                        |
-| Variants         |                        Scenario 1.2                        |
-| Exceptions       | Scenario 1.3(incorrect code), Scenario 1.4(user not found) |
+### Forgot password, UC11
+| Actors Involved  |                      Customer, Manager                       |
+|------------------|:------------------------------------------------------------:| 
+| Precondition     |             User has an account on EZelectronics             |
+| Post condition   |                              -                               |
+| Nominal Scenario |                        Scenario 11.1                         |
+| Variants         |                        Scenario 11.2                         |
+| Exceptions       | Scenario 11.3(incorrect code), Scenario 11.4(user not found) |
 
 ##### Scenario 1.1
 
-| Scenario 1.1   |                                                                       |
+| Scenario 11.1  |                                                                               |
+|----------------|:-----------------------------------------------------------------------------:| 
+| Precondition   |                   Customer has an account on EZelectronics                    |
+| Post condition |                           Customer changed password                           |
+| Step#          |                                  Description                                  |
+| 1              |                      Customer requests password recovery                      |  
+| 1              |                           system asks for username                            |
+| 3              |                           Customer enters username                            | 
+| 4              |              system searches for username, finds an existing one              | 
+| 5              |                  system sends verification email to Customer                  |  
+| 6              |           system requests asks Customer to enter verification code            |
+| 7              |                     Customer enters the verification code                     |
+| 8              |                   system checks code correctness, it is ok                    |
+| 9              |                 system asks user to enter their new Password                  |
+| 10             |      system validates the newly entered password, successful validation       |
+| 11             | system shows a message to Customer saying that the password has been modified |
+
+##### Scenario 11.2
+
+| Scenario 11.2  |                                                                              |
+|----------------|:----------------------------------------------------------------------------:| 
+| Precondition   |                   Manager has an account on EZelectronics                    |
+| Post condition |                           Manager changed password                           |
+| Step#          |                                 Description                                  |
+| 1              |                      Manager requests password recovery                      |  
+| 1              |                           system asks for username                           |
+| 3              |                           Manager enters username                            | 
+| 4              |             system searches for username, finds an existing one              | 
+| 5              |                 system sends verification email to Customer                  |  
+| 6              |           system requests asks Manager to enter verification code            |
+| 7              |                     Manager enters the verification code                     |
+| 8              |                   system checks code correctness, it is ok                   |
+| 9              |                 system asks user to enter their new Password                 |
+| 10             |      system validates the newly entered password, successful validation      |
+| 11             | system shows a message to Manager saying that the password has been modified |
+
+##### Scenario 11.3
+
+| Scenario 11.3  |                                                                   |
+|----------------|:-----------------------------------------------------------------:| 
+| Precondition   |               User has an account on EZelectronics                |
+| Post condition |                    User didn't change password                    |
+| Step#          |                            Description                            |
+| 1              |                  User requests password recovery                  |  
+| 1              |                     system asks for username                      |
+| 3              |                       User enters username                        | 
+| 4              |        system searches for username, finds an existing one        | 
+| 5              |            system sends verification email to Customer            |  
+| 6              |       system requests asks User to enter verification code        |
+| 7              |                 User enters the verification code                 |
+| 8              |             system checks code correctness, it is not             |
+| 9              | system shows error to user, saying the verification code is wrong |
+
+##### Scenario 11.4
+
+| Scenario 11.4  |                                                             |
+|----------------|:-----------------------------------------------------------:| 
+| Precondition   |            User has an account on EZelectronics             |
+| Post condition |                 User didn't change password                 |
+| Step#          |                         Description                         |
+| 1              |               User requests password recovery               |  
+| 1              |                  system asks for username                   |
+| 3              |                    User enters username                     | 
+| 4              | system searches for username, does not find an existing one | 
+
+### Change account details, UC12
+
+| Actors Involved  |                                                                Customer, Manager                                                                |
+|------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------:| 
+| Precondition     |                                                              User is authenticated                                                              |
+| Post condition   |                                                                                                                                                 |
+| Nominal Scenario |                            Scenario 12.1, Scenario 12.1, Scenario 12.3, Scenario 12.4, Scenario 12.5,  Scenario 12.6                            |
+| Variants         |                                                                  Scenario 12.7                                                                  |
+| Exceptions       | Scenario 12.8(username already exists), Scenario 12.9(non-existent email), Scenario 12.10(email already used), Scenario 12.11(invalid password) |
+
+##### Scenario 12.1 (change username)
+
+| Scenario 12.1  |                                                                           |
+|----------------|:-------------------------------------------------------------------------:| 
+| Precondition   |                           User is authenticated                           |
+| Post condition |                           User changed username                           |
+| Step#          |                                Description                                |
+| 1              |                  user requests to change account details                  |
+| 2              |                        user enters a new username                         |
+| 3              |         system searches for username, username does not exist, ok         | 
+| 4              |                  system changes username to new username                  |
+| 5              | system shows a message to User saying that the username has been modified |
+
+##### Scenario 12.2 (change name)
+
+| Scenario 2.2   |                                                                       |
 |----------------|:---------------------------------------------------------------------:| 
-| Precondition   |               Customer has an account on EZelectronics                |
-| Post condition |                       Customer changed password                       |
+| Precondition   |                         User is authenticated                         |
+| Post condition |                           User changed name                           |
 | Step#          |                              Description                              |
-| 1              |                       Customer provide username                       |  
-| 2              |               Search for username, find an existing one               | 
-| 3              |                  Send verification email to Customer                  |  
-| 4              |                       Request verification code                       |
-| 5              |                  Customer input a verification code                   |
-| 6              |                         Check correctness, ok                         |
-| 7              |                         Request new Password                          |
-| 8              |             Validate the password, successful validation              |
-| 9              | Show a message to Customer saying that the password has been modified |
+| 1              |                user requests to change account details                |
+| 2              |                        user enters a new name                         |  
+| 3              |                 system checks that name not null, ok                  | 
+| 4              | system shows a message to User saying that the name has been modified |
 
-##### Scenario 1.2
+##### Scenario 12.3 (change surname)
 
-| Scenario 1.2   |                                                                      |
-|----------------|:--------------------------------------------------------------------:| 
-| Precondition   |               Manager has an account on EZelectronics                |
-| Post condition |                       Manager changed password                       |
-| Step#          |                             Description                              |
-| 1              |                       Manager provide username                       |  
-| 2              |              Search for username, find an existing one               | 
-| 3              |                  Send verification email to Manager                  |  
-| 4              |                      Request verification code                       |
-| 5              |                  Manager input a verification code                   |
-| 6              |                        Check correctness, ok                         |
-| 7              |                         Request new Password                         |
-| 8              |         FR1.3: Validate the password, successful validation          |
-| 9              | Show a message to Manager saying that the password has been modified |
+| Scenario 2.3   |                                                                          |
+|----------------|:------------------------------------------------------------------------:| 
+| Precondition   |                          User is authenticated                           |
+| Post condition |                           User changed surname                           |
+| Step#          |                               Description                                |
+| 1              |                 User requests to change account details                  |
+| 2              |                        User enters a new surname                         |  
+| 3              |                 system checks that surname not null, ok                  | 
+| 4              | system shows a message to User saying that the surname has been modified |
 
-##### Scenario 1.3
+##### Scenario 12.4(change address)
 
-| Scenario 1.3   |                                           |
-|----------------|:-----------------------------------------:| 
-| Precondition   |   User has an account on EZelectronics    |
-| Post condition |        User didn't change password        |
-| Step#          |                Description                |
-| 1              |           User provide username           |  
-| 2              | Search for username, find an existing one | 
-| 3              |      Send verification email to User      |  
-| 4              |         Request verification code         |
-| 5              |      User input a verification code       |
-| 6              |      Check correctness, not correct       |
-| 7              |                Show error                 |
+| Scenario 12.4  |                                                                          |
+|----------------|:------------------------------------------------------------------------:| 
+| Precondition   |                        Customer is authenticated                         |
+| Post condition |                         Customer changed address                         |
+| Step#          |                               Description                                |
+| 1              |               Customer requests to change account details                |
+| 2              |                      Customer enters a new address                       |
+| 3              |             system checks the correctness of the address, ok             | 
+| 4              | system shows a message to User saying that the address has been modified |
 
-##### Scenario 1.4
+##### Scenario 12.5 (change email)
 
-| Scenario 1.4   |                                      |
-|----------------|:------------------------------------:| 
-| Precondition   | User has an account on EZelectronics |
-| Post condition |     User didn't change password      |
-| Step#          |             Description              |
-| 1              |        User provide username         |  
-| 2              |    Search for username, not found    | 
-| 3              |              Show error              |
+| Scenario 12.5  |                                                                        |
+|----------------|:----------------------------------------------------------------------:| 
+| Precondition   |                         User is authenticated                          |
+| Post condition |                           User changed email                           |
+| Step#          |                              Description                               |
+| 1              |                User requests to change account details                 |
+| 2              |                        User enters a new e-mail                        |  
+| 3              |                   search for email, not existing: ok                   | 
+| 4              |                    Send verification email to User                     |  
+| 5              |                       Request verification code                        |
+| 6              |                   User enters the verification code                    |
+| 7              |       system checks verification code correctness, it is correct       |
+| 8              | system shows a message to User saying that the email has been modified |
 
-### Change account details, UC2
+##### Scenario 12.6 (change password)
 
-| Actors Involved  |                                                             Customer, Manager                                                              |
-|------------------|:------------------------------------------------------------------------------------------------------------------------------------------:| 
-| Precondition     |                                                           User is authenticated                                                            |
-| Post condition   |                                                                                                                                            |
-| Nominal Scenario |                            Scenario 2.1, Scenario 2.1, Scenario 2.3, Scenario 2.4, Scenario 2.5,  Scenario 2.6                             |
-| Variants         |                                                                Scenario 2.7                                                                |
-| Exceptions       | Scenario 2.8(username already exixting), Scenario 2.9(Inexistent email), Scenario 2.10(mail already used), Scenario 2.11(invalid password) |
+| Scenario 2.6   |                                                                           |
+|----------------|:-------------------------------------------------------------------------:| 
+| Precondition   |                           User is authenticated                           |
+| Post condition |                           User changed password                           |
+| Step#          |                                Description                                |
+| 1              |                  User requests to change account details                  |
+| 1              |                        User enters a new password                         |  
+| 2              |              system validates password with safety rules, ok              | 
+| 3              | system shows a message to User saying that the password has been modified |
 
-##### Scenario 2.1
+##### Scenario 12.7 (manager, change name)
 
-| Scenario 2.1   |                                                                   |
-|----------------|:-----------------------------------------------------------------:| 
-| Precondition   |                       User is authenticated                       |
-| Post condition |                       User changed username                       |
-| Step#          |                            Description                            |
-| 1              |                     User provide new username                     |  
-| 2              |           Search for username, username Inexistent, ok            | 
-| 3              | Show a message to User saying that the username has been modified |
-
-##### Scenario 2.2
-
-| Scenario 2.2   |                                                               |
-|----------------|:-------------------------------------------------------------:| 
-| Precondition   |                     User is authenticated                     |
-| Post condition |                       User changed name                       |
-| Step#          |                          Description                          |
-| 1              |                     User provide new name                     |  
-| 2              |                       name not null, ok                       | 
-| 3              | Show a message to User saying that the name has been modified |
-
-##### Scenario 2.3
-
-| Scenario 2.3   |                                                                  |
-|----------------|:----------------------------------------------------------------:| 
-| Precondition   |                      User is authenticated                       |
-| Post condition |                       User changed surname                       |
-| Step#          |                           Description                            |
-| 1              |                     User provide new surname                     |  
-| 2              |                       surname not null, ok                       | 
-| 3              | Show a message to User saying that the surname has been modified |
-
-##### Scenario 2.4
-
-| Scenario 2.4   |                                                                  |
-|----------------|:----------------------------------------------------------------:| 
-| Precondition   |                    Customer is authenticated                     |
-| Post condition |                     Custemer changed address                     |
-| Step#          |                           Description                            |
-| 1              |                   Customer provide new address                   |  
-| 2              |                      Check correctness of the address, ok                       | 
-| 3              | Show a message to User saying that the address has been modified |
-
-##### Scenario 2.5
-
-| Scenario 2.5   |                                                                 |
-|----------------|:---------------------------------------------------------------:| 
-| Precondition   |                      User is authenticated                      |
-| Post condition |                       User changed e-mail                       |
-| Step#          |                           Description                           |
-| 1              |                    User provide new e-amail                     |  
-| 2              |               search for email, not existing: ok                | 
-| 3              |                 Send verification email to User                 |  
-| 4              |                    Request verification code                    |
-| 5              |                 User input a verification code                  |
-| 6              |                   Check correctness, correct                    |
-| 7              | Show a message to User saying that the e-mail has been modified |
-
-##### Scenario 2.6
-
-| Scenario 2.6   |                                                                   |
-|----------------|:-----------------------------------------------------------------:| 
-| Precondition   |                       User is authenticated                       |
-| Post condition |                       User changed password                       |
-| Step#          |                            Description                            |
-| 1              |                     User provide new password                     |  
-| 2              |          FR1.3: validate password with safety rules, ok           | 
-| 3              | Show a message to User saying that the password has been modified |
-
-##### Scenario 2.7
-
-| Scenario 2.7   |                                                                  |
+| Scenario 12.7  |                                                                  |
 |----------------|:----------------------------------------------------------------:| 
 | Precondition   |                     Manager is authenticated                     |
 | Post condition |                       Manager changed name                       |
 | Step#          |                           Description                            |
-| 1              |                     Manager provide new name                     |  
-| 2              |                        name not null, ok                         | 
-| 3              | Show a message to Manager saying that the name has been modified |
+| 1              |             User requests to change account details              |
+| 2              |                     Manger enters a new name                     |  
+| 3              |               system checks that name not null, ok               | 
+| 4              | Show a message to Manager saying that the name has been modified |
 
-##### Scenario 2.8
+##### Scenario 12.8 (change username, username already exists)
 
-| Scenario 2.8   |                                              |
-|----------------|:--------------------------------------------:| 
-| Precondition   |            User is authenticated             |
-| Post condition |            username not modified             |
-| Step#          |                 Description                  |
-| 1              |          User provide new username           |  
-| 2              | Search for username, username already exists | 
-| 3              |                  Show error                  |
+| Scenario 12.8  |                                                                    |
+|----------------|:------------------------------------------------------------------:| 
+| Precondition   |                       User is authenticated                        |
+| Post condition |                       username not modified                        |
+| Step#          |                            Description                             |
+| 1              |              User requests to change account details               |
+| 2              |                     User enters a new username                     |  
+| 3              |       system searches for username, username already exists        | 
+| 4              | system showx error to user saying that the username already exists |
 
-##### Scenario 2.9
+##### Scenario 12.9 (change email, incorrect verification code)
 
-| Scenario 2.9   |                                    |
+| Scenario 12.9  |                                                                           |
+|----------------|:-------------------------------------------------------------------------:| 
+| Precondition   |                           User is authenticated                           |
+| Post condition |                            email not modified                             |
+| Step#          |                                Description                                |
+| 1              |                  User requests to change account details                  |
+| 1              |                          User enters a new email                          |  
+| 2              |                     search for email, does not exist                      | 
+| 3              |                      Send verification email to User                      |  
+| 4              |                system asks user to enter verification code                |
+| 5              |                      User input a verification code                       |
+| 6              |          system check verification code correctness, not correct          |
+| 7              | system shows error to user saying that the verification code is incorrect |
+
+##### Scenario 12.10 (change email, already existing )
+
+| Scenario 12.10 |                                    |
 |----------------|:----------------------------------:| 
 | Precondition   |       User is authenticated        |
 | Post condition |        e-mail not modified         |
 | Step#          |            Description             |
-| 1              |      User provide new e-amail      |  
-| 2              | search for email, not existing: ok | 
-| 3              |  Send verification email to User   |  
-| 4              |     Request verification code      |
-| 5              |   User input a verification code   |
-| 6              |   Check correctness, not correct   |
-| 7              |            Show error.             |
-
-##### Scenario 2.10
-
-| Scenario 2.10  |                                    |
-|----------------|:----------------------------------:| 
-| Precondition   |       User is authenticated        |
-| Post condition |        e-mail not modified         |
 | Step#          |            Description             |
-| Step#          |            Description             |
-| 1              |      User provide new e-amail      |  
+| 1              |       User provide new email       |  
 | 2              | search for email, already existing | 
 | 3              |            Show error.             |
 
-##### Scenario 2.11
+##### Scenario 12.11 (change password, not safe)
 
-| Scenario 2.11  |                                                                 |
-|----------------|:---------------------------------------------------------------:| 
-| Precondition   |                      User is authenticated                      |
-| Post condition |                      password not modified                      |
-| Step#          |                           Description                           |
-| 1              |                    User provide new password                    |  
-| 2              | FR1.3: validate password with safety rules, rules not satisfied | 
-| 3              |                           Show error                            |
+| Scenario 12.11 |                                                          |
+|----------------|:--------------------------------------------------------:| 
+| Precondition   |                  User is authenticated                   |
+| Post condition |                  password not modified                   |
+| Step#          |                       Description                        |
+| 1              |                User provide new password                 |  
+| 2              | validate password with safety rules, rules not satisfied | 
+| 3              |                        Show error                        |
 
-### Create new Store, UC3
 
+### Create new Store, UC13
 | Actors Involved  |                     Manager                     |
 |------------------|:-----------------------------------------------:| 
 | Precondition     | User has an account and is logged in as Manager |
-| Post condition   |                                                 |
-| Nominal Scenario |                  Scenario 3.1                   |
-| Variants         |                                                 |
-| Exceptions       |        Scenario 3.2(inexistent address)         |
+| Post condition   |                        -                        |
+| Nominal Scenario |                  Scenario 13.1                  |
+| Variants         |                        -                        |
+| Exceptions       |         Scenario 13.2(invalid address)          |
 
-##### Scenario 3.1
+##### Scenario 13.1
 
-| Scenario 3.1   |                                                                      |
-|----------------|:--------------------------------------------------------------------:| 
-| Precondition   |           User has an account and is logged in as Manager            |
-| Post condition |                         New Store is created                         |
-| Step#          |                             Description                              |
-| 1              |                Manager inputs Store name and address                 |  
-| 2              |               Search for address, find an existing one               | 
-| 3              | Show a message to Manager saying that the new store has been Created |
+| Scenario 3.1   |                                                                              |
+|----------------|:----------------------------------------------------------------------------:| 
+| Precondition   |               User has an account and is logged in as Manager                |
+| Post condition |                             New Store is created                             |
+| Step#          |                                 Description                                  |
+| 1              |                      Manager requests to add new store                       |
+| 2              |             system asks Manager to enter store name and address              |
+| 3              |                    Manager enters Store name and address                     |  
+| 4              |               FR8.2: system verifies address, address is valid               | 
+| 5              | system shows a message to Manager saying that the new store has been Created |
 
-##### Scenario 3.2
+##### Scenario 13.2 (invalid address)
 
-| Scenario 3.2   |                                                 |
-|----------------|:-----------------------------------------------:| 
-| Precondition   | User has an account and is logged in as Manager |
-| Post condition |          The new store is not created           |
-| Step#          |                   Description                   |
-| 1              |      Manager inputs Store name and address      | 
-| 2              |                Name not null, ok                | 
-| 3              |   Search for address, address doesn't exists    | 
-| 4              |                   Show error.                   |
+| Scenario 3.2   |                                                                  |
+|----------------|:----------------------------------------------------------------:| 
+| Precondition   |         User has an account and is logged in as Manager          |
+| Post condition |                   The new store is not created                   |
+| Step#          |                           Description                            |
+| 1              |                Manager requests to add new store                 |
+| 2              |       system asks Manager to enter store name and address        |
+| 3              |              Manager enters Store name and address               |  
+| 4              |        FR8.2: system verifies address, address is invalid        | | 
+| 5              | system shows error to manager saying that the address is invalid |
 
-### Change Store informations, UC4
+### Change Store information, UC14
 
 | Actors Involved  |                             Manager                             |
 |------------------|:---------------------------------------------------------------:| 
 | Precondition     | User has an account, is logged in as Manager and owns the store |
 | Post condition   |                                -                                |
-| Nominal Scenario |                          Scenario 4.1                           |
-| Variants         |                          Scenario 4.2                           |
-| Exceptions       |              Scenario 4.3(inexistent new address)               |
+| Nominal Scenario |                          Scenario 14.1                          |
+| Variants         |                          Scenario 14.2                          |
+| Exceptions       |               Scenario 14.3 (invalid new address)               |
 
-##### Scenario 4.1
+##### Scenario 14.1
 
 | Scenario 4.1   |                                                                    |
 |----------------|:------------------------------------------------------------------:| 
 | Precondition   |  User has an account, is logged in as Manager and owns the store   |
 | Post condition |                      Store's name is modified                      |
 | Step#          |                            Description                             |
-| 1              |                Manager inputs the new store's name                 |  
-| 2              |                         name not null, ok                          | 
-| 3              | Show a message to Manager saying that the  store has been modified |
+| 1              |            Manager requests to change store information            |
+| 2              |                Manager enters the new store's name                 |  
+| 3              |                         name not null, ok                          | 
+| 4              | Show a message to Manager saying that the  store has been modified |
 
-##### Scenario 4.2
+##### Scenario 14.2
 
-| Scenario 4.2   |                                                                    |
+| Scenario 14.2  |                                                                    |
 |----------------|:------------------------------------------------------------------:| 
 | Precondition   |  User has an account, is logged in as Manager and owns the store   |
 | Post condition |                    Store's address is modified                     |
 | Step#          |                            Description                             |
-| 1              |               Manager inputs the new store's address               |  
-| 2              |              Search for address, find an existing one              | 
-| 3              | Show a message to Manager saying that the  store has been modified |
+| 1              |            Manager requests to change store information            |
+| 2              |               Manager enters the new store's address               |  
+| 3              |              Search for address, find an existing one              | 
+| 4              | Show a message to Manager saying that the  store has been modified |
 
-##### Scenario 4.3
+##### Scenario 14.3
 
-| Scenario 4.3   |                                                                 |
+| Scenario 14.3  |                                                                 |
 |----------------|:---------------------------------------------------------------:| 
 | Precondition   | User has an account, is logged in as Manager and owns the store |
 | Post condition |               The store's address is not modified               |
 | Step#          |                           Description                           |
-| 1              |               Manager inputs new store's address                |  
+| 1              |               Manager enters new store's address                |  
 | 2              |           Search for address, address doesn't exists            | 
 | 3              |                           Show error.                           |
 
-### Delete Store, UC5
+### Delete Store, UC15
 
 | Actors Involved  |                             Manager                             |
 |------------------|:---------------------------------------------------------------:| 
 | Precondition     | User has an account, is logged in as Manager and owns the store |
 | Post condition   |                                -                                |
-| Nominal Scenario |                          Scenario 5.1                           |
+| Nominal Scenario |                          Scenario 15.1                          |
 | Variants         |                                -                                |
 | Exceptions       |                                -                                |
 
-##### Scenario 5.1
+##### Scenario 15.1
 
 | Scenario 5.1   |                                                                 |
 |----------------|:---------------------------------------------------------------:| 
@@ -1180,27 +1202,27 @@ Story:
 | Post condition |                        Store is deleted                         |
 | Step#          |                           Description                           |
 | 1              |                Manager request to delete a store                |  
-| 2              |       the system retrives all the products of that store        | 
+| 2              |       the system retrieves all the products of that store       | 
 | 3              |           Each product of the store is deleted - F2.6           |
 | 4              |                      The store is deleted                       |
 
-### Manage admins, UC22 
+### Manage admins, UC16 
 | Actors Involved  |           Tech admin           |
 |:----------------:|:------------------------------:|
 |   Precondition   |  user logged in as tech admin  |
 |  post condition  |               -                |
-| Nominal Scenario | Scenario 22.1 (add tech admin) |
+| Nominal Scenario | Scenario 16.1 (add tech admin) |
 |     Variants     |               -                |
 |    Exceptions    |               -                |
 
-##### Scenario 22.1
-| Scenario 22.1  |                                                                                                             |
+##### Scenario 16.1
+| Scenario 16.1  |                                                                                                             |
 |:--------------:|:-----------------------------------------------------------------------------------------------------------:|
 |  Precondition  |                                        user logged in as tech admin                                         |
 | Post condition |                                            tech admin user added                                            |
 |     Step#      |                                                 Description                                                 |
 |       1        |                                      tech admin requests to add a user                                      |
-|       2        |              tech admin inputs info of the new tech admin and chooses tech admin role for them              |
+|       2        |            tech admin enters the info of the new tech admin and chooses tech admin role for them            |
 |       3        |                                system adds the new tech admin to the system                                 |
 |       4        | system sends email to the new tech admin with the login credentials, with instructions on changing password |
 
@@ -1213,8 +1235,7 @@ Story:
 - Customer: A user with the role of a customer.
 - Role: Specify the kind of user, either customer or manager.
 - Manager: A user with the role of manager, responsible for adding products to the platform.
-- Tech admin: A user with the role of tech responsible for adding tech admin and business admins to system and has access to the information the platform users and can remove them.
-- Business admin: A user with the role of business admin, responsible for adding viewing platform user info and sales analytics but cannot remove them.
+- Tech admin: A user with the role of tech responsible for adding tech admin and business admins to system and has access to the information the platform users and can delete them.
 - Product: physical object that is added to the catalog from the manager and eventually sold to the user. A product
   could be sold or not sold, if it gets sold, it will have a selling date.
 - Sell: manager sets the product’s selling date to current day.
