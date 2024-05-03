@@ -146,11 +146,12 @@ Story:
 |   FR2   |                Manage products                 |
 |  FR2.1  |                 Create product                 |
 |  FR2.2  |               Register arrivals                |
-|  FR2.5  |          List all available products           |
-| FR2.5.1 |  filter available products based on category   |
-| FR2.5.2 |    filter available products based on model    |
-| FR2.5.3 | filter available products based on sold status |
-|  FR2.6  |        Delete specific product by code         |
+|  FR2.3  |          List all available products           |
+| FR2.3.1 |  filter available products based on category   |
+| FR2.3.2 |    filter available products based on model    |
+| FR2.3.3 | filter available products based on sold status |
+| FR2.4   |            get product by code                 |
+|  FR2.5  |        Delete specific product by code         |
 |  FR2.7  |           Get store by product code            |
 |  FR2.8  |                  Change store                  |
 |  FR2.9  |            List all owned products             |
@@ -222,7 +223,7 @@ Story:
 |     Variants     |             Scenario 1.2 (create manager account)             |
 |    Exceptions    | Scenario 1.3 (username exists), Scenario 1.4 (invalid fields) |
 
-##### Scenario 1.1 (create customer account) - FR1.2
+##### Scenario 1.1 (create customer account) - FR1.1
 
 |  Scenario 1.1  |                                                                            |
 |:--------------:|:--------------------------------------------------------------------------:|
@@ -231,14 +232,14 @@ Story:
 |     Step#      |                                Description                                 |
 |       1        |                         user selects role customer                         |
 |       2        |          user enters username, name, email, surname and password           |
-|       3        |            database searched for username, duplicate not found             |
-|       4        |       input fields are validated, they are conforming to constraints       |
-|       5        |              database searched for email, duplicate not found              |
-|       6        | System sends a verification code to the specified email and ask it to user |
+|       3        | system searches for username in database, duplicate not found             |
+|       4        |       input fields are validated, constraints are satisfied       |
+|       5        | system searches for email in database, duplicate not found              |
+|       6        | System sends a verification code to the specified email and asks user to write it |
 |       7        |                      user sends the code, right code                       |
-|       8        |            FR1.1: A customer account gets created for the user             |
+|       8        |            FR1.1: customer account gets created for the user             |
 
-##### Scenario 1.2 (create manager account) - FR1.1
+##### Scenario 1.2 (create manager account) - FR1.2
 
 |  Scenario 1.2  |                                                                            |
 |:--------------:|:--------------------------------------------------------------------------:|
@@ -247,12 +248,12 @@ Story:
 |     Step#      |                                Description                                 |
 |       1        |                         user selects role Manager                          |
 |       2        |          user enters username, name, email, surname and password           |
-|       3        |            database searched for username, duplicate not found             |
+|       3        |  system searches for username in database, duplicate not found             |
 |       4        |       input fields are validated, they are conforming to constraints       |
-|       5        |              database searched for email, duplicate not found              |
-|       6        | System sends a verification code to the specified email and ask it to user |
-|       7        |                      user sends the code, right code                       |
-|       8        |             FR1.2: A Manager account gets created for the user             |
+|       5        | system searches for email in database, duplicate not found              |
+|       6        | System sends a verification code to the specified email and asks user to write it |
+|       7        |        user sends the code, right code                       |
+|       8        |      FR1.2: Manager account gets created for the user             |
 
 ##### Scenario 1.3 (username exists)
 
@@ -263,8 +264,8 @@ Story:
 |     Step#      |                       Description                       |
 |       1        |                user selects role Manager                |
 |       2        | user enters username, name, email, surname and password |
-|       3        |     database searched for username, duplicate found     |
-|       4        |   show error saying that the username already exists    |
+|       3        |system searches for username in database, duplicate found     |
+|       4        |system shows error saying that the username already exists    |
 |       5        |          user remains in account creation page          |
 
 ##### Scenario 1.4 (invalid fields)
@@ -276,9 +277,9 @@ Story:
 |     Step#      |                            Description                             |
 |       1        |                     user selects role Manager                      |
 |       2        |      user enters username, name, email, surname and password       |
-|       3        |        database searched for username, duplicate not found         |
-|       4        | input fields are validated, they not are conforming to constraints |
-|       5        |   show error saying that the are problems with the input fields    |
+|       3        |   system searches for username in database, duplicate not found         |
+|       4        | input fields are validated, constraints are not satisfied |
+|       5        |system shows error saying that there are problems with the input fields    |
 |       6        |               user remains in account creation page                |
 
 
@@ -291,9 +292,9 @@ Story:
 |     Step#      |                          Description                           |
 |       1        |                   user selects role customer                   |
 |       2        |    user enters username, name, email, surname and password     |
-|       3        |      database searched for username, duplicate not found       |
-|       4        | input fields are validated, they are conforming to constraints |
-|       5        |          database searched for email, duplicate found          |
+|       3        | system searches for username in database, duplicate not found       |
+|       4        | input fields are validated, constraints are satisfied |
+|       5        |system searches for email in database, duplicate found          |
 |       6        | show error saying that the are problems with the input fields  |
 |       7        |             user remains in account creation page              |
 
@@ -301,18 +302,18 @@ Story:
 
 |  Scenario 1.6  |                                                                            |
 |:--------------:|:--------------------------------------------------------------------------:|
-|  Precondition  |                         User does not have account                         |
-| Post condition |                         User does not have account                         |
-|     Step#      |                                Description                                 |
-|       1        |                         user selects role customer                         |
-|       2        |          user enters username, name, email, surname and password           |
-|       3        |            database searched for username, duplicate not found             |
-|       4        |   FR1.3: input fields are validated, they are conforming to constraints    |
-|       5        |              database searched for email, duplicate not found              |
-|       6        | System sends a verification code to the specified email and ask it to user |
-|       7        |                      user sends the code, right code                       |
-|       8        |       show error saying that the are problems with the input fields        |
-|       9        |                   user remains in account creation page                    |
+|  Precondition  |      User does not have account                         |
+| Post condition |      User does not have account                         |
+|     Step#      |             Description                                 |
+|       1        |      user selects role customer                         |
+|       2        |user enters username, name, email, surname and password           |
+|       3        |system searches for username in database, duplicate not found             |
+|       4        | input fields are validated, constraitns are verified    |
+|       5        |system searches for email in database, duplicate not found              |
+|       6        |System sends a verification code to the specified email and asks user to write it |
+|       7        |     user sends the code, right code                       |
+|       8        | show error saying that the are problems with the input fields        |
+|       9        |   user remains in account creation page                    |
 
 ### Login, UC2 - FR3.1
 
@@ -332,7 +333,7 @@ Story:
 | Post condition |                          user logged in                          |
 |     Step#      |                           Description                            |
 |       1        |                user enters username and password                 |
-|       2        | database searched for username, check password, password matched |
+|       2        |system searches for username in database, check password, password matched |
 |       3        |                    FR3.1: user gets logged in                    |
 
 ##### Scenario 2.2 (username and password don't match)
@@ -404,10 +405,10 @@ Story:
 | Post condition |                                  product is created                                  |
 |     Step#      |                                     Description                                      |
 |       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate |
-|       2        |                     system checks code, does not already exists                      |
-|       3        |                system checks arrival date, exists and is current date                |
-|       4        |             FR2.7: system validates fields, they comply with constraints             |
-|       5        |                                FR2.1:product created                                 |
+|       2        |                     system checks code, does not already exist                    |
+|       3        |                system checks arrival date, exists and is before current date                |
+|       4        |       system checks fields, constraints are satisfied      |
+|       5        |           FR2.1:product created                                 |
 
 ##### Scenario 5.2 (create product, without arrival date)
 
@@ -417,10 +418,10 @@ Story:
 | Post condition |                           product is created                            |
 |     Step#      |                               Description                               |
 |       1        | User inserts product info: code, sellingPrice, model, category, details |
-|       2        |               system checks code, does not already exists               |
+|       2        |               system checks code, does not already exist                |
 |       3        |               system checks arrival date, does not exist                |
 |       4        |                system sets arrival date to current date                 |
-|       5        |      FR2.7: system validates fields, they comply with constraints       |
+|       5        |system checks fields, constraints are satisfied     |
 |       6        |                          FR2.1:product created                          |
 
 ##### Scenario 5.3 (register arrivals) - FR2.2
@@ -428,25 +429,25 @@ Story:
 |  Scenario 5.3  |                                                                                                     |
 |:--------------:|:---------------------------------------------------------------------------------------------------:|
 |  Precondition  |                                      user logged in as Manager                                      |
-| Post condition |                                       arrivals are registered                                       |
+| Post condition |             arrival is registered                                       |
 |     Step#      |                                             Description                                             |
 |       1        | manager inserts arrival product info: model, sellingPrice, category, details, arrivalDate, quantity |
-|       3        |                       system checks arrival date, exists and is current date                        |
-|       4        |                    FR2.7: system validates fields, they comply with constraints                     |
-|       5        |                                      FR2.2:arrival registered                                       |
+|       3        |                       system checks arrival date, exists and is before current date                        |
+|       4        |     system checks fields, constraints are satisfied|
+|       5        |     FR2.2:arrival registered                       |
 
 ##### Scenario 5.4 (register arrivals, without arrival date)
 
 |  Scenario 5.4  |                                                                                        |
 |:--------------:|:--------------------------------------------------------------------------------------:|
 |  Precondition  |                               user logged in as Manager                                |
-| Post condition |                                arrivals are registered                                 |
+| Post condition |           arrival is registered                                 |
 |     Step#      |                                      Description                                       |
 |       1        | manager inserts arrival product info: model, category, sellingPrice, details, quantity |
 |       3        |                       system checks arrival date, does not exist                       |
 |       4        |                        system sets arrival date to current date                        |
-|       5        |              FR2.7: system validates fields, they comply with constraints              |
-|       6        |                               FR2.2:arrivals registered                                |
+|       5        | system checks fields, constraints are satisfied              |
+|       6        |                               FR2.2:arrival registered                                |
 
 ##### Scenario 5.5 (create product, already existing code)
 
@@ -457,7 +458,7 @@ Story:
 |     Step#      |                                     Description                                      |
 |       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate |
 |       2        |                          system checks code, already exists                          |
-|       3        |              system shows error describing that the code already exists              |
+|       3        |              system shows error that the code already exists              |
 |       4        |                 product not added, user remains on add product page                  |
 
 ##### Scenario 5.6 (create product, arrival date after current date)
@@ -468,9 +469,9 @@ Story:
 | Post condition |                                product is not created                                |
 |     Step#      |                                     Description                                      |
 |       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate |
-|       2        |                     system checks code, does not already exists                      |
-|       3        |                  system checks arrival date, is after current date                   |
-|       4        |           system shows error describing that the arrivalDate is incorrect            |
+|       2        |   system checks code, does not already exist                     |
+|       3        |     system checks arrival date, is after current date                   |
+|       4        |           system shows error that the arrivalDate is invalid            |
 |       5        |                 product not added, user remains on add product page                  |
 
 ##### Scenario 5.7 (register arrivals, arrival date after current date)
@@ -482,18 +483,18 @@ Story:
 |     Step#      |                                             Description                                             |
 |       1        | manager inserts arrival product info: model, category, sellingPrice, details, arrivalDate, quantity |
 |       3        |                    system checks arrival date, exists and is after current date                     |
-|       4        |                   system shows error describing that the arrivalDate is incorrect                   |
+|       4        |                   system shows error describing that the arrivalDate is invalid                   |
 |       5        |                      arrivals not registered, user remains on add product page                      |
 
-### Get products, UC6 - FR2.5
+### Get products, UC6 - FR2.3
 
-| Actors Involved  |                                                                                                                                              User (Customer or Manager)                                                                                                                                              |
+| Actors Involved  |  User (Customer or Manager)     |
 |:----------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 |   Precondition   |                                                                                                                                                    user logged in                                                                                                                                                    |
 |  Post condition  |                                                                                                                                                          -                                                                                                                                                           |
-| Nominal Scenario |                                                                                                                                           Scenario 7.1 (get all products)                                                                                                                                            |
-|     Variants     | Scenario 7.2 (get all products and filter products based on category) ,Scenario 7.3 (get all products and filter products based on model), Scenario 7.4 (get all products and filter products based on category and sold status), Scenario 7.5 (get all products and filter products based on model and sold status) | 
-|    Exceptions    |                                                                                                                                        Scenario 7.6 (product does not exists)                                                                                                                                        |
+| Nominal Scenario |                                                               Scenario 6.1 (get all products)                                                                                                                                            |
+|     Variants     | Scenario 6.2 (filter all products based on category) ,Scenario 6.3 (filter all products based on model), Scenario 6.4 (filter all products based on category and sold status), Scenario 6.5 (filter all products based on model and sold status) | Scenario 6.6 (get product by code)
+|    Exceptions    |                                                                                                                                        Scenario 6.7 (product does not exist)                                                                                                                                        |
 
 ##### Scenario 6.1 (get all products)
 
@@ -503,49 +504,60 @@ Story:
 | Post condition |         List all products         |
 |     Step#      |            Description            |
 |       1        | User requests to get all products |
-|       2        | FR2.5:system returns all products |
+|       2        | FR2.3: system returns all products |
 
 ##### Scenario 6.2 (get all products and filter products based on category)
 
 |  Scenario 6.2  |                                                         |
 |:--------------:|:-------------------------------------------------------:|
 |  Precondition  |                     user logged in                      |
-| Post condition |       get all products filtered based on category       |
+| Post condition |       list all products filtered based on category       |
 |     Step#      |                       Description                       |
-|       1        | User requests to get all products in a certain category |
-|       2        |  FR2.5.1:system returns all products in that category   |
+|       1        | user requests to get all products in a certain category |
+|       2        |  FR2.3.1: system returns all products in that category   |
 
 ##### Scenario 6.3 (get all products and filter products based on model)
 
 |  Scenario 6.3  |                                                      |
 |:--------------:|:----------------------------------------------------:|
 |  Precondition  |                    user logged in                    |
-| Post condition |       get all products filtered based on model       |
+| Post condition |      list all products filtered based on model       |
 |     Step#      |                     Description                      |
 |       1        | User requests to see all products of a certain model |
-|       2        |  FR2.5.2:system returns all products of that model   |
+|       2        |  FR2.3.2: system returns all products of that model   |
 
 ##### Scenario 6.4 (get all products and filter products based on category and sold status)
 
 |  Scenario 6.4  |                                                                         |
 |:--------------:|:-----------------------------------------------------------------------:|
 |  Precondition  |                             user logged in                              |
-| Post condition |       get all products filtered based on category and sold status       |
+| Post condition |      list all products filtered based on category and sold status       |
 |     Step#      |                               Description                               |
 |       1        | User requests to see all products in a certain category and sold status |
-|       2        |      system returns all products in that category and sold status       |
+|       2        |     FR2.3.3: system returns all products in that category and sold status       |
 
 ##### Scenario 6.5 (get all products and filter products based on model and sold status)
 
 |  Scenario 6.5  |                                                                      |
 |:--------------:|:--------------------------------------------------------------------:|
 |  Precondition  |                            user logged in                            |
-| Post condition |       get all products filtered based on model and sold status       |
+| Post condition |      list all products filtered based on model and sold status       |
 |     Step#      |                             Description                              |
 |       1        | user requests to see all products of a certain model and sold status |
-|       2        |      system returns all products of that model and sold status       |
+|       2        |FR2.3.3: system returns all products of that model and sold status    |
 
-##### Scenario 6.6 (product does not exists)
+##### Scenario 6.6 (get product by code)
+
+|  Scenario 6.6  |                                                        |
+|:--------------:|:------------------------------------------------------:|
+|  Precondition  |                     user logged in                     |
+| Post condition |                 products not returned                  |
+|     Step#      |                      Description                       |
+|       1        |                User enters product code                |
+|       2        |       system searches for product by code, finds it    |
+|       3        |       FR2.4: system returns product and its info       |
+
+##### Scenario 6.7 (product does not exists)
 
 |  Scenario 6.6  |                                                        |
 |:--------------:|:------------------------------------------------------:|
@@ -555,16 +567,6 @@ Story:
 |       1        |                User enters product code                |
 |       2        |          system searches for product by code           |
 |       3        | system does not find product and returns error message |
-
-##### Scenario 6.7 (get product by code) - FR2.4
-|  Scenario 6.7  |                                           |
-|:--------------:|:-----------------------------------------:|
-|  Precondition  |              user logged in               |
-| Post condition |           products not returned           |
-|     Step#      |                Description                |
-|       1        |         User enters product code          |
-|       2        |    system searches for product by code    |
-|       3        | system finds product and returns its info |
 
 ### Delete Product, UC7
 
@@ -586,7 +588,7 @@ Story:
 |       1        |                Manager enters product code to be deleted                 |
 |       2        |                   system searches for product by code                    |
 |       3        | system verify the product is located in a store owned by the manager, ok |
-|       4        |                        system deletes the product                        |
+|       4        |                 FR2.5: system deletes the product                        |
 
 ##### Scenario 7.2
 
@@ -1224,7 +1226,7 @@ Story:
 |       1        |                                      tech admin requests to add a user                                      |
 |       2        |            tech admin enters the info of the new tech admin and chooses tech admin role for them            |
 |       3        |                                system adds the new tech admin to the system                                 |
-|       4        | system sends email to the new tech admin with the login credentials, with instructions on changing password |
+|       4        | FR1.3 tech admin account created, system sends email to the new tech admin with the login credentials|
 
 # Glossary
 
