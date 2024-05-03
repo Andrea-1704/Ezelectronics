@@ -211,8 +211,8 @@ Story:
 |   ID    |                        Description                        |
 |:-------:|:---------------------------------------------------------:|
 |   FR1   |                      Create account                       |
-|  FR1.1  |                  create manager account                   |
-|  FR1.2  |                  create customer account                  |
+|  FR1.1  |                  create customer account                  |
+|  FR1.2  |                  create manager account                   |
 |   FR2   |                      Manage products                      |
 |  FR2.1  |                      Create product                       |
 |  FR2.2  |                     Register arrivals                     |
