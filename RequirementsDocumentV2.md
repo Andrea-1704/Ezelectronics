@@ -52,6 +52,7 @@ history of their past purchases.
 |               Competitors                |                  Similar companies that have a software with the same scope                   |
 |             Payment Service              | People who have invested in the company and are interested in the company's financial status  |
 |             Shipping Service             |            People who are responsible for delivering the products to the customers            |
+|              Google Places               |                               api for verification of addresses                               |  
 
 # Context Diagram and interfaces
 
@@ -68,6 +69,7 @@ history of their past purchases.
 | Tech Admin, Business Admin |  PC, Smartphone   |                                                                   GUI                                                                   |
 |      Payment Service       |     Internet      | https://developer.paypal.com/api/rest/ , https://developer.visa.com/pages/working-with-visa-apis, https://developer.mastercard.com/apis |
 |      Shipping Service      |     Internet      |                                                 https://www.ufficiopostale.com/api.php                                                  |
+|       Google Places        |     internet      |                              https://developers.google.com/maps/documentation/places/web-service/overview                               |
 
 # Stories and personas
 
