@@ -386,28 +386,6 @@ Story:
 |       1        |     user asks to get current session info     |
 |       2        | FR3.3:user receives their profile information |
 
-### Delete Store, UC5
-
-| Actors Involved  |                             Manager                             |
-|------------------|:---------------------------------------------------------------:| 
-| Precondition     | User has an account, is logged in as Manager and owns the store |
-| Post condition   |                                -                                |
-| Nominal Scenario |                          Scenario 5.1                           |
-| Variants         |                                -                                |
-| Exceptions       |                                -                                |
-
-##### Scenario 5.1
-
-| Scenario 5.1   |                                                                 |
-|----------------|:---------------------------------------------------------------:| 
-| Precondition   | User has an account, is logged in as Manager and owns the store |
-| Post condition |                        Store is deleted                         |
-| Step#          |                           Description                           |
-| 1              |                Manager request to delete a store                |  
-| 2              |       the system retrieves all the products of that store       | 
-| 3              |           Each product of the store is deleted - F2.6           |
-| 4              |                      The store is deleted                       |
-
 ### Create product , UC5 - FR2.1
 
 | Actors Involved  |                                                                                        Manager                                                                                         |
@@ -1207,13 +1185,13 @@ Story:
 | 4              |                      The store is deleted                       |
 
 ### Manage admins, UC22 
-| Actors Involved  |             Tech admin             |
-|:----------------:|:----------------------------------:|
-|   Precondition   |    user logged in as tech admin    |
-|  post condition  |                 -                  |
-| Nominal Scenario |   Scenario 22.1 (add tech admin)   |
-|     Variants     | Scenario 22.2 (add business admin) |
-|    Exceptions    |                 -                  |
+| Actors Involved  |           Tech admin           |
+|:----------------:|:------------------------------:|
+|   Precondition   |  user logged in as tech admin  |
+|  post condition  |               -                |
+| Nominal Scenario | Scenario 22.1 (add tech admin) |
+|     Variants     |               -                |
+|    Exceptions    |               -                |
 
 ##### Scenario 22.1
 | Scenario 22.1  |                                                                                                             |
@@ -1226,93 +1204,6 @@ Story:
 |       3        |                                system adds the new tech admin to the system                                 |
 |       4        | system sends email to the new tech admin with the login credentials, with instructions on changing password |
 
-##### Scenario 22.2
-| Scenario 22.2  |                                                                                                                 |
-|:--------------:|:---------------------------------------------------------------------------------------------------------------:|
-|  Precondition  |                                          user logged in as tech admin                                           |
-| Post condition |                                            business admin user added                                            |
-|     Step#      |                                                   Description                                                   |
-|       1        |                                        tech admin requests to add a user                                        |
-|       2        |                tech admin inputs info of the new business admin and chooses business admin role                 |
-|       3        |                                system adds the new business admin to the system                                 |
-|       4        | system sends email to the new business admin with the login credentials, with instructions on changing password |
-
-### Sales analytics - UC23
-| Actors Involved  |            Business admin             |
-|:----------------:|:-------------------------------------:|
-|   Precondition   |   user logged in as business admin    |
-|  post condition  |                   -                   |
-| Nominal Scenario | Scenario 23.1 (store sales analytics) |
-|     Variants     |             Scenario 23.2             |
-|    Exceptions    |                   -                   |
-
-##### Scenario 23.1
-| Scenario 23.1  |                                                  |
-|:--------------:|:------------------------------------------------:|
-|  Precondition  |         user logged in as business admin         |
-| Post condition |              sales analytics viewed              |
-|     Step#      |                   Description                    |
-|       1        | business admin requests to view sales analytics  |
-|       2        | business admin selects the store sales analytics |
-|       3        |            system asks for store code            |
-|       4        |       business admin inputs the store code       |
-|       5        |       system check if store exist, it does       |
-|       6        |     system returns the store sales analytics     |
-
-##### Scenario 23.2
-| Scenario 23.2  |                                                             |
-|:--------------:|:-----------------------------------------------------------:|
-|  Precondition  |              user logged in as business admin               |
-| Post condition |                   sales analytics viewed                    |
-|     Step#      |                         Description                         |
-|       1        |       business admin requests to view sales analytics       |
-|       2        | business admin selects the product category sales analytics |
-|       3        |              system asks for product category               |
-|       4        |         business admin inputs the product category          |
-|       5        |     system returns the product category sales analytics     |
-
-##### Scenario 23.3
-| Scenario 23.3  |                                                                       |
-|:--------------:|:---------------------------------------------------------------------:|
-|  Precondition  |                   user logged in as business admin                    |
-| Post condition |                        sales analytics viewed                         |
-|     Step#      |                              Description                              |
-|       1        |            business admin requests to view sales analytics            |
-|       2        | business admin selects the store and product category sales analytics |
-|       3        |            system asks for store code and product category            |
-|       4        |       business admin inputs the store code and product category       |
-|       5        |                 system check if store exist, it does                  |
-|       6        |     system returns the store and product category sales analytics     |
-
-##### Scenario 23.4
-| Scenario 23.4  |                                                          |
-|:--------------:|:--------------------------------------------------------:|
-|  Precondition  |             user logged in as business admin             |
-| Post condition |                  sales analytics viewed                  |
-|     Step#      |                       Description                        |
-|       1        |     business admin requests to view sales analytics      |
-|       2        | business admin selects the product model sales analytics |
-|       3        |              system asks for product model               |
-|       4        |         business admin inputs the product model          |
-|       5        |    system checks if the product model exists, it does    |
-|       5        |     system returns the product model sales analytics     |
-
-##### Scenario 23.5
-| Scenario 23.5  |                                                                       |
-|:--------------:|:---------------------------------------------------------------------:|
-|  Precondition  |                   user logged in as business admin                    |
-| Post condition |                        sales analytics viewed                         |
-|     Step#      |                              Description                              |
-|       1        |            business admin requests to view sales analytics            |
-|       2        | business admin select the store and the product model sales analytics |
-|       3        |             system asks for store code and product model              |
-|       3        |             system asks for product model and store code              |
-|       4        |                business admin inputs the product model                |
-|       6        |              system checks if the store exists, it does               |
-|       5        |          system checks if the product model exists, it does           |
-|       5        |           system returns the product model sales analytics            |
-
-### Pay Manager comm
 # Glossary
 
 ![Class Diagram](/assets/img/V2/CLDV2.png)
