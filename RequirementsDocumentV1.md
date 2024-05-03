@@ -486,49 +486,48 @@ Story:
 |:----------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 |   Precondition   |                                                                         user logged in as manager                                                                          |
 |  Post condition  |                                                                                     -                                                                                      |
-| Nominal Scenario |                                                                                Scenario 6.1                                                                                |
+| Nominal Scenario |                                                            Scenario 6.1 (product exists, correct selling date)                                                             |
 |     Variants     |                                                                     Scenario 6.2(without selling date)                                                                     |
 |    Exceptions    | Scenario 6.3(product does not exist), Scenario 6.4 (selling date before arrival date), Scenario 6.5 (selling date after current date), Scenario 6.6 (product already sold) |
 
-##### Scenario 6.1
+##### Scenario 6.1 (product exists, correct selling date)
 
 |  Scenario 6.1  |                                                                                        |
 |:--------------:|:--------------------------------------------------------------------------------------:|
 |  Precondition  |                               user logged in as manager                                |
 | Post condition |                                 product marked as sold                                 |
 |     Step#      |                                      Description                                       |
-|       1        |  manager attempts to mark product as sold via it’s code and setting it’s selling date  |
-|       2        |                      system checks if the product exists, it does                      |
-|       3        |                  system checks if the selling date is provided, it is                  |
-|       3        | system checks if selling date is after arrival date and before the current date, it is |
-|       4        |             the system checks that the product is not yet sold, it is not              |
-|       5        |                            FR2.3:product is marked as sold                             |
+|       1        |                     manager searches for product by code, finds it                     |
+|       2        |                               manager sets selling date                                |
+|       3        |                        manager attempts to mark product as sold                        |
+|       4        |                  system checks if the selling date is provided, it is                  |
+|       5        | system checks if selling date is after arrival date and before the current date, it is |
+|       6        |             the system checks that the product is already sold, it is not              |
+|       7        |                            FR2.3: product is marked as sold                            |
 
 ##### Scenario 6.2 (without selling date)
 
-|  Scenario 6.2  |                                                                         |
-|:--------------:|:-----------------------------------------------------------------------:|
-|  Precondition  |                        user logged in as manager                        |
-| Post condition |                         product marked as sold                          |
-|     Step#      |                               Description                               |
-|       1        |        manager attempts to mark a product as sold via it’s code         |
-|       2        |              system checks if the product exists, it does               |
-|       3        |        system checks if the selling date is provided, it is not         |
-|       4        |                 system sets sellingDate to current date                 |
-|       5        | the system checks that the product is not yet sold, results as not sold |
-|       6        |                     FR2.3:product is marked as sold                     |
+|  Scenario 6.2  |                                                               |
+|:--------------:|:-------------------------------------------------------------:|
+|  Precondition  |                   user logged in as manager                   |
+| Post condition |                    product marked as sold                     |
+|     Step#      |                          Description                          |
+|       1        |        manager searches for product by code, finds it         |
+|       2        |           manager attempts to mark product as sold            |
+|       3        |   system checks if the selling date is provided, it is not    |
+|       4        |            system sets sellingDate to current date            |
+|       5        | the system checks that the product is already sold, it is not |
+|       6        |               FR2.3: product is marked as sold                |
 
 ##### Scenario 6.3 (product does not exist)
 
-|  Scenario 6.3  |                                                                                        |
-|:--------------:|:--------------------------------------------------------------------------------------:|
-|  Precondition  |                               user logged in as manager                                |
-| Post condition |                               product not marked as sold                               |
-|     Step#      |                                      Description                                       |
-|       1        | manager attempts to mark as sold a product via it’s code and setting it’s selling date |
-|       2        |                    system checks if the product exists, it does not                    |
-|       3        |                   system shows error that the product does not exist                   |
-|       4        |                             product is not marked as sold                              |
+|  Scenario 6.3  |                                                                |
+|:--------------:|:--------------------------------------------------------------:|
+|  Precondition  |                   user logged in as manager                    |
+| Post condition |                   product not marked as sold                   |
+|     Step#      |                          Description                           |
+|       1        | manager search for product by code, finds it, does not find it |
+|       2        |                 product is not marked as sold                  |
 
 ##### Scenario 6.4 (selling date before arrival date)
 
@@ -537,12 +536,14 @@ Story:
 |  Precondition  |                                 user logged in as manager                                  |
 | Post condition |                                 product not marked as sold                                 |
 |     Step#      |                                        Description                                         |
-|       1        |   manager attempts to mark a product as sold via it’s code and setting it’s selling date   |
-|       2        |                        system checks if the product exists, it does                        |
-|       3        |                    system checks if the selling date is provided, it is                    |
-|       4        | system checks if selling date is after arrival date and before the current date, it is not |
-|       5        |              system shows error that the selling date is before arrival date               |
-|       6        |                               product is not marked as sold                                |
+|       1        |                       manager searches for product by code, finds it                       |
+|       2        |                                 manager sets selling date                                  |
+|       3        |                          manager attempts to mark product as sold                          |
+|       4        |                    system checks if the selling date is provided, it is                    |
+|       5        | system checks if selling date is after arrival date and before the current date, it is not |
+|       6        |              system shows error that the selling date is before arrival date               |
+|       7        |               the system checks that the product is already sold, it is not                |
+|       8        |                               product is not marked as sold                                |
 
 ##### Scenario 6.5 (selling date after current date)
 
@@ -551,12 +552,14 @@ Story:
 |  Precondition  |                                 user logged in as manager                                  |
 | Post condition |                                 product not marked as sold                                 |
 |     Step#      |                                        Description                                         |
-|       1        |   manager attempts to mark a product as sold via it’s code and setting it’s selling date   |
-|       2        |                        system checks if the product exists, it does                        |
-|       3        |                    system checks if the selling date is provided, it is                    |
-|       4        | system checks if selling date is after arrival date and before the current date, it is not |
-|       5        |               system shows error that the selling date is after current date               |
-|       6        |                               product is not marked as sold                                |
+|       1        |                       manager searches for product by code, finds it                       |
+|       2        |                                 manager sets selling date                                  |
+|       3        |                          manager attempts to mark product as sold                          |
+|       4        |                    system checks if the selling date is provided, it is                    |
+|       5        | system checks if selling date is after arrival date and before the current date, it is not |
+|       6        |               system shows error that the selling date is after current date               |
+|       7        |               the system checks that the product is already sold, it is not                |
+|       8        |                               product is not marked as sold                                |
 
 ##### Scenario 6.6 (product already sold)
 
@@ -569,7 +572,7 @@ Story:
 |       2        |                      system checks if the product exists, it does                      |
 |       3        |                  system checks if the selling date is provided, it is                  |
 |       4        | system checks if selling date is after arrival date and before the current date, it is |
-|       5        |      the system checks that the product is not yet sold, results as already sold       |
+|       5        |               the system checks that the product is already sold, it is                |
 |       6        |                             product is not marked as sold                              |
 
 ### Get products, UC7 - FR2.5
