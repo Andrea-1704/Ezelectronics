@@ -24,6 +24,7 @@ Version: V1—description of EZElectronics in FUTURE form (as proposed by the te
 ![Create account](assets/img/V2/GUI/1.3-create-account.png)
 
 ### Login UC2:
+##### Scenario 2.1
 ![Login](assets/img/V2/GUI/2-login.png)
 
 #### Customer home page:
@@ -32,17 +33,24 @@ Version: V1—description of EZElectronics in FUTURE form (as proposed by the te
 
 ### Current account info UC4:
 ##### Scenario 4.1
-![Current account info](assets/img/V2/GUI/4-account-info.png)
+#### Customer
+![Current account info customer](assets/img/V2/GUI/4-account-info.png)
+
+#### Manager
+![Current account info manager](assets/img/V2/GUI/4-account-info-manager.png)
 
 ### Change account info UC12: 
-##### Scenario 12.4 (change email)
-![Step 1](assets/img/V2/GUI/4.2-account-info.png)
-##### Scenario 12.1 (change username)
-![Step 1](assets/img/V2/GUI/4.3-account-info.png)
-##### Scenario 12.5, 12.11 (change password, unsafe password)
-![Step 1](assets/img/V2/GUI/4.4-account-info.png)
-#### Scenario 12.9 (change email, wrong verification code)
+#### Scenario 12.1
 ![Step 2](assets/img/V2/GUI/4.1-account-info.png)
+
+##### Scenario 12.4
+![Step 1](assets/img/V2/GUI/4.2-account-info.png)
+
+##### Scenario 12.8 
+![Step 1](assets/img/V2/GUI/4.3-account-info.png)
+
+##### Scenario 12.10 
+![Step 1](assets/img/V2/GUI/4.4-account-info.png)
 
 
 ### Get products UC6:
@@ -61,7 +69,7 @@ Version: V1—description of EZElectronics in FUTURE form (as proposed by the te
 ##### Scenario 8.4 (cart history)
 ![Get products](assets/img/V2/GUI/8.4-cart-history.png)
 ##### Scenario 8.1 (current cart)
-![Get products](assets/img/V2/GUI/8-current-cart.png)
+![Get products](assets/img/V2/GUI/8-current-cart.jpg)
 
 ### Forgot password UC11:
 ![Step 1](assets/img/V2/GUI/3.1-password-recovery.png)
@@ -70,24 +78,24 @@ Version: V1—description of EZElectronics in FUTURE form (as proposed by the te
 ![Step 4](assets/img/V2/GUI/3.4-password-recovery.png)
 
 ### Pay for cart UC9:
-#### insert shipping info
-![Step 1](assets/img/V2/GUI/9.1-pay-shipping-info.png)
-![Step 2](assets/img/V2/GUI/9.1-pay-method.png)
-![Step 3](assets/img/V2/GUI/9-pay-sucess.png)
+##### Scenario 9.1
+![shipping info](assets/img/V2/GUI/9.1-pay-shipping-info.png)
+![payment method](assets/img/V2/GUI/9.1-pay-method.png)
+![pay success](assets/img/V2/GUI/9.1-pay-success.png)
+
 ##### Scenario 9.2 (empty cart)
-![Step 1](assets/img/V2/GUI/9.2-empty-cart.png)
+![empty cart](assets/img/V2/GUI/9.2-empty-cart.png)
 
 ### Create product UC5:
+##### Scenario 5.1
+![set arrival date](assets/img/V2/GUI/5-create-product-cal.png)
+
+##### Scenario 5.2
 ![Step 1](assets/img/V2/GUI/5-create-product.png)
-![Step 1](assets/img/V2/GUI/5-create-product-cal.png)
-![Step 1](assets/img/V2/GUI/5-create-product-success.png)
+![create success](assets/img/V2/GUI/5-create-product-success.png)
 
-### Manage Users UC10: 
-
-##### Scenario 10.1 (get users)
-![Step 1](assets/img/V2/GUI/10.1-manage-users.png)
-##### Scenario 10.3 (view user)
-![Step 1](assets/img/V2/GUI/10.3-get-user.png)
+###### Scenario 5.6 
+![register arrival](assets/img/V2/GUI/5-create-product-reg-arr.png)
 
 ### Create store UC13:
 ![Create store](assets/img/V2/GUI/13-create-store.png)
@@ -106,12 +114,17 @@ Version: V1—description of EZElectronics in FUTURE form (as proposed by the te
 ##### Scenario 14.1
 ![Manage store](assets/img/V2/GUI/14.1-manage-change-name.png)
 
-
-
 ### Delete Store UC15:
 ![Delete store](assets/img/V2/GUI/15-delete-store.png)
 
 ### Get owned products UC16:
-##### Scenario 16.1 (get all products)
-![Get owned products](assets/img/V2/GUI/16.1-manager-home-page.png)
+
+##### Manager home page
+![Get owned products list all](assets/img/V2/GUI/16.1-manager-home-page.png)
+
+##### Scenario 16.1
+![Get owned products](assets/img/V2/GUI/16.1-manager-list-all-prod.png)
+
+##### Scenario 16.4, Scenario 16.5
+![Get owned products filter sold not sold](assets/img/V2/GUI/16.4-manager-list-sold.png)
 
