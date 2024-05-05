@@ -70,6 +70,7 @@ Version: V1 - CURRENT
 ##### Scenario 7.3 (by model)
 ![Search for product model](assets/img/V1/GUI/7.3-product-model.png)
 
+##### Scenario 7.7 (by code)
 #### As a customer 
 ![Search for product success](assets/img/V1/GUI/7.7-product-by-code.png)
 #### As a manager
@@ -86,14 +87,14 @@ Version: V1 - CURRENT
 
 ### Manage cart, UC9
 
-## Scenario 9.1
+##### Scenario 9.1
 ![Get current cart](assets/img/V1/GUI/9.1-current-cart.png)
 
-## Scenario 9.4
+##### Scenario 9.4
 ![Get cart history](assets/img/V1/GUI/9.4-cart-history.png)
 
 ### Pay for cart, UC10
-## Scenario 10.1
+## Scenario 10.2
 ![Empty cart error](assets/img/V1/GUI/10.1-empty-cart-error.png)
 
 
