@@ -168,6 +168,7 @@ Story:
 |  FR5.1  |               Create a new Store               |
 |  FR5.2  |          Change Store’s informations           |
 |  FR5.3  |                  Delete store                  |
+|  FR5.4  |              Retrive owned stores              |
 |   FR6   |                 Manage Account                 |
 |  FR6.1  |             Change Account details             |
 | FR6.1.1 |            Change Account username             |
@@ -205,7 +206,7 @@ Story:
 
 ## Use cases
 
-### Create account user, UC1 - FR1
+### Create Account user, UC1 - FR1
 
 | Actors Involved  |                             User                              |
 |:----------------:|:-------------------------------------------------------------:|
@@ -324,7 +325,7 @@ Story:
 |       11       |           show error saying that the are problems with the input fields           |
 |       12       |                       user remains in account creation page                       |
 
-### Log in, UC2
+### Login, UC2
 
 | Actors Involved  |                       User                       |
 |:----------------:|:------------------------------------------------:|
@@ -356,7 +357,7 @@ Story:
 |       2        | system looks for username, exists but, password doesn't match |
 |       3        |                  user does not get logged in                  |
 
-### Log out, UC3
+### Logout, UC3
 
 | Actors Involved  |        User        |
 |:----------------:|:------------------:|
@@ -396,7 +397,7 @@ Story:
 |       1        |   user asks to get current account info    |
 |       2        |  user receives their profile information   |
 
-### Create product , UC5
+### Create Product , UC5
 
 | Actors Involved  |                                                                          Manager                                                                           |
 |:----------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------:|
@@ -720,7 +721,7 @@ Story:
 |       1        | customer requests to delete their current cart |
 |       2        |        system deletes the customer cart        |
 
-### Payment for cart, UC9
+### Payment of the cart, UC9
 
 | Actors Involved  | Customer, Manager, Payment Service, Shipping Service, Google Places |
 |:----------------:|:-------------------------------------------------------------------:|
@@ -794,15 +795,15 @@ Story:
 |       13       |    	System checks if the payment is successful, it is not    |
 |       14       |       System shows an error to the user, cart not sold       |
 
-### Delete account - UC10 FR6.3
+### Delete Account - UC10 FR6.3
 
 | Actors Involved  |                User                 |
 |:----------------:|:-----------------------------------:|
 |   Precondition   |           User logged in            |
 |  Post condition  | User not logged in, account deleted |
 | Nominal Scenario |            Scenario 10.1            |
-|     Variants     |                  -                  |
-|    Exceptions    |                  -                  |
+|     Variants     |                                     |
+|    Exceptions    |                                     |
 
 ##### Scenario 10.1 - FR5
 
@@ -1038,7 +1039,7 @@ Story:
 | 3              | validate password with safety rules, rules not satisfied | 
 | 4              |                        Show error                        |
 
-### Create new store, UC13
+### Create a new Store, UC13
 
 | Actors Involved  |                     Manager                     |
 |------------------|:-----------------------------------------------:| 
@@ -1074,7 +1075,7 @@ Story:
 | 4              |        FR8.2: system verifies address, address is invalid        | | 
 | 5              | system shows error to manager saying that the address is invalid |
 
-### Change store information, UC14
+### Change Store information, UC14
 
 | Actors Involved  |                             Manager                             |
 |------------------|:---------------------------------------------------------------:| 
@@ -1091,10 +1092,11 @@ Story:
 | Precondition   |  User has an account, is logged in as Manager and owns the store   |
 | Post condition |                      Store's name is modified                      |
 | Step#          |                            Description                             |
-| 1              |            Manager requests to change store information            |
-| 2              |                Manager enters the new store's name                 |  
-| 3              |                         name not null, ok                          | 
-| 4              | Show a message to Manager saying that the  store has been modified |
+| 1              |               FR5.4 - Manager retrives owned stores                |
+| 2              |      Manager requests to change the informations for a store       |
+| 3              |                Manager enters the new store's name                 |  
+| 4              |                         name not null, ok                          | 
+| 5              | Show a message to Manager saying that the  store has been modified |
 
 ##### Scenario 14.2 - FR5.2
 
@@ -1103,10 +1105,11 @@ Story:
 | Precondition   |  User has an account, is logged in as Manager and owns the store   |
 | Post condition |                    Store's address is modified                     |
 | Step#          |                            Description                             |
-| 1              |            Manager requests to change store information            |
-| 2              |               Manager enters the new store's address               |  
-| 3              |          FR8.2: system verifies address, address is valid          | 
-| 4              | Show a message to Manager saying that the  store has been modified |
+| 1              |               FR5.4 - Manager retrives owned stores                |
+| 2              |      Manager requests to change the informations for a store       |
+| 3              |               Manager enters the new store's address               |  
+| 4              |          FR8.2: system verifies address, address is valid          | 
+| 5              | Show a message to Manager saying that the  store has been modified |
 
 ##### Scenario 14.3
 
@@ -1115,11 +1118,13 @@ Story:
 | Precondition   | User has an account, is logged in as Manager and owns the store |
 | Post condition |               The store's address is not modified               |
 | Step#          |                           Description                           |
-| 1              |               Manager enters new store's address                |  
-| 2              |        FR8.2: system verifies address, address is valid         | 
-| 3              |                           Show error.                           |
+| 1              |              FR5.4 - Manager retrives owned stores              |
+| 2              |     Manager requests to change the informations for a store     |
+| 3              |               Manager enters new store's address                |  
+| 4              |        FR8.2: system verifies address, address is valid         | 
+| 5              |                           Show error.                           |
 
-### Delete store, UC15
+### Delete Store, UC15
 
 | Actors Involved  |                             Manager                             |
 |------------------|:---------------------------------------------------------------:| 
@@ -1136,10 +1141,11 @@ Story:
 | Precondition   | User has an account, is logged in as Manager and owns the store |
 | Post condition |                        Store is deleted                         |
 | Step#          |                           Description                           |
-| 1              |                Manager request to delete a store                |  
-| 2              |       the system retrieves all the products of that store       | 
-| 3              |           F2.6:  Each product of the store is deleted           |
-| 4              |                      The store is deleted                       |
+| 1              |              FR5.4 - Manager retrives owned stores              |
+| 2              |                Manager request to delete a store                |  
+| 3              |       the system retrieves all the products of that store       | 
+| 4              |           F2.6:  Each product of the store is deleted           |
+| 5              |                      The store is deleted                       |
 
 ### Get owned products, UC16
 
