@@ -16,7 +16,7 @@ going to develop the project INDEPENDENT of the deadlines of the course, and fro
 |                                                                                                         | Estimate          |
 |---------------------------------------------------------------------------------------------------------|-------------------|
 | NC =  Estimated number of classes to be developed                                                       | 30                |
-| A = Estimated average size per class, in LOC                                                            | 150 LOC           |
+| A = Estimated average size per class, in LOC                                                            | 150LOC            |
 | S = Estimated size of project, in LOC (= NC * A)                                                        | 4500              |
 | E = Estimated effort, in person hours (here use productivity 10 LOC per person hour)                    | 450               |
 | C = Estimated cost, in euro (here use 1 person hour cost = 30 euro)                                     | 13500             |
@@ -40,20 +40,14 @@ going to develop the project INDEPENDENT of the deadlines of the course, and fro
 
 ###
 
-| Activity name               | Estimated effort (person hours) |
-|-----------------------------|---------------------------------|
-| Requirements                | 120                             |
-| functional requirements     | 76                              |
-| non functional requirements | 44                              |
-| Design                      | 88                              |
-| GUI prototype               | 44                              |
-| Coding                      | 468                             |
-| Entities development        | 104                             |
-| Service development         | 180                             |
-| Controllers development     | 104                             |
-| repositories development    | 20                              |
-| Code reviews                | 60                              |
-| Tests                       | 208                             |
+| Activity name | Estimated effort (person hours) |
+|---------------|---------------------------------|
+| Requirements  | 120                             |
+| Design        | 80                              |
+| GUI prototype | 48                              |
+| Documentation | 44                              |
+| Coding        | 460                             |
+| Testing       | 176                             |
 
 Insert here Gantt chart with above activities
 
@@ -64,6 +58,6 @@ for the difference
 
 |                                    | Estimated effort | Estimated duration |          
 |------------------------------------|------------------|--------------------|
-| estimate by size                   | 450              | 2.8 weeks          | This is the least accurate estimation because it only takes into account the implamantation implementation regardless other project aspects                     |
-| estimate by product decomposition  | 701              | 4.5 weeks          |
+| estimate by size                   | 450              | 2.8 weeks          | This is the least accurate estimation because it only takes into account the implementation implementation regardless other project aspects                     |
+| estimate by product decomposition  | 701              | 4.4 weeks          |
 | estimate by activity decomposition | 928              | 5.8 weeks          |

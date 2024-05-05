@@ -40,20 +40,14 @@ the project INDEPENDENT of the deadlines of the course, and from scratch
 
 ###
 
-| Activity name               | Estimated effort (person hours) |
-|-----------------------------|---------------------------------|
-| Requirements                | 100                             |
-| functional requirements     | 52                              |
-| non functional requirements | 48                              |
-| Design                      | 52                              |
-| GUI prototype               | 40                              |
-| Coding                      | 248                             |
-| Entities development        | 48                              |
-| Service development         | 48                              |
-| Controllers development     | 48                              |
-| repositories development    | 48                              |
-| Code reviews                | 56                              |
-| Tests                       | 152                             |
+| Activity name | Estimated effort (person hours) |
+|---------------|---------------------------------|
+| Requirements  | 80                              |
+| Design        | 48                              |
+| GUI prototype | 40                              |
+| Documentation | 36                              |
+| Coding        | 240                             |
+| Tests         | 148                             |
 
 ###
 
