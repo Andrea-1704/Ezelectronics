@@ -585,7 +585,7 @@ Story:
 |       2        |    system searches for product by code    |
 |       3        | system finds product and returns its info |
 
-### Delete product by code, UC8 - FR2.6
+### Delete product, UC8 - FR2.6
 
 | Actors Involved  |                Manager                |
 |:----------------:|:-------------------------------------:|

@@ -377,7 +377,7 @@ Story:
 |       1        | user asks to be logged out |
 |       2        |    User gets logged out    |
 
-### Current account info, UC4 - FR3.3
+### Current session info, UC4 - FR3.3
 
 | Actors Involved  |                    User                    |
 |:----------------:|:------------------------------------------:|
@@ -721,7 +721,7 @@ Story:
 |       1        | customer requests to delete their current cart |
 |       2        |        system deletes the customer cart        |
 
-### Payment of the cart, UC9
+### Pay for cart, UC9
 
 | Actors Involved  | Customer, Manager, Payment Service, Shipping Service, Google Places |
 |:----------------:|:-------------------------------------------------------------------:|
@@ -1039,7 +1039,7 @@ Story:
 | 3              | validate password with safety rules, rules not satisfied | 
 | 4              |                        Show error                        |
 
-### Create a new Store, UC13
+### Create new Store, UC13
 
 | Actors Involved  |                     Manager                     |
 |------------------|:-----------------------------------------------:| 
