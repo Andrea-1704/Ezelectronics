@@ -1026,7 +1026,7 @@ Story:
 
 ##### Scenario 12.10 (change password, not safe)
 
-| Scenario 12.11 |                                                          |
+| Scenario 12.10 |                                                          |
 |----------------|:--------------------------------------------------------:| 
 | Precondition   |                  User is authenticated                   |
 | Post condition |                  password not modified                   |
