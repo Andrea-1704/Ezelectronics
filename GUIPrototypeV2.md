@@ -37,12 +37,12 @@ Version: V1—description of EZElectronics in FUTURE form (as proposed by the te
 ### Change account info UC12: 
 ##### Scenario 12.4 (change email)
 ![Step 1](assets/img/V2/GUI/4.2-account-info.png)
-#### Scenario 12.9 (change email, wrong verification code)
-![Step 2](assets/img/V2/GUI/4.1-account-info.png)
 ##### Scenario 12.1 (change username)
 ![Step 1](assets/img/V2/GUI/4.3-account-info.png)
 ##### Scenario 12.5, 12.11 (change password, unsafe password)
 ![Step 1](assets/img/V2/GUI/4.4-account-info.png)
+#### Scenario 12.9 (change email, wrong verification code)
+![Step 2](assets/img/V2/GUI/4.1-account-info.png)
 
 
 ### Get products UC6:
@@ -107,7 +107,6 @@ Version: V1—description of EZElectronics in FUTURE form (as proposed by the te
 ![Manage store](assets/img/V2/GUI/14.1-manage-change-name.png)
 
 
-[//]: # (![Get owned products]&#40;assets/img/V2/GUI/16-store-product.png&#41;)
 
 ### Delete Store UC15:
 ![Delete store](assets/img/V2/GUI/15-delete-store.png)

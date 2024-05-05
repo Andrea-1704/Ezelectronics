@@ -895,13 +895,13 @@ Story:
 
 ### Change account details, UC12
 
-| Actors Involved  |                                                                      User                                                                       |
-|------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------:| 
-| Precondition     |                                                              User is authenticated                                                              |
-| Post condition   |                                                                                                                                                 |
-| Nominal Scenario |                                    Scenario 12.1, Scenario 12.2, Scenario 12.3, Scenario 12.4, Scenario 12.5                                    |
-| Variants         |                                                                  Scenario 12.7                                                                  |
-| Exceptions       | Scenario 12.8(username already exists), Scenario 12.9(non-existent email), Scenario 12.10(email already used), Scenario 12.11(invalid password) |
+| Actors Involved  |                                                                          User                                                                           |
+|------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------:| 
+| Precondition     |                                                                  User is authenticated                                                                  |
+| Post condition   |                                                                                                                                                         |
+| Nominal Scenario |                                        Scenario 12.1, Scenario 12.2, Scenario 12.3, Scenario 12.4, Scenario 12.5                                        |
+| Variants         |                                                                      Scenario 12.6                                                                      |
+| Exceptions       | Scenario 12.7(username already exists), Scenario 12.8(non-existent email), Scenario 12.9(email already used), Scenario 12.10(change password, not safe) |
 
 ##### Scenario 12.1 (change username) - FR6.1.1
 
@@ -918,7 +918,7 @@ Story:
 
 ##### Scenario 12.2 (change name) - FR6.1.2
 
-| Scenario 2.2   |                                                                       |
+| Scenario 12.2  |                                                                       |
 |----------------|:---------------------------------------------------------------------:| 
 | Precondition   |                         User is authenticated                         |
 | Post condition |                           User changed name                           |
@@ -931,7 +931,7 @@ Story:
 
 ##### Scenario 12.3 (change surname) - FR6.1.3
 
-| Scenario 2.3   |                                                                          |
+| Scenario 12.3  |                                                                          |
 |----------------|:------------------------------------------------------------------------:| 
 | Precondition   |                          User is authenticated                           |
 | Post condition |                           User changed surname                           |
@@ -944,7 +944,7 @@ Story:
 
 ##### Scenario 12.4 (change email) - FR6.1.4
 
-| Scenario 12.5  |                                                                        |
+| Scenario 12.4  |                                                                        |
 |----------------|:----------------------------------------------------------------------:| 
 | Precondition   |                         User is authenticated                          |
 | Post condition |                           User changed email                           |
@@ -960,8 +960,7 @@ Story:
 | 9              | system shows a message to User saying that the email has been modified |
 
 ##### Scenario 12.5 (change password) - FR6.1.5
-
-| Scenario 2.6   |                                                                           |
+| Scenario 12.5  |                                                                           |
 |----------------|:-------------------------------------------------------------------------:| 
 | Precondition   |                           User is authenticated                           |
 | Post condition |                           User changed password                           |
@@ -972,9 +971,8 @@ Story:
 | 4              |              system validates password with safety rules, ok              | 
 | 5              | system shows a message to User saying that the password has been modified |
 
-##### Scenario 12.7 (manager, change name) - FR6.1.2
-
-| Scenario 12.7  |                                                                  |
+##### Scenario 12.6 (manager, change name) - FR6.1.2
+| Scenario 12.6  |                                                                  |
 |----------------|:----------------------------------------------------------------:| 
 | Precondition   |                     Manager is authenticated                     |
 | Post condition |                       Manager changed name                       |
@@ -985,9 +983,8 @@ Story:
 | 4              |               system checks that name not null, ok               | 
 | 5              | Show a message to Manager saying that the name has been modified |
 
-##### Scenario 12.8 (change username, username already exists)
-
-| Scenario 12.8  |                                                                    |
+##### Scenario 12.7 (change username, username already exists)
+| Scenario 12.7  |                                                                    |
 |----------------|:------------------------------------------------------------------:| 
 | Precondition   |                       User is authenticated                        |
 | Post condition |                       username not modified                        |
@@ -998,9 +995,9 @@ Story:
 | 4              |    system get user by username(FR9.1), username alreasy exists     | 
 | 5              | system shows error to user saying that the username already exists |
 
-##### Scenario 12.9 (change email, incorrect verification code)
+##### Scenario 12.8 (change email, incorrect verification code)
 
-| Scenario 12.9  |                                                                           |
+| Scenario 12.8  |                                                                           |
 |----------------|:-------------------------------------------------------------------------:| 
 | Precondition   |                           User is authenticated                           |
 | Post condition |                            email not modified                             |
@@ -1015,9 +1012,9 @@ Story:
 | 8              |          system check verification key correctness, not correct           |
 | 9              | system shows error to user saying that the verification code is incorrect |
 
-##### Scenario 12.10 (change email, already existing )
+##### Scenario 12.9 (change email, already existing )
 
-| Scenario 12.10 |                                         |
+| Scenario 12.9  |                                         |
 |----------------|:---------------------------------------:| 
 | Precondition   |          User is authenticated          |
 | Post condition |           e-mail not modified           |
@@ -1027,7 +1024,7 @@ Story:
 | 3              |   search for email, already existing    | 
 | 4              |               Show error.               |
 
-##### Scenario 12.11 (change password, not safe)
+##### Scenario 12.10 (change password, not safe)
 
 | Scenario 12.11 |                                                          |
 |----------------|:--------------------------------------------------------:| 
@@ -1051,7 +1048,7 @@ Story:
 
 ##### Scenario 13.1 - FR5.1
 
-| Scenario 3.1   |                                                                                                                     |
+| Scenario 13.1  |                                                                                                                     |
 |----------------|:-------------------------------------------------------------------------------------------------------------------:| 
 | Precondition   |                                   User has an account and is logged in as Manager                                   |
 | Post condition |                                                New Store is created                                                 |
@@ -1064,7 +1061,7 @@ Story:
 
 ##### Scenario 13.2 (invalid address)
 
-| Scenario 3.2   |                                                                  |
+| Scenario 13.2  |                                                                  |
 |----------------|:----------------------------------------------------------------:| 
 | Precondition   |         User has an account and is logged in as Manager          |
 | Post condition |                   The new store is not created                   |
@@ -1087,7 +1084,7 @@ Story:
 
 ##### Scenario 14.1 - FR5.2
 
-| Scenario 4.1   |                                                                    |
+| Scenario 14.1  |                                                                    |
 |----------------|:------------------------------------------------------------------:| 
 | Precondition   |  User has an account, is logged in as Manager and owns the store   |
 | Post condition |                      Store's name is modified                      |
@@ -1136,7 +1133,7 @@ Story:
 
 ##### Scenario 15.1 - FR5.3
 
-| Scenario 5.1   |                                                                 |
+| Scenario 15.1  |                                                                 |
 |----------------|:---------------------------------------------------------------:| 
 | Precondition   | User has an account, is logged in as Manager and owns the store |
 | Post condition |                        Store is deleted                         |
