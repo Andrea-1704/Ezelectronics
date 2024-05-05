@@ -5,9 +5,10 @@ Authors:
 Date: 01-05-2025
 
 Version: V1 - CURRENT
-| Version number |                                     Change                                      |
-|:--------------:|:-------------------------------------------------------------------------------:|
-|      1.0       | Add GUI based on use cases |
+
+| Version number |           Change           |
+|:--------------:|:--------------------------:|
+|      1.0       | Add GUI based on use cases | 
 
 
 ### Create account, UC1
