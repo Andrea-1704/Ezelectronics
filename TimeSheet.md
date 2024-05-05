@@ -9,7 +9,7 @@ Count only effort spent on EZElectronics (so do not count effort spent in virtua
 These figures will not be used to evaluate neither the project nor the team, they are meant as practical application of basic project management.
 
 |      Week      | requirement engineering | design | coding | unit testing | integration testing | acceptance testing | management | git maven |
-| :------------: | :---------------------: | :----: | :----: | :----------: | :-----------------: | :----------------: | :--------: | :-------: |
+|:--------------:|:-----------------------:|:------:|:------:|:------------:|:-------------------:|:------------------:|:----------:|:---------:|
 |   Apr 8 - 14   |                         |        |        |              |                     |                    |            |           |
 |  Apr 15 - 21   |                         |        |        |              |                     |                    |            |           |
 |  Apr 22 - 28   |                         |        |        |              |                     |                    |            |           |
