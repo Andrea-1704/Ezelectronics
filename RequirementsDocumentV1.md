@@ -25,79 +25,10 @@ Version: V1—description of EZElectronics in CURRENT form (as received by teach
 - [Table of access rights](#table-of-access-rights)
 - [Functional and non functional requirements](#functional-and-non-functional-requirements)
     - [Functional Requirements](#functional-requirements)
-      - [FR1- Create account]
-        - [FR1.1- Create manager account]
-        - [FR1.2- Create customer account]
-      - [FR2- Manage products]
-        - [FR2.1- Create product]
-        - [FR2.2- Register arrivals]
-        - [FR2.3- Mark products as sold]
-        - [FR2.4- Find product by code]
-        - [FR2.5- Get all products]
-          - [FR2.5.1- Get all products and filter products based on category]
-          - [FR2.5.2- Get all products and filter products based on model]
-          - [FR2.5.3- Get all products and filter products based on sold status]
-        - [FR2.6- Delete product by code]
-      - [FR3- Authorization and authentication]
-        - [FR3.1- Login]
-        - [FR3.2- Logout]
-        - [FR3.3- Get current session info]
-      - [FR4- Cart Management]
-        - [FR4.1- View cart]
-        - [FR4.2- Add product to cart]
-        - [FR4.3- Delete product from cart]
-        - [FR4.4- Pay for cart]
-        - [FR4.5- List and access cart history]
-        - [FR4.6- Delete cart of logged in user]
-      - [FR5- List all users]
-        - [FR5.1- List all user and filter them based on role]
-        - [FR5.2- List user by username]
-      - [FR6- Delete user by username]
-  - [Non Functional Requirements](#non-functional-requirements)
+    - [Non Functional Requirements](#non-functional-requirements)
 - [Use case diagram and use cases](#use-case-diagram-and-use-cases)
     - [Use case diagram](#use-case-diagram)
     - [Use cases](#use-cases)
-      - [Create User, UC1 - FR1](#create-user-uc1---fr1)
-        - [Scenario 1.1](#scenario-11)
-        - [Scenario 1.2(create manager)](#scenario-12-create-manager)
-        - [Scenario 1.3 (username exists)](#scenario-13-username-exists)
-        - [Scenario 1.4 (invalid inputs)](#scenario-14-invalid-inputs)
-      - [Login, UC2 - FR3.1](#login-uc2---fr31)
-      - [Logout, UC3 - FR3.2](#logout-uc3---fr32)
-      - [Current session info, UC4 - FR3.3](#current-session-info-uc4---fr33)
-        - [Scenario 4.1 - FR3.3](#scenario-41---fr33)
-      - [Create Product , UC5 - FR2.1](#create-product--uc5---fr21)
-        - [Scenario 5.1](#scenario-51)
-        - [Scenario 5.2 (create product, without arrival date)](#scenario-52-create-product-without-arrival-date)
-        - [Scenario 5.3 (register arrivals) - FR2.2](#scenario-53-register-arrivals---fr22)
-        - [Scenario 5.4 (register arrivals, without arrival date)](#scenario-54-register-arrivals-without-arrival-date)
-        - [Scenario 5.5 (create product, already existing code)](#scenario-55-create-product-already-existing-code)
-        - [Scenario 5.6 (create product, arrival date after current date)](#scenario-56-create-product-arrival-date-after-current-date)
-        - [Scenario 5.7 (register arrivals, arrival date after current date)](#scenario-57-register-arrivals-arrival-date-after-current-date)
-      - [Mark product as sold, UC6 - FR2.3](#mark-product-as-sold-uc6---fr23)
-        - [Scenario 6.1](#scenario-61)
-        - [Scenario 6.2 (without selling date)](#scenario-62-without-selling-date)
-        - [Scenario 6.3 (product does not exist)](#scenario-63-product-does-not-exist)
-        - [Scenario 6.4 (selling date before arrival date)](#scenario-64-selling-date-before-arrival-date)
-        - [Scenario 6.5 (selling date after current date)](#scenario-65-selling-date-after-current-date)
-        - [Scenario 6.6 (product already sold)](#scenario-66-product-already-sold)
-      - [Get Products, UC7 - FR2.5](#get-products-uc7---fr25)
-        - [Scenario 7.1 (get all products)](#scenario-71-get-all-products)
-        - [Scenario 7.2 (get all products and filter based on category)](#scenario-72-get-all-products-and-filter-products-based-on-category)
-        - [Scenario 7.3 (get all products and filter based on model)](#scenario-73-get-all-products-and-filter-products-based-on-model)
-        - [Scenario 7.4 (get all products and filter based on category and sold status)](#scenario-74-get-all-products-and-filter-products-based-on-category-and-sold-status)
-        - [Scenario 7.5 (get all products and filter based on model and sold status)](#scenario-75-get-all-products-and-filter-products-based-on-model-and-sold-status)
-        - [Scenario 7.6 (product does not exist)](#scenario-76-product-does-not-exists)
-        - [Scenario 7.7 (get product by code)](#scenario-77-get-product-by-code---fr24)
-      - [Delete Product by code, UC8 - FR2.6](#delete-product-by-code-uc8---fr26)
-        - [Scenario 8.1](#scenario-81---fr26)
-        - [Scenario 8.2 (product does not exist)](#scenario-82-product-does-not-exist)
-      - [Manage Cart - UC9 - FR4.1](#scenario-9)
-      - [List all users - UC10 - FR5](#scenario)
-      - [Delete user by username - UC11 - FR6](#scenario-111---fr5)
-        - [Scenario 11.1](#scenario-111)
-        - [Scenario 11.2](#scenario-112)
-      - [Manage Users - UC12 - ]
 - [Glossary](#glossary)
 - [System Design](#system-design)
 - [Deployment Diagram](#deployment-diagram)
@@ -111,13 +42,12 @@ history of their past purchases.
 
 # Stakeholders
 
-|             Stakeholder name             |                                          Description                                          |
-|:----------------------------------------:|:---------------------------------------------------------------------------------------------:|
-|                   User                   |    Logged in person using the website. Each User could be either a customer or a manager.     |
-|                 Customer                 |     People using the website to buy electronics products from electronics store managers      |
-|                 Manager                  | People who are electronics store managers and showcase their products online and manage sales |
-|         EZElectronics Employees          |                      (TechAdmin, Investors, Legal team, Marketing Team)                       |
-
+|    Stakeholder name     |                                          Description                                          |
+|:-----------------------:|:---------------------------------------------------------------------------------------------:|
+|          User           |    Logged in person using the website. Each User could be either a customer or a manager.     |
+|        Customer         |     People using the website to buy electronics products from electronics store managers      |
+|         Manager         | People who are electronics store managers and showcase their products online and manage sales |
+| EZElectronics Employees |                      (TechAdmin, Investors, Legal team, Marketing Team)                       |
 
 # Context Diagram and interfaces
 
@@ -215,7 +145,7 @@ Story:
 | FR2.5.3 | Get all products and filter products based on sold status |
 |  FR2.6  |                  Delete product by code                   | 
 |   FR3   |             Authorization and authentication              | 
-|  FR3.1  |                          Login                            | 
+|  FR3.1  |                           Login                           | 
 |  FR3.2  |                          Logout                           | 
 |  FR3.3  |                 Get current session info                  | 
 |   FR4   |                      Cart Management                      | 
@@ -232,7 +162,7 @@ Story:
 |:----:|:----------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------:|
 | NFR1 |             Usability              |                                The user interface should be friendly enough so that the customers become able to navigate around the website and use all the functionalities under 15 minutes                                 | FR1,FR2, FR3, FR4 |
 | NFR2 |             Efficiency             |                                                                    The page should respond and be navigable in 0.5 second regardless of network latencies.                                                                    | FR1,FR2, FR3, FR4 |
-| NFR3 |             Efficiency             |                                                                                             Ram occupation shold be under 300 MB.                                                                                             | FR1,FR2, FR3, FR4 |
+| NFR3 |             Efficiency             |                                                                                            Ram occupation should be under 300 MB.                                                                                             | FR1,FR2, FR3, FR4 |
 | NFR4 |            Reliability             |                                                          Number of defects and failures during transactions should be less than 1% of the total amount of tentative.                                                          |       FR4.4       |
 | NFR5 |            Portability             | Should be available as a web app (and have proper browser support and possibility to be viewed on old machines) Universal/legacy browser compatibility: Chrome 123.0.0, Firefox 125.0.1,  Safari 17.4.1, Internet explorer 11 | FR1,FR2, FR3, FR4 |
 
@@ -256,56 +186,56 @@ Story:
 
 ##### Scenario 1.1 (create customer account) - FR1.2
 
-|  Scenario 1.1  |                                                                |
-|:--------------:|:--------------------------------------------------------------:|
-|  Precondition  |                   user does not have account                   |
-| Post condition |                   user has customer account                    |
-|     Step#      |                          Description                           |
-|       1        |                   user selects role customer                   |
-|       2        |   user enters username, name, surname and password             |
-|       3        | system searches for username in database, duplicate not found  |
-|       4        |     input fields are validated, constraints are satisfied      |
-|       5        |        FR1.1: customer account is created for the user         |
+|  Scenario 1.1  |                                                               |
+|:--------------:|:-------------------------------------------------------------:|
+|  Precondition  |                  user does not have account                   |
+| Post condition |                   user has customer account                   |
+|     Step#      |                          Description                          |
+|       1        |                  user selects role customer                   |
+|       2        |       user enters username, name, surname and password        |
+|       3        | system searches for username in database, duplicate not found |
+|       4        |     input fields are validated, constraints are satisfied     |
+|       5        |        FR1.1: customer account is created for the user        |
 
 ##### Scenario 1.2 (create manager account) - FR1.1
 
-|  Scenario 1.2  |                                                                |
-|:--------------:|:--------------------------------------------------------------:|
-|  Precondition  |                   user does not have account                   |
-| Post condition |                    user has manager account                    |
-|     Step#      |                          Description                           |
-|       1        |                   user selects role Manager                    |
-|       2        |        user enters username, name, surname and password        |
-|       3        |  system searches for username in database, duplicate not found |
-|       4        |      input fields are validated, constraints are satisfied     |
-|       5        |         FR1.2: manager account is created for the user         |
+|  Scenario 1.2  |                                                               |
+|:--------------:|:-------------------------------------------------------------:|
+|  Precondition  |                  user does not have account                   |
+| Post condition |                   user has manager account                    |
+|     Step#      |                          Description                          |
+|       1        |                   user selects role Manager                   |
+|       2        |       user enters username, name, surname and password        |
+|       3        | system searches for username in database, duplicate not found |
+|       4        |     input fields are validated, constraints are satisfied     |
+|       5        |        FR1.2: manager account is created for the user         |
 
 ##### Scenario 1.3 (username exists)
 
-|  Scenario 1.3  |                                                             |
-|:--------------:|:-----------------------------------------------------------:|
-|  Precondition  |                 user does not have account                  |
-| Post condition |                 user does not have account                  |
-|     Step#      |                        Description                          |
-|       1        |                 user selects role Manager                   |
-|       2        |      user enters username, name, surname and password       |
-|       3        |system searches for username in database, duplicate not found|
-|       4        |  system shows error saying that the username already exists |
-|       5        |           user remains in account creation page             |
+|  Scenario 1.3  |                                                               |
+|:--------------:|:-------------------------------------------------------------:|
+|  Precondition  |                  user does not have account                   |
+| Post condition |                  user does not have account                   |
+|     Step#      |                          Description                          |
+|       1        |                   user selects role Manager                   |
+|       2        |       user enters username, name, surname and password        |
+|       3        | system searches for username in database, duplicate not found |
+|       4        |  system shows error saying that the username already exists   |
+|       5        |             user remains in account creation page             |
 
 ##### Scenario 1.4 (invalid inputs)
 
-|  Scenario 1.4  |                                                                    |
-|:--------------:|:------------------------------------------------------------------:|
-|  Precondition  |                     user does not have account                     |
-| Post condition |                     user does not have account                     |
-|     Step#      |                            Description                             |
-|       1        |                     user selects role Manager                      |
-|       2        |          user enters username, name, surname and password          |
-|       3        |   system searches for username in database, duplicate not found    |
-|       4        |      system shows error saying that the username already exists    |
-|       5        |   show error saying that there are problems with the input fields  |
-|       6        |               user remains in account creation page                |
+|  Scenario 1.4  |                                                                 |
+|:--------------:|:---------------------------------------------------------------:|
+|  Precondition  |                   user does not have account                    |
+| Post condition |                   user does not have account                    |
+|     Step#      |                           Description                           |
+|       1        |                    user selects role Manager                    |
+|       2        |        user enters username, name, surname and password         |
+|       3        |  system searches for username in database, duplicate not found  |
+|       4        |   system shows error saying that the username already exists    |
+|       5        | show error saying that there are problems with the input fields |
+|       6        |              user remains in account creation page              |
 
 ### Login, UC2 - FR3.1
 
@@ -384,7 +314,7 @@ Story:
 | Actors Involved  |                                                                                        Manager                                                                                         |
 |:----------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 |   Precondition   |                                                                               user logged in as Manager                                                                                |
-|  Post condition  |                                                                                                                                                                                       |
+|  Post condition  |                                                                                                                                                                                        |
 | Nominal Scenario |                                                                                      Scenario 5.1                                                                                      |
 |     Variants     |                     Scenario 5.2 (create product, without arrival date), Scenario 5.3 (register arrivals), Scenario 5.4 (register arrivals, without arrival date)                      |
 |    Exceptions    | Scenario 5.5(create product, already existing code), Scenario 5.6(create product, arrival date after current date) , Scenario 5.7 (Register arrivals, arrival date after current date) |
@@ -397,9 +327,9 @@ Story:
 | Post condition |                                  product is created                                  |
 |     Step#      |                                     Description                                      |
 |       1        | user inserts product info: code, sellingPrice, model, category, details, arrivalDate |
-|       2        |                     system checks code, does not already exist                      |
-|       3        |                system checks arrival date, exists and is before current date                |
-|       4        |             system checks fields, they comply with constraints             |
+|       2        |                      system checks code, does not already exist                      |
+|       3        |            system checks arrival date, exists and is before current date             |
+|       4        |                  system checks fields, they comply with constraints                  |
 |       5        |                                FR2.1:product created                                 |
 
 ##### Scenario 5.2 (create product, without arrival date)
@@ -413,7 +343,7 @@ Story:
 |       2        |               system checks code, does not already exists               |
 |       3        |               system checks arrival date, does not exist                |
 |       4        |                system sets arrival date to current date                 |
-|       5        |      system checks fields, they comply with constraints       |
+|       5        |           system checks fields, they comply with constraints            |
 |       6        |                          FR2.1:product created                          |
 
 ##### Scenario 5.3 (register arrivals) - FR2.2
@@ -424,8 +354,8 @@ Story:
 | Post condition |                                       arrivals are registered                                       |
 |     Step#      |                                             Description                                             |
 |       1        | manager inserts arrival product info: model, sellingPrice, category, details, arrivalDate, quantity |
-|       3        |                       system checks arrival date, exists and is before current date                        |
-|       4        |                    system checks fields, they comply with constraints                     |
+|       3        |                    system checks arrival date, exists and is before current date                    |
+|       4        |                         system checks fields, they comply with constraints                          |
 |       5        |                                      FR2.2:arrival registered                                       |
 
 ##### Scenario 5.4 (register arrivals, without arrival date)
@@ -438,7 +368,7 @@ Story:
 |       1        | manager inserts arrival product info: model, category, sellingPrice, details, quantity |
 |       3        |                       system checks arrival date, does not exist                       |
 |       4        |                        system sets arrival date to current date                        |
-|       5        |              system checks fields, they comply with constraints              |
+|       5        |                   system checks fields, they comply with constraints                   |
 |       6        |                               FR2.2:arrivals registered                                |
 
 ##### Scenario 5.5 (create product, already existing code)
@@ -450,7 +380,7 @@ Story:
 |     Step#      |                                     Description                                      |
 |       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate |
 |       2        |                          system checks code, already exists                          |
-|       3        |              system shows error that the code already exists              |
+|       3        |                   system shows error that the code already exists                    |
 |       4        |                 product not added, user remains on add product page                  |
 
 ##### Scenario 5.6 (create product, arrival date after current date)
@@ -463,7 +393,7 @@ Story:
 |       1        | User inserts product info: code, sellingPrice, model, category, details, arrivalDate |
 |       2        |                     system checks code, does not already exists                      |
 |       3        |                  system checks arrival date, is after current date                   |
-|       4        |           system shows error that the arrivalDate is invalid            |
+|       4        |                  system shows error that the arrivalDate is invalid                  |
 |       5        |                 product not added, user remains on add product page                  |
 
 ##### Scenario 5.7 (register arrivals, arrival date after current date)
@@ -475,16 +405,16 @@ Story:
 |     Step#      |                                             Description                                             |
 |       1        | manager inserts arrival product info: model, category, sellingPrice, details, arrivalDate, quantity |
 |       3        |                    system checks arrival date, exists and is after current date                     |
-|       4        |                   system shows error describing that the arrivalDate is invalid                  |
+|       4        |                    system shows error describing that the arrivalDate is invalid                    |
 |       5        |                      arrivals not registered, user remains on add product page                      |
 
 ### Mark product as sold, UC6 - FR2.3
 
-| Actors Involved  |                                                                                  Manager                                                                                   |
-|:----------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|   Precondition   |                                                                         user logged in as manager                                                                          |
-|  Post condition  |                                                                                     -                                                                                      |
-| Nominal Scenario |                                                            Scenario 6.1 (product exists, valid selling date)                                                             |
+| Actors Involved  |                                                                                   Manager                                                                                   |
+|:----------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|   Precondition   |                                                                          user logged in as manager                                                                          |
+|  Post condition  |                                                                                      -                                                                                      |
+| Nominal Scenario |                                                              Scenario 6.1 (product exists, valid selling date)                                                              |
 |     Variants     |                                                                     Scenario 6.2 (without selling date)                                                                     |
 |    Exceptions    | Scenario 6.3 (product does not exist), Scenario 6.4 (selling date before arrival date), Scenario 6.5 (selling date after current date), Scenario 6.6 (product already sold) |
 
@@ -500,7 +430,7 @@ Story:
 |       3        |                        manager attempts to mark product as sold                        |
 |       4        |                  system checks if the selling date is provided, it is                  |
 |       5        | system checks if selling date is after arrival date and before the current date, it is |
-|       6        |             system checks that the product is already sold, it is not              |
+|       6        |               system checks that the product is already sold, it is not                |
 |       7        |                            FR2.3: product is marked as sold                            |
 
 ##### Scenario 6.2 (without selling date)
@@ -645,6 +575,7 @@ Story:
 |       3        | system does not find product and returns error message |
 
 ##### Scenario 7.7 (get product by code) - FR2.4
+
 |  Scenario 7.7  |                                           |
 |:--------------:|:-----------------------------------------:|
 |  Precondition  |              user logged in               |
