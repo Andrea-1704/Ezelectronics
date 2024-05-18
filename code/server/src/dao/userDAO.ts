@@ -100,5 +100,92 @@ class UserDAO {
 
         })
     }
+
+    getUsers() : Promise<User[]> {
+        return new Promise<User[]>( (resolve, reject) => {
+            try {
+                const sql = "SELECT * FROM users"
+                db.all(sql, [], (err: Error | null, rows: any[]) => {
+                    if (err) {
+                        reject(err)
+                        return
+                    }
+                    const users: User[] = rows.map(row => new User(row.username, row.name, row.surname, row.role, row.address, row.birthdate))
+                    resolve(users)
+                })
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    getUsersByRole(role: string) : Promise<User[]> {
+        return new Promise<User[]>( (resolve, reject) => {
+            try {
+                const sql = "SELECT * FROM users WHERE role = ?"
+                db.all(sql, [role], (err: Error | null, rows: any[]) => {
+                    if (err) {
+                        reject(err)
+                        return
+                    }
+                    const users: User[] = rows.map(row => new User(row.username, row.name, row.surname, row.role, row.address, row.birthdate))
+                    resolve(users)
+                })
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    deleteUser(username: string) : Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            try {
+                const sql = "DELETE FROM users WHERE username = ?"
+                db.run(sql, [username], (err: Error | null) => {
+                    if (err) {
+                        reject(err)
+                        return
+                    }
+                    resolve(true)
+                })
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    deleteAll() : Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            try {
+                const sql = "DELETE FROM users WHERE role != 'Admin'"
+                db.run(sql, [], (err: Error | null) => {
+                    if (err) {
+                        reject(err)
+                        return
+                    }
+                    resolve(true)
+                })
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    updateUserInfo(name: string, surname: string, address: string, birthdate: string, username: string) : Promise<User> {
+        return new Promise<User>((resolve, reject) => {
+            try {
+                const sql = "UPDATE users SET name = ?, surname = ?, address = ?, birthdate = ? WHERE username = ?"
+                db.run(sql, [name, surname, address, birthdate, username], (err: Error | null) => {
+                    if (err) {
+                        reject(err)
+                        return
+                    }
+                    this.getUserByUsername(username).then((user: User) => resolve(user)).catch((err: Error) => reject(err))
+                })
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
 }
 export default UserDAO
