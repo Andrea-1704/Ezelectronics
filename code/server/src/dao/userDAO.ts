@@ -101,6 +101,10 @@ class UserDAO {
         })
     }
 
+    /**
+     * gets all the users in the database
+     * @returns A Promise that resolves to an array of use objects
+     */
     getUsers() : Promise<User[]> {
         return new Promise<User[]>( (resolve, reject) => {
             try {
@@ -119,6 +123,11 @@ class UserDAO {
         })
     }
 
+    /**
+     * get all users in the database that have the specified role
+     * @param role
+     * @returns A Promise that resolves to an array of use objects
+     */
     getUsersByRole(role: string) : Promise<User[]> {
         return new Promise<User[]>( (resolve, reject) => {
             try {
@@ -137,6 +146,11 @@ class UserDAO {
         })
     }
 
+    /**
+     * delete a specific user from the database
+     * @param username
+     * @returns A promise that resolves to true if the user is deleted successfully
+     */
     deleteUser(username: string) : Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             try {
@@ -154,6 +168,10 @@ class UserDAO {
         })
     }
 
+    /**
+     * delete all non-admin users
+     * @returns A promise that resolves to true if all the non-admin users are deleted successfully
+     */
     deleteAll() : Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             try {
@@ -171,6 +189,15 @@ class UserDAO {
         })
     }
 
+    /**
+     * update user info
+     * @param name
+     * @param surname
+     * @param address
+     * @param birthdate
+     * @param username
+     * @returns a promise that resolves to the User that has been updated
+     */
     updateUserInfo(name: string, surname: string, address: string, birthdate: string, username: string) : Promise<User> {
         return new Promise<User>((resolve, reject) => {
             try {
