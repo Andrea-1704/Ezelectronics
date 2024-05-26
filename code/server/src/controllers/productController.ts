@@ -1,4 +1,5 @@
 import ProductDAO from "../dao/productDAO";
+import {Product} from "../components/product";
 
 /**
  * Represents a controller for managing products.
@@ -32,7 +33,7 @@ class ProductController {
      * @param changeDate The optional date in which the change occurred.
      * @returns A Promise that resolves to the new available quantity of the product.
      */
-    async changeProductQuantity(model: string, newQuantity: number, changeDate: string | null): Promise<number> /**:Promise<number> */ {
+    async changeProductQuantity(model: string, newQuantity: number, changeDate: string | null): Promise<number> {
         return this.dao.changeProductQuantity(model, newQuantity, changeDate)
     }
 
@@ -43,7 +44,7 @@ class ProductController {
      * @param sellingDate The optional date in which the sale occurred.
      * @returns A Promise that resolves to the new available quantity of the product.
      */
-    async sellProduct(model: string, quantity: number, sellingDate: string | null) /**:Promise<number> */ {
+    async sellProduct(model: string, quantity: number, sellingDate: string | null): Promise<number>  {
         return this.dao.sellProduct(model, quantity, sellingDate)
     }
 
@@ -54,7 +55,13 @@ class ProductController {
      * @param model An optional parameter. It can only be present if grouping is equal to "model" (in which case it must be present and not empty).
      * @returns A Promise that resolves to an array of Product objects.
      */
-    async getProducts(grouping: string | null, category: string | null, model: string | null) /**Promise<Product[]> */ {
+    async getProducts(grouping: string | null, category: string | null, model: string | null): Promise<Product[]>  {
+        if(grouping === "category" && !category){
+            throw new Error("Category is required")
+        }
+        if(grouping === "model" && !model){
+            throw new Error("Model is required")
+        }
         return this.dao.getProducts(grouping, category, model)
     }
 
@@ -65,7 +72,13 @@ class ProductController {
      * @param model An optional parameter. It can only be present if grouping is equal to "model" (in which case it must be present and not empty).
      * @returns A Promise that resolves to an array of Product objects.
      */
-    async getAvailableProducts(grouping: string | null, category: string | null, model: string | null) /**:Promise<Product[]> */ {
+    async getAvailableProducts(grouping: string | null, category: string | null, model: string | null): Promise<Product[]>{
+        if(grouping === "category" && !category){
+            throw new Error("Category is required")
+        }
+        if(grouping === "model" && !model){
+            throw new Error("Model is required")
+        }
         return this.dao.getAvailableProducts(grouping, category, model)
     }
 
@@ -73,7 +86,7 @@ class ProductController {
      * Deletes all products.
      * @returns A Promise that resolves to `true` if all products have been successfully deleted.
      */
-    async deleteAllProducts() /**:Promise <Boolean> */ {
+    async deleteAllProducts(): Promise<Boolean>  {
         return this.dao.deleteAllProducts()
     }
 
@@ -83,7 +96,7 @@ class ProductController {
      * @param model The model of the product to delete
      * @returns A Promise that resolves to `true` if the product has been successfully deleted.
      */
-    async deleteProduct(model: string) /**:Promise <Boolean> */ {
+    async deleteProduct(model: string): Promise<Boolean> /**:Promise <Boolean> */ {
         return this.dao.deleteProduct(model)
     }
 
