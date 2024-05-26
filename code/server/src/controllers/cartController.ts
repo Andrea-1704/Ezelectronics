@@ -11,7 +11,7 @@ class CartController {
     private dao: CartDAO
     private productDao: ProductDAO
     constructor() {
-        this.dao = new CartDAO(this.productDao)
+        this.dao = new CartDAO()
     }
 
     /**
