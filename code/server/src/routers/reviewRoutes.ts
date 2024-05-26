@@ -1,9 +1,8 @@
 import express, { Router } from "express"
 import ErrorHandler from "../helper"
-import { body, param, query } from "express-validator"
+import { body, param } from "express-validator"
 import ReviewController from "../controllers/reviewController"
 import Authenticator from "./auth"
-import { ProductReview } from "../components/review"
 
 class ReviewRoutes {
     private controller: ReviewController
@@ -36,6 +35,12 @@ class ReviewRoutes {
          */
         this.router.post(
             "/:model",
+            this.authenticator.isLoggedIn,
+            this.authenticator.isCustomer,
+            param("model").isString().notEmpty(),
+            body("score").isInt({ min: 1, max: 5 }),
+            body("comment").isString().notEmpty(),
+            this.errorHandler.validateRequest,
             (req: any, res: any, next: any) => this.controller.addReview(req.params.model, req.user, req.body.score, req.body.comment)
                 .then(() => res.status(200).send())
                 .catch((err: Error) => {
@@ -46,12 +51,15 @@ class ReviewRoutes {
 
         /**
          * Route for retrieving all reviews of a product.
-         * It requires the user to be authenticathed
+         * It requires the user to be authenticated
          * It expects a product model as a route parameter. This parameter must be a non-empty string and the product must exist.
          * It returns an array of reviews
          */
         this.router.get(
             "/:model",
+            this.authenticator.isLoggedIn,
+            param("model").isString().notEmpty(),
+            this.errorHandler.validateRequest,
             (req: any, res: any, next: any) => this.controller.getProductReviews(req.params.model)
                 .then((reviews: any/*ProductReview[]*/) => res.status(200).json(reviews))
                 .catch((err: Error) => next(err))
@@ -60,11 +68,17 @@ class ReviewRoutes {
         /**
          * Route for deleting the review made by a user for one product.
          * It requires the user to be authenticated and to be a customer
-         * It expects a product model as a route parameter. This parameter must be a non-empty string and the product must exist. The user must also have made a review for the product
+         * It expects a product model as a route parameter.
+         * This parameter must be a non-empty string and the product must exist.
+         * The user must also have made a review for the product
          * It returns a 200 status code.
          */
         this.router.delete(
             "/:model",
+            this.authenticator.isLoggedIn,
+            this.authenticator.isCustomer,
+            param("model").isString().notEmpty(),
+            this.errorHandler.validateRequest,
             (req: any, res: any, next: any) => this.controller.deleteReview(req.params.model, req.user)
                 .then(() => res.status(200).send())
                 .catch((err: Error) => {
@@ -81,6 +95,9 @@ class ReviewRoutes {
          */
         this.router.delete(
             "/:model/all",
+            this.authenticator.isLoggedIn,
+            this.authenticator.isAdminOrManager,
+            param("model").isString().notEmpty(),
             (req: any, res: any, next: any) => this.controller.deleteReviewsOfProduct(req.params.model)
                 .then(() => res.status(200).send())
                 .catch((err: Error) => next(err))
@@ -93,6 +110,8 @@ class ReviewRoutes {
          */
         this.router.delete(
             "/",
+            this.authenticator.isLoggedIn,
+            this.authenticator.isAdminOrManager,
             (req: any, res: any, next: any) => this.controller.deleteAllReviews()
                 .then(() => res.status(200).send())
                 .catch((err: Error) => next(err))
