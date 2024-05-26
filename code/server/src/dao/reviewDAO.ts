@@ -1,4 +1,6 @@
 import db from "../db/db";
+import {ProductReview} from "../components/review";
+import {User} from "../components/user";
 
 /**
  * A class that implements the interaction with the database for all review-related operations.
@@ -13,11 +15,11 @@ class ReviewDAO {
      * @param comment The comment made by the user
      * @returns A Promise that resolves to nothing
      */
-    addReview(model: string, user: any, score: number, comment: string) {
+    addReview(model: string, user: User, score: number, comment: string) {
         return new Promise<void>((resolve, reject) => {
             try {
                 const sql = "INSERT INTO review (model, user, score, comment, date) VALUES (?, ?, ?, ?, ?)"
-                db.run(sql, [model, user, score, comment, new Date()], (err: Error) => {
+                db.run(sql, [model, user.username, score, comment, new Date().toISOString().slice(0,10)], (err: Error) => {
                     if (err) {
                         reject(err)
                         return
@@ -39,7 +41,7 @@ class ReviewDAO {
         return new Promise<any>((resolve, reject) => {
             try {
                 const sql = "SELECT * FROM review WHERE model = ?"
-                db.all(sql, [model], (err: Error, rows: any[]) => {
+                db.all(sql, [model], (err: Error, rows: ProductReview[]) => {
                     if (err) {
                         reject(err)
                         return
@@ -50,7 +52,7 @@ class ReviewDAO {
                             user: row.user,
                             score: row.score,
                             comment: row.comment,
-                            date: new Date(row.date).toISOString().split("T")[0].split("-").reverse().join("-")
+                            date: row.date
                         }
                     })
                     resolve(reviews)
@@ -61,18 +63,17 @@ class ReviewDAO {
         })
 
     }
-
     /**
      * Deletes the review made by a user for a product
      * @param model The model of the product to delete the review from
      * @param user The user who made the review to delete
      * @returns A Promise that resolves to nothing
      */
-    deleteReview(model: string, user: any) {
+    deleteReview(model: string, user: User) {
         return new Promise<void>((resolve, reject) => {
             try {
                 const sql = "DELETE FROM review WHERE model = ? AND user = ?"
-                db.run(sql, [model, user], (err: Error) => {
+                db.run(sql, [model, user.username], (err: Error) => {
                     if (err) {
                         reject(err)
                         return
@@ -84,8 +85,6 @@ class ReviewDAO {
             }
         })
     }
-
-
     /**
      * Deletes all reviews for a product
      * @param model The model of the product to delete the reviews from
@@ -103,7 +102,6 @@ class ReviewDAO {
             })
         })
     }
-
     /**
      * Deletes all reviews of all products
      * @returns A Promise that resolves to nothing
@@ -117,6 +115,23 @@ class ReviewDAO {
                     return
                 }
                 resolve()
+            })
+        })
+    }
+    /**
+     * Checks if a user has reviewed a product
+     * @param model the model of the product
+     * @param username the username of the user
+     */
+    hasReviewed(model: string, username: string) {
+        const sql = "SELECT * FROM review WHERE model = ? AND user = ?"
+        return new Promise<boolean>((resolve, reject) => {
+            db.all(sql, [model, username], (err: Error, rows: ProductReview[]) => {
+                if (err) {
+                    reject(err)
+                    return
+                }
+                resolve(rows.length > 0)
             })
         })
     }
