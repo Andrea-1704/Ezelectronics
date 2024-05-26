@@ -5,7 +5,7 @@ import UserDAO from "../../src/dao/userDAO"
 jest.mock("../../src/dao/userDAO")
 
 //Example of a unit test for the createUser method of the UserController
-//The test checks if the method returns true when the DAO method returns true
+//The test checks if the method returns true when the DAO method returns true,
 //The test also expects the DAO method to be called once with the correct parameters
 
 test("It should return true", async () => {

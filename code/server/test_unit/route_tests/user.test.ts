@@ -1,4 +1,5 @@
 import { test, expect, jest } from "@jest/globals"
+// @ts-ignore
 import request from 'supertest'
 import { app } from "../../index"
 
@@ -6,7 +7,7 @@ import UserController from "../../src/controllers/userController"
 const baseURL = "/ezelectronics"
 
 //Example of a unit test for the POST ezelectronics/users route
-//The test checks if the route returns a 200 success code
+//The test checks if the route returns a 200 success code,
 //The test also expects the createUser method of the controller to be called once with the correct parameters
 
 test("It should return a 200 success code", async () => {
