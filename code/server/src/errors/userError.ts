@@ -106,4 +106,4 @@ class UnauthorizedUserError extends Error {
     }
 }
 
-export { UserNotFoundError, UserNotManagerError, UserNotCustomerError, UserAlreadyExistsError, UserNotAdminError, UserIsAdminError, UnauthorizedUserError }
+export { UserNotFoundError, UserNotManagerError, UserNotCustomerError, UserAlreadyExistsError, UserNotAdminError, UserIsAdminError, UnauthorizedUserError ,USER_NOT_FOUND,USER_NOT_MANAGER,USER_ALREADY_EXISTS,USER_NOT_CUSTOMER,USER_NOT_ADMIN,USER_IS_ADMIN,UNAUTHORIZED_USER }

@@ -49,12 +49,10 @@ class UserController {
      * The function has different behavior depending on the role of the user calling it:
      * - Admins can retrieve any user
      * - Other roles can only retrieve their own information
-     * @param user
      * @param username - The username of the user to retrieve. The user must exist.
      * @returns A Promise that resolves to the user with the specified username.
      */
-    async getUserByUsername(user: User, username: string): Promise<User>  {
-        if(user.username !== username && !Utility.isAdmin(user)) throw new UserNotAdminError()
+    async getUserByUsername(username: string): Promise<User>  {
         return this.dao.getUserByUsername(username)
     }
 
@@ -63,14 +61,10 @@ class UserController {
      * The function has different behavior depending on the role of the user calling it:
      * - Admins can delete any non-Admin user
      * - Other roles can only delete their own account
-     * @param user
      * @param username - The username of the user to delete. The user must exist.
      * @returns A Promise that resolves to true if the user has been deleted.
      */
-    async deleteUser(user: User, username: string) /**:Promise<Boolean> */ {
-        if(user.username !== username && !Utility.isAdmin(user)) throw new UserNotAdminError()
-        const userToDelete = await this.dao.getUserByUsername(username)
-        if(Utility.isAdmin(userToDelete) && userToDelete.username !== username) throw new UserIsAdminError()
+    async deleteUser(username: string) : Promise<Boolean> {
         return this.dao.deleteUser(username)
     }
 
@@ -95,7 +89,7 @@ class UserController {
      */
     async updateUserInfo(user: User, name: string, surname: string, address: string, birthdate: string, username: string): Promise<User> {
         if(user.username !== username && !Utility.isAdmin(user)) throw new UserNotAdminError()
-        const userToUpdate = await this.getUserByUsername(user, username)
+        const userToUpdate = await this.getUserByUsername(username)
         if(Utility.isAdmin(userToUpdate) && userToUpdate.username !== user.username) throw new UnauthorizedUserError()
         return this.dao.updateUserInfo(name, surname, address, birthdate, username)
     }

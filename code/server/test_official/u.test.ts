@@ -1,6 +1,4 @@
-import { describe, test, expect, beforeAll, afterAll } from "@jest/globals"
-import request from 'supertest'
-import { app } from "../index"
+import { test, expect } from "@jest/globals"
 import db from "../src/db/db"
 
 test("1", () => {

@@ -4,6 +4,8 @@ import { body, param } from "express-validator"
 import { User } from "../components/user"
 import ErrorHandler from "../helper"
 import UserController from "../controllers/userController"
+import {Utility} from "../utilities";
+import {UserIsAdminError, UserNotAdminError} from "../errors/userError";
 
 /**
  * Represents a class that defines the routes for handling users.
@@ -111,9 +113,14 @@ class UserRoutes {
             this.authService.isLoggedIn,
             param("username").isString().isLength({ min: 1 }),
             this.errorHandler.validateRequest,
-            (req: any, res: any, next: any) => this.controller.getUserByUsername(req.user, req.params.username)
-                .then((user: any /**User */) => res.status(200).json(user))
-                .catch((err) => next(err))
+            (req: any, res: any, next: any) => {
+                if(req.user.username !== req.params.username && !Utility.isAdmin(req.user)) {
+                    throw new UserNotAdminError()
+                }
+                this.controller.getUserByUsername(req.params.username)
+                    .then((user: any /**User */) => res.status(200).json(user))
+                    .catch((err) => next(err))
+            }
         )
 
         /**
@@ -127,9 +134,14 @@ class UserRoutes {
             this.authService.isLoggedIn,
             param("username").isString().isLength({ min: 1 }),
             this.errorHandler.validateRequest,
-            (req: any, res: any, next: any) => this.controller.deleteUser(req.user, req.params.username)
-                .then(() => res.status(200).end())
-                .catch((err: any) => next(err))
+            async (req: any, res: any, next: any) => {
+                if(req.user.username !== req.params.username && !Utility.isAdmin(req.user)) throw new UserNotAdminError()
+                const userToDelete = await this.controller.getUserByUsername(req.params.username)
+                if(Utility.isAdmin(userToDelete) && userToDelete.username !== req.params.username) throw new UserIsAdminError()
+                this.controller.deleteUser(req.params.username)
+                    .then(() => res.status(200).end())
+                    .catch((err: any) => next(err))
+            }
         )
 
         /**

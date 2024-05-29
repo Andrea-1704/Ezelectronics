@@ -1,96 +1,286 @@
-import { describe, test, expect, beforeAll, afterAll, jest } from "@jest/globals"
-
-import UserController from "../../src/controllers/userController"
+import { describe, test, expect, jest, beforeEach } from "@jest/globals"
 import UserDAO from "../../src/dao/userDAO"
 // @ts-ignore
 import crypto from "crypto"
-import db from "../../src/db/db"
-import { Database } from "sqlite3"
-import {User} from "../../src/components/user";
-import {UserNotFoundError} from "../../src/errors/userError";
+import { UserAlreadyExistsError, UserNotFoundError } from "../../src/errors/userError";
+import { setupDatabase, teardownDatabase, insertUser } from '../../src/db/testdb';
+
 
 jest.mock("crypto")
-jest.mock("../../src/db/db.ts")
+jest.mock("../../src/db/testdb.ts")
 
 //Example of unit test for the createUser method
 //It mocks the database run method to simulate a successful insertion and the crypto randomBytes and scrypt methods,
 //to simulate the hashing of the password,
 //It then calls the createUser method and expects it to resolve true
 
-test("It should resolve true", async () => {
-    const userDAO = new UserDAO()
-    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
-        callback(null)
-        return {} as Database
+// test("It should resolve true", async () => {
+//     const userDAO = new UserDAO()
+//     const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+//         callback(null)
+//         return {} as Database
+//     });
+//     const mockRandomBytes = jest.spyOn(crypto, "randomBytes").mockImplementation((size) => {
+//         return (Buffer.from("salt"))
+//     })
+//     const mockScrypt = jest.spyOn(crypto, "scrypt").mockImplementation(async (password, salt, keylen) => {
+//         return Buffer.from("hashedPassword")
+//     })
+//     const result = await userDAO.createUser("username", "name", "surname", "password", "role")
+//     expect(result).toBe(true)
+//     mockRandomBytes.mockRestore()
+//     mockDBRun.mockRestore()
+//     mockScrypt.mockRestore()
+//
+// })
+
+
+let dao : UserDAO;
+
+beforeEach(async () => {
+    await setupDatabase();
+    dao = new UserDAO();
+});
+
+// afterEach(async () => {
+//     await teardownDatabase();
+// });
+
+describe("UserDAO", () => {
+
+    test("getIsUserAuthenticated - correct credentials", async () => {
+        const user = {
+            username: "test_user",
+            name: "Test",
+            surname: "User",
+            role: "Manager",
+            password: crypto.scryptSync("password", Buffer.from("salt", "utf8"), 16),
+            salt: Buffer.from("salt", "utf8"),
+            address: "Test Address",
+            birthdate: "1990-01-01"
+        };
+        await insertUser(user);
+
+        const isAuthenticated = await dao.getIsUserAuthenticated("test_user", "password");
+        expect(isAuthenticated).toBe(true);
     });
-    const mockRandomBytes = jest.spyOn(crypto, "randomBytes").mockImplementation((size) => {
-        return (Buffer.from("salt"))
-    })
-    const mockScrypt = jest.spyOn(crypto, "scrypt").mockImplementation(async (password, salt, keylen) => {
-        return Buffer.from("hashedPassword")
-    })
-    const result = await userDAO.createUser("username", "name", "surname", "password", "role")
-    expect(result).toBe(true)
-    mockRandomBytes.mockRestore()
-    mockDBRun.mockRestore()
-    mockScrypt.mockRestore()
 
-})
+    test("getIsUserAuthenticated - incorrect username", async () => {
+        const isAuthenticated = await dao.getIsUserAuthenticated("wrong_user", "password");
+        expect(isAuthenticated).toBe(false);
+    });
 
-//to be checked whether these are to be written on dao layer or not
-//test to be written:
-//login
-//setup
-//creates user (any role)
-//test1. try login with correct password verify true response
-//test2. try login but with a different password verify error type
-//test3. try login with a non-existent username, verify not found error
-//test4. already logged IDK how to test this one actually login twice to see what happens
+    test("getIsUserAuthenticated - incorrect password", async () => {
+        const user = {
+            username: "test_user",
+            name: "Test",
+            surname: "User",
+            role: "Manager",
+            password: crypto.scryptSync("password", Buffer.from("salt", "utf8"), 16),
+            salt: Buffer.from("salt", "utf8"),
+            address: "Test Address",
+            birthdate: "1990-01-01"
+        };
+        await insertUser(user);
 
+        const isAuthenticated = await dao.getIsUserAuthenticated("test_user", "wrong_password");
+        expect(isAuthenticated).toBe(false);
+    });
 
-//logout
-//setup
-//creates user (any role)
-//login
-//test1. try logout, verify success
-//test2. logout twice see what happens
+    test("createUser - successful creation", async () => {
+        const isCreated = await dao.createUser("test_user", "Test", "User", "password", "Manager");
+        expect(isCreated).toBe(true);
+    });
 
-//create account
-//test1. successfully login, try out maybe with different roles
-//test2. username already in user, verify error
-//test3. empty parameters (although this should be checked on routes test and not here)
+    test("createUser - user already exists", async () => {
+        await dao.createUser("test_user", "Test", "User", "password", "Manager");
 
+        await expect(dao.createUser("test_user", "Test", "User", "password", "Manager")).rejects.toThrow(UserAlreadyExistsError);
+    });
 
-//view users'
-//setup
-//create a bunch of users with different roles
-//login as admin/ or customer or manager
-//test1 query a username that already exists verify the user data
-//test2 query a username that does not exist and get error?
-//customer/manager tests
-//test1. try to see another user's info, should get error
-//test2. try to see your own data, should verify the data
-//test3. try to see the information of all users, should get not admin error
-//test4. try to see information based on role, should get not admin error
-//try
-//admin
-//test5 try to see information based on role that does not exist, get error saying which fields are correct or whatnot
-//test6 get users by role, verify mocked users with the response
-//test7 get the information of all users and verify it with the ones inserted
+    test("getUserByUsername - user exists", async () => {
+        const user = {
+            username: "test_user",
+            name: "Test",
+            surname: "User",
+            role: "Manager",
+            password: crypto.scryptSync("password", Buffer.from("salt", "utf8"), 16),
+            salt: Buffer.from("salt", "utf8"),
+            address: "Test Address",
+            birthdate: "1990-01-01"
+        };
+        await insertUser(user);
 
+        const fetchedUser = await dao.getUserByUsername("test_user");
+        expect(fetchedUser.username).toBe(user.username);
+        expect(fetchedUser.name).toBe(user.name);
+    });
 
-//delete one user
-//setup1
-//login as customer or manager
-//test1.
-// try to delete a username that is not yours get error
-//test2.
-// try to delete your own account get success verify it
+    test("getUserByUsername - user does not exist", async () => {
+        await expect(dao.getUserByUsername("non_existent_user")).rejects.toThrow(UserNotFoundError);
+    });
 
+    test("getUsers - fetch all users", async () => {
+        const user1 = {
+            username: "test_user1",
+            name: "Test1",
+            surname: "User1",
+            role: "Manager",
+            password: crypto.scryptSync("password", Buffer.from("salt1", "utf8"), 16),
+            salt: Buffer.from("salt1", "utf8"),
+            address: "Test Address1",
+            birthdate: "1990-01-01"
+        };
 
-//setup2 as admin
-//test1 try to delete a username that is not admin, get success verify
-//test2 try to delete non-existent username
-//test3 try to delete a username associated to an admin and get error
+        const user2 = {
+            username: "test_user2",
+            name: "Test2",
+            surname: "User2",
+            role: "Customer",
+            password: crypto.scryptSync("password", Buffer.from("salt2", "utf8"), 16),
+            salt: Buffer.from("salt2", "utf8"),
+            address: "Test Address2",
+            birthdate: "1992-01-01"
+        };
 
+        await insertUser(user1);
+        await insertUser(user2);
 
+        const users = await dao.getUsers();
+        expect(users).toHaveLength(2);
+    });
+
+    test("getUsersByRole - fetch users by role", async () => {
+        const user1 = {
+            username: "test_user1",
+            name: "Test1",
+            surname: "User1",
+            role: "Manager",
+            password: crypto.scryptSync("password", Buffer.from("salt1", "utf8"), 16),
+            salt: Buffer.from("salt1", "utf8"),
+            address: "Test Address1",
+            birthdate: "1990-01-01"
+        };
+
+        const user2 = {
+            username: "test_user2",
+            name: "Test2",
+            surname: "User2",
+            role: "Customer",
+            password: crypto.scryptSync("password", Buffer.from("salt2", "utf8"), 16),
+            salt: Buffer.from("salt2", "utf8"),
+            address: "Test Address2",
+            birthdate: "1992-01-01"
+        };
+
+        const user3 = {
+            username: "test_user3",
+            name: "Test3",
+            surname: "User3",
+            role: "Manager",
+            password: crypto.scryptSync("password", Buffer.from("salt3", "utf8"), 16),
+            salt: Buffer.from("salt3", "utf8"),
+            address: "Test Address3",
+            birthdate: "1993-01-01"
+        };
+
+        await insertUser(user1);
+        await insertUser(user2);
+        await insertUser(user3);
+
+        const managers = await dao.getUsersByRole("Manager");
+        expect(managers).toHaveLength(2);
+        managers.forEach(user => expect(user.role).toBe("Manager"));
+
+        const customers = await dao.getUsersByRole("Customer");
+        expect(customers).toHaveLength(1);
+        customers.forEach(user => expect(user.role).toBe("Customer"));
+    });
+
+    test("deleteUser - user is deleted successfully", async () => {
+        const user = {
+            username: "test_user",
+            name: "Test",
+            surname: "User",
+            role: "Manager",
+            password: crypto.scryptSync("password", Buffer.from("salt", "utf8"), 16),
+            salt: Buffer.from("salt", "utf8"),
+            address: "Test Address",
+            birthdate: "1990-01-01"
+        };
+        await insertUser(user);
+
+        const isDeleted = await dao.deleteUser("test_user");
+        expect(isDeleted).toBe(true);
+
+        await expect(dao.getUserByUsername("test_user")).rejects.toThrow(UserNotFoundError);
+    });
+
+    test("deleteAll - all non-admin users are deleted", async () => {
+        const adminUser = {
+            username: "admin_user",
+            name: "Admin",
+            surname: "User",
+            role: "Admin",
+            password: crypto.scryptSync("admin_password", Buffer.from("admin_salt", "utf8"), 16),
+            salt: Buffer.from("admin_salt", "utf8"),
+            address: "Admin Address",
+            birthdate: "1985-01-01"
+        };
+
+        const managerUser = {
+            username: "manager_user",
+            name: "Manager",
+            surname: "User",
+            role: "Manager",
+            password: crypto.scryptSync("password", Buffer.from("salt", "utf8"), 16),
+            salt: Buffer.from("salt", "utf8"),
+            address: "Manager Address",
+            birthdate: "1990-01-01"
+        };
+
+        const customerUser = {
+            username: "customer_user",
+            name: "Customer",
+            surname: "User",
+            role: "Customer",
+            password: crypto.scryptSync("password", Buffer.from("salt", "utf8"), 16),
+            salt: Buffer.from("salt", "utf8"),
+            address: "Customer Address",
+            birthdate: "1990-01-01"
+        };
+
+        await insertUser(adminUser);
+        await insertUser(managerUser);
+        await insertUser(customerUser);
+
+        const isDeleted = await dao.deleteAll();
+        expect(isDeleted).toBe(true);
+
+        const users = await dao.getUsers();
+        expect(users).toHaveLength(1);
+        expect(users[0].role).toBe("Admin");
+    });
+
+    test("updateUserInfo - update user information", async () => {
+        const user = {
+            username: "test_user",
+            name: "Test",
+            surname: "User",
+            role: "Manager",
+            password: crypto.scryptSync("password", Buffer.from("salt", "utf8"), 16),
+            salt: Buffer.from("salt", "utf8"),
+            address: "Test Address",
+            birthdate: "1990-01-01"
+        };
+        await insertUser(user);
+
+        const updatedUser = await dao.updateUserInfo("Updated Name", "Updated Surname", "Updated Address", "1990-01-02", "test_user");
+
+        expect(updatedUser.name).toBe("Updated Name");
+        expect(updatedUser.surname).toBe("Updated Surname");
+        expect(updatedUser.address).toBe("Updated Address");
+        expect(updatedUser.birthdate).toBe("1990-01-02");
+    });
+
+});
