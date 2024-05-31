@@ -21,7 +21,7 @@ class CartDAO {
    * If the product is not in the cart, it should be added with a quantity of 1.
    * If there is no current unpaid cart in the database, then a new cart should be created.
    * @param user - The user to whom the product should be added.
-   * @param model - The model of the product to add.
+   * @param model 
    * @returns A Promise that resolves to `true` if the product was successfully added.
    */
   async addToCart(user: User, model: string): Promise<Boolean> {
@@ -31,6 +31,7 @@ class CartDAO {
     }
     const hasCart = await this.hasCart(user)
     if (!hasCart) {
+
       await this.createCart(user)
     }
     const cart = await this.getCart(user)
