@@ -155,6 +155,50 @@ this.router.get(
         
           }, 10000); 
   });
+  describe("GET /history", () => {
+    // Test per il caso di successo
+    test("It returns the cart history for the logged in user with status 200", async() => {
+      const user = { username: "customer" };
+      const carts = [{ /* dati del carrello */ }];
+  
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        req.user = user;
+        return next();
+      });
+      jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.spyOn(CartController.prototype, "getCustomerCarts").mockResolvedValueOnce(carts);
+  
+      const response = await request(app).get(baseURL + "/history");
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(carts);
+      expect(CartController.prototype.getCustomerCarts).toHaveBeenCalledWith(user);
+    });
+  
+    // Test per il caso di errore
+    test("It handles errors and returns the appropriate error status", async() => {
+      const user = { username: "customer" };
+      const error = new Error("Errore di test");
+      const next = jest.fn();
+  
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        req.user = user;
+        return next();
+      });
+      jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.spyOn(CartController.prototype, "getCustomerCarts").mockRejectedValueOnce(error);
+  
+      const response = await request(app).get(baseURL + "/history");
+      // Assumi che il tuo middleware di gestione degli errori imposti uno stato specifico per questo tipo di errore
+      expect(response.status).not.toBe(200);
+      // Verifica che il middleware di gestione degli errori sia stato chiamato
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+  
         
 
 
