@@ -7,6 +7,7 @@ import request from 'supertest';
 import { app } from "../../index";
 import ErrorHandler from "../../src/helper"
 import { Category, Product } from "../../src/components/product";
+import { beforeEach } from "node:test";
 const baseURL = "/ezelectronics";
 
 let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
@@ -196,7 +197,36 @@ this.router.get(
     });
   });
   
-        
+  describe("DELETE /products/:model", () => {
+    const user = { username: "customer" };
+    const model = "iPhone13";
+  
+    beforeEach(() => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        req.user = user;
+        return next();
+      });
+      jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.spyOn(CartController.prototype, "removeProductFromCart").mockResolvedValueOnce(true);
+    });
+  
+    test("It removes a product from the cart for the logged in user", async() => {
+      const response = await request(app).delete(`${baseURL}/products/${model}`);
+      expect(response.status).toBe(200);
+      expect(CartController.prototype.removeProductFromCart).toHaveBeenCalledWith(user, model);
+    });
+  
+    test("It handles errors when removing a product from the cart", async() => {
+      const errorMessage = "Product not found";
+      jest.spyOn(CartController.prototype, "removeProductFromCart").mockRejectedValueOnce(new Error(errorMessage));
+  
+      const response = await request(app).delete(`${baseURL}/products/${model}`);
+      expect(response.status).not.toBe(200);
+    });
+  });
+   
 
 
 
