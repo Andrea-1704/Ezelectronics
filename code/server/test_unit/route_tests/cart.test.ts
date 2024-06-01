@@ -13,6 +13,27 @@ let testCart = new Cart(0, "customer", false, "17-04-2002", 0, []);
 jest.mock("../../src/controllers/cartController")
 jest.mock("../../src/routers/auth")
 
+
+describe("Route unit tests", () => {
+  describe("GET /carts", () => {
+    test("It returns the cart of the logged in user", async() => {
+      jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+        return next();
+      })
+      jest.spyOn(CartController.prototype, "getCart").mockResolvedValueOnce(testCart);
+      
+      //We send a request to the route we are testing. We are in a situation where:
+            //  - The user is an Customer (= the Authenticator logic is mocked to be correct)
+            //  - The getCart function returns the cart of the user (= the cartController logic is mocked to be correct)
+            //We expect the 'getCart' function to have been called, the route to return a 200 success code and the expected cart of the
+            //customer
+      const response = await request(app).get(baseURL + "/carts")
+      expect(response.status).toBe(200)
+      expect(CartController.prototype.getCart).toHaveBeenCalled()
+      expect(response.body).toEqual(testCart)
+    }, 10000)
+  })
+
 /*
 test this function:
 this.router.get(
@@ -29,24 +50,7 @@ this.router.get(
         )
 */
 
-describe("Route unit tests", () => {
-  describe("GET /cart", () => {
-    test("It returns the cart of the logged in user", async() => {
-      jest.spyOn(CartController.prototype, "getCart").mockResolvedValueOnce(testCart);
-      jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
-        return next();
-      })
-      //We send a request to the route we are testing. We are in a situation where:
-            //  - The user is an Customer (= the Authenticator logic is mocked to be correct)
-            //  - The getCart function returns the cart of the user (= the cartController logic is mocked to be correct)
-            //We expect the 'getCart' function to have been called, the route to return a 200 success code and the expected cart of the
-            //customer
-      const response = await request(app).get(baseURL + "/carts")
-      expect(response.status).toBe(200)
-      expect(CartController.prototype.getCart).toHaveBeenCalled()
-      expect(response.body).toEqual(testCart)
-    })
-  })
+
 })
 
 /*
