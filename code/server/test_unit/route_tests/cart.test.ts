@@ -54,9 +54,9 @@ this.router.get(
                 })
         )
 */
-describe("POST /carts", () => {
+/*describe("POST /carts", () => {
   test("It adds a product to a cart", async() => {
-    const model = { model: "iPhone13" }
+    const req = { model: "iPhone13" }
     jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
       return next();
     })
@@ -73,15 +73,48 @@ describe("POST /carts", () => {
     })
     jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(true);
     
-    const response = await request(app).post(baseURL + "/carts").send(model)
+    const response = await request(app).post(baseURL + "/carts").send(req)
     expect(response.status).toBe(200)
     expect(CartController.prototype.addToCart).toHaveBeenCalled()
     //expect(response.body).toEqual(testCart)
     //sellingPrice: number, model: string, category: Category, arrivalDate: string | null, details: string | null, quantity: number
-    expect(CartController.prototype.addToCart).toHaveBeenCalledWith(model)
+    expect(CartController.prototype.addToCart).toHaveBeenCalledWith(req.model)
+
 
     }, 10000);
-  })
+  })*/
+  describe("POST /carts", () => {
+    test("It adds a product to a cart", async() => {
+      // Simula un oggetto `req` che includa `user` e `body`
+      const user = { username: "customer" }; // Assumi che questo sia l'utente loggato
+      const model = "iPhone13";
+      
+      // Setup mock
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        req.user = user; // Aggiungi l'utente al req
+        return next();
+      });
+      jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.mock('express-validator', () => ({
+        body: jest.fn().mockImplementation(() => ({
+            isString: () => ({ notEmpty: () => ({}) }),
+        })),
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(true);
+      
+      const response = await request(app).post(baseURL + "/carts").send({ model });
+      expect(response.status).toBe(200);
+      expect(CartController.prototype.addToCart).toHaveBeenCalled();
+      expect(CartController.prototype.addToCart).toHaveBeenCalledWith(user, model);
+  
+    }, 10000);
+  });
+  
   /*
   this.router.post(
             "/",
