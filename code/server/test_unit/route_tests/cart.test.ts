@@ -263,7 +263,41 @@ this.router.get(
     });
   });
   
-
+  describe("DELETE /", () => {
+    test("It deletes all carts", async() => {
+      // Setup dei mock per i middleware di autenticazione
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.spyOn(CartController.prototype, "deleteAllCarts").mockResolvedValueOnce(true);
+  
+      // Esegui la richiesta DELETE
+      const response = await request(app).delete(baseURL+"/carts");
+      expect(response.status).toBe(200);
+      expect(CartController.prototype.deleteAllCarts).toHaveBeenCalled();
+    });
+  
+    test("It handles errors when deleting all carts", async() => {
+      const error = new Error("Errore durante l'eliminazione dei carrelli");
+  
+      // Setup dei mock per i middleware di autenticazione
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.spyOn(CartController.prototype, "deleteAllCarts").mockRejectedValueOnce(error);
+  
+      // Esegui la richiesta DELETE
+      const response = await request(app).delete(baseURL+"/carts");
+      expect(response.status).not.toBe(200);
+    });
+  });
+  
 
 
 })
