@@ -1,6 +1,7 @@
 import { describe, test, expect, beforeAll, afterAll, jest } from "@jest/globals"
 import {User, Role} from "../../src/components/user";
 import { Cart } from "../../src/components/cart";
+import CartController from "../../src/controllers/cartController";
 
 let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
 let testCart = new Cart(0, "customer", false, "17-04-2002", 0, []);
@@ -27,7 +28,7 @@ this.router.get(
 describe("Route unit tests", () => {
   describe("GET /cart", () => {
     test("It returns the cart of the logged in user", async() => {
-      jest.spyOn(UserController.prototype, "getUsers").mockResolvedValueOnce([testAdmin, testCustomer])
+      jest.spyOn(CartController.prototype, "getCart").mockResolvedValueOnce([testAdmin, testCustomer])
     })
   })
 })

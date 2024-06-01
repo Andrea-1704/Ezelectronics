@@ -88,11 +88,25 @@ class UserController {
      * @returns A Promise that resolves to the updated user
      */
     async updateUserInfo(user: User, name: string, surname: string, address: string, birthdate: string, username: string): Promise<User> {
-        if(user.username !== username && !Utility.isAdmin(user)) throw new UserNotAdminError()
-        const userToUpdate = await this.getUserByUsername(username)
-        if(Utility.isAdmin(userToUpdate) && userToUpdate.username !== user.username) throw new UnauthorizedUserError()
-        return this.dao.updateUserInfo(name, surname, address, birthdate, username)
+        if(user.username !== username && !Utility.isAdmin(user)) throw new UserNotAdminError();
+        const userToUpdate = await this.getUserByUsername(username);
+    
+        //We consider the change only if fields are not empty:
+        const updatedName = name || userToUpdate.name;
+        const updatedSurname = surname || userToUpdate.surname;
+        const updatedAddress = address || userToUpdate.address;
+        const updatedBirthdate = birthdate || userToUpdate.birthdate;
+    
+        // Aggiorna le informazioni dell'utente solo se sono state fornite nuove informazioni
+        return this.dao.updateUserInfo(
+            updatedName,
+            updatedSurname,
+            updatedAddress,
+            updatedBirthdate,
+            username
+        );
     }
+    
 }
 
 export default UserController
