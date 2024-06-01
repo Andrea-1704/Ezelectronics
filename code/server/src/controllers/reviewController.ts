@@ -22,13 +22,20 @@ class ReviewController {
      * @param comment The comment made by the user
      * @returns A Promise that resolves to nothing
      */
-    async addReview(model: string, user: User, score: number, comment: string): Promise<void> {
-        const product = await this.productDao.getProductByModel(model)
-        if(!product) throw new ProductNotFoundError()
-        const hasReviewed = await this.dao.hasReviewed(model, user.username)
-        if(hasReviewed) throw new ExistingReviewError()
-        return this.dao.addReview(model, user, score, comment)
+    async addReview(model: string, user: User, score: number, comment?: string): Promise<void> {
+        const product = await this.productDao.getProductByModel(model);
+        if (!product) throw new ProductNotFoundError();
+        const hasReviewed = await this.dao.hasReviewed(model, user.username);
+        if (hasReviewed) throw new ExistingReviewError();
+    
+        // comment are not mandatory:
+        const safeComment = comment || ' ';
+    
+        return this.dao.addReview(model, user, score, safeComment);
     }
+    
+    
+    
 
     /**
      * Returns all reviews for a product
