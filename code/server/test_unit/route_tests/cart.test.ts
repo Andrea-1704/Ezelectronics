@@ -55,7 +55,7 @@ this.router.get(
         )
 */
 describe("POST /carts", () => {
-  test("It returns the cart of the logged in user", async() => {
+  test("It adds a product to a cart", async() => {
     jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
       return next();
     })
