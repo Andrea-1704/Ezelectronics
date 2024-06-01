@@ -227,6 +227,43 @@ this.router.get(
   });
    
 
+  describe("DELETE /current", () => {
+    test("It clears the cart for the logged in user", async() => {
+      const user = { username: "customer" };
+  
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        req.user = user;
+        return next();
+      });
+      jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.spyOn(CartController.prototype, "clearCart").mockResolvedValueOnce(true);
+  
+      const response = await request(app).delete(baseURL + "/carts/current");
+      expect(response.status).toBe(200);
+      expect(CartController.prototype.clearCart).toHaveBeenCalledWith(user);
+    });
+  
+    test("It handles errors when clearing the cart", async() => {
+      const user = { username: "customer" };
+      const error = new Error("Errore durante la pulizia del carrello");
+  
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        req.user = user;
+        return next();
+      });
+      jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.spyOn(CartController.prototype, "clearCart").mockRejectedValueOnce(error);
+  
+      const response = await request(app).delete(baseURL + "/carts/current");
+      expect(response.status).not.toBe(200);
+    });
+  });
+  
+
 
 
 })
