@@ -11,7 +11,7 @@ const baseURL = "/ezelectronics";
 
 let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
 let testCart = new Cart(0, "customer", false, "17-04-2002", 0, []);
-let testProduct= new Product(10, "iphone13", Category.SMARTPHONE, null, null, 3);
+let testProduct= new Product(10, "iphone13", Category.SMARTPHONE, "10-04-2002"," " , 3);
 
 jest.mock("../../src/controllers/cartController")
 jest.mock("../../src/routers/auth")
@@ -56,6 +56,7 @@ this.router.get(
 */
 describe("POST /carts", () => {
   test("It adds a product to a cart", async() => {
+    const model = { model: "iPhone13" }
     jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
       return next();
     })
@@ -72,17 +73,12 @@ describe("POST /carts", () => {
     })
     jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(true);
     
-    //We send a request to the route we are testing. We are in a situation where:
-          //  - The user is an Customer (= the Authenticator logic is mocked to be correct)
-          //  - The getCart function returns the cart of the user (= the cartController logic is mocked to be correct)
-          //We expect the 'getCart' function to have been called, the route to return a 200 success code and the expected cart of the
-          //customer
     const response = await request(app).post(baseURL + "/carts").send(testProduct)
     expect(response.status).toBe(200)
     expect(CartController.prototype.addToCart).toHaveBeenCalled()
     //expect(response.body).toEqual(testCart)
     //sellingPrice: number, model: string, category: Category, arrivalDate: string | null, details: string | null, quantity: number
-    expect(CartController.prototype.addToCart).toHaveBeenCalledWith(testProduct.sellingPrice, testProduct.model, testProduct.category, testProduct.arrivalDate, testProduct.details, testProduct.quantity)
+    expect(CartController.prototype.addToCart).toHaveBeenCalledWith(model.model)
 
     }, 10000);
   })
