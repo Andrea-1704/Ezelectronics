@@ -298,7 +298,44 @@ this.router.get(
     });
   });
   
-
+  describe("GET /all", () => {
+    test("It retrieves all carts for admin or manager", async() => {
+      const user = { username: "admin" }; 
+  
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        req.user = user;
+        return next();
+      });
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => {
+        return next();
+      });
+      const carts = [testCart]; 
+      jest.spyOn(CartController.prototype, "getAllCarts").mockResolvedValueOnce(carts);
+  
+      const response = await request(app).get(baseURL + "/carts/all");
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(carts);
+      expect(CartController.prototype.getAllCarts).toHaveBeenCalled();
+    });
+  
+    test("It handles errors when retrieving all carts", async() => {
+      const user = { username: "admin" };
+  
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        req.user = user;
+        return next();
+      });
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => {
+        return next();
+      });
+      const error = new Error("Errore durante il recupero dei carrelli");
+      jest.spyOn(CartController.prototype, "getAllCarts").mockRejectedValueOnce(error);
+  
+      const response = await request(app).get(baseURL + "/carts/all");
+      expect(response.status).not.toBe(200);
+    });
+  });
+  
 
 })
 
