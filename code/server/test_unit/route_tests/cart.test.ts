@@ -2,6 +2,10 @@ import { describe, test, expect, beforeAll, afterAll, jest } from "@jest/globals
 import {User, Role} from "../../src/components/user";
 import { Cart } from "../../src/components/cart";
 import CartController from "../../src/controllers/cartController";
+import Authenticator from "../../src/routers/auth";
+import request from 'supertest';
+import { app } from "../../index";
+const baseURL = "/ezelectronics";
 
 let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
 let testCart = new Cart(0, "customer", false, "17-04-2002", 0, []);
@@ -28,7 +32,19 @@ this.router.get(
 describe("Route unit tests", () => {
   describe("GET /cart", () => {
     test("It returns the cart of the logged in user", async() => {
-      jest.spyOn(CartController.prototype, "getCart").mockResolvedValueOnce([testAdmin, testCustomer])
+      jest.spyOn(CartController.prototype, "getCart").mockResolvedValueOnce(testCart);
+      jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+        return next();
+      })
+      //We send a request to the route we are testing. We are in a situation where:
+            //  - The user is an Customer (= the Authenticator logic is mocked to be correct)
+            //  - The getCart function returns the cart of the user (= the cartController logic is mocked to be correct)
+            //We expect the 'getCart' function to have been called, the route to return a 200 success code and the expected cart of the
+            //customer
+      const response = await request(app).get(baseURL + "/carts")
+      expect(response.status).toBe(200)
+      expect(CartController.prototype.getCart).toHaveBeenCalled()
+      expect(response.body).toEqual(testCart)
     })
   })
 })
