@@ -73,7 +73,7 @@ describe("POST /carts", () => {
     })
     jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(true);
     
-    const response = await request(app).post(baseURL + "/carts").send(testProduct)
+    const response = await request(app).post(baseURL + "/carts").send(model)
     expect(response.status).toBe(200)
     expect(CartController.prototype.addToCart).toHaveBeenCalled()
     //expect(response.body).toEqual(testCart)
