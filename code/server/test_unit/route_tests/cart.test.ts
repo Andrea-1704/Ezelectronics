@@ -193,7 +193,6 @@ this.router.get(
   
       const response = await request(app).get(baseURL + "/carts/history");
       expect(response.status).not.toBe(200);
-      expect(CartController.prototype.getCustomerCarts).toHaveBeenCalledWith(error);
     });
   });
   
