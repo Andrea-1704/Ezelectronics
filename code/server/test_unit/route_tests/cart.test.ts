@@ -78,7 +78,7 @@ describe("POST /carts", () => {
     expect(CartController.prototype.addToCart).toHaveBeenCalled()
     //expect(response.body).toEqual(testCart)
     //sellingPrice: number, model: string, category: Category, arrivalDate: string | null, details: string | null, quantity: number
-    expect(CartController.prototype.addToCart).toHaveBeenCalledWith(model.model)
+    expect(CartController.prototype.addToCart).toHaveBeenCalledWith(model)
 
     }, 10000);
   })
