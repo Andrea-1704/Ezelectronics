@@ -129,6 +129,33 @@ this.router.get(
                 })
         )
   */
+  describe("PATCH /carts", () => {
+          test("It checks out the cart for the logged in user", async() => {
+            // create fake use:
+            const user = { username: "customer" };
+        
+            //  middleware di autenticazione
+            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+              req.user = user; // Aggiungi l'utente al req
+              return next();
+            });
+            jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+              return next();
+            });
+        
+            // Mock del controller
+            jest.spyOn(CartController.prototype, "checkoutCart").mockResolvedValueOnce(true);
+        
+            
+            const response = await request(app).patch(baseURL + "/carts");
+            expect(response.status).toBe(200);
+            expect(CartController.prototype.checkoutCart).toHaveBeenCalled();
+            // Verifica che `checkoutCart` sia stata chiamata con l'utente autenticato
+            expect(CartController.prototype.checkoutCart).toHaveBeenCalledWith(user);
+        
+          }, 10000); 
+  });
+        
 
 
 
