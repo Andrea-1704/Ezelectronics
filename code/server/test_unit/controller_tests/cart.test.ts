@@ -55,6 +55,52 @@ describe("controller unit tests", () => {
       expect(response).toBe(undefined);
     }, 10000);
   })
+
+  /*
+   @param user - The user for whom to retrieve the cart.
+     * @returns A Promise that resolves to the user's cart or an empty one if there is no current cart.
+     
+   getCart(user: User): Promise<Cart> {
+    return this.dao.getCart(user);
+    }
+  */
+    describe("CartController", () => {
+      test("It should add a product to the cart of the logged in user", async () => {
+         
+        const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(undefined);
+        
+        const controller = new CartController();
+        const response = await controller.addToCart(testCustomer, "test");
+    
+        expect(addToCartSpy).toHaveBeenCalledTimes(1);
+        expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
+        expect(response).toBe(undefined);
+      }, 10000);
+    })
+
+    describe("CartController", () => {
+      test("It should retrieve the user's cart if it exists", async () => {
+        const getCartSpy = jest.spyOn(CartController.prototype, "getCart").mockResolvedValueOnce(testCart);
+        
+        const controller = new CartController();
+        const response = await controller.getCart(testCustomer);
   
-})
+        expect(getCartSpy).toHaveBeenCalledTimes(1);
+        expect(getCartSpy).toHaveBeenCalledWith(testCustomer);
+        expect(response).toEqual(testCart);
+      }, 10000);
+  
+      test("It should return undefined if there is no current cart for the user", async () => {
+        const getCartSpy = jest.spyOn(CartController.prototype, "getCart").mockResolvedValueOnce(undefined);
+        
+        const controller = new CartController();
+        const response = await controller.getCart(testCustomer);
+  
+        expect(getCartSpy).toHaveBeenCalledTimes(1);
+        expect(getCartSpy).toHaveBeenCalledWith(testCustomer);
+        expect(response).toBeUndefined();
+      }, 10000);
+    });
+});
+  
 
