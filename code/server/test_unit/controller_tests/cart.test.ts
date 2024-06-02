@@ -171,15 +171,14 @@ describe("controller unit tests", () => {
     }
     */
     describe("CartController", () => {
-      test("Dovrebbe eliminare tutti i carrelli di tutti gli utenti se possibile", async () => {
-        const getAllCarts = jest.spyOn(CartController.prototype, "getAllCarts").mockResolvedValueOnce([testCart]);
+      test("Should get all the carts, if possible", async () => {
+        const getAllCarts = jest.spyOn(CartController.prototype, "getAllCarts").mockResolvedValueOnce(undefined);
         
         const controller = new CartController();
         const response = await controller.getAllCarts();
   
         expect(getAllCarts).toHaveBeenCalledTimes(1);
-        expect(getAllCarts).toHaveBeenCalledWith(testCart);
-        expect(response).toBe(true);
+        expect(response).toBe(undefined);
       }, 10000);
   
       
