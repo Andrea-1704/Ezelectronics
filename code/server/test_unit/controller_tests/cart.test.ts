@@ -101,6 +101,30 @@ describe("controller unit tests", () => {
         expect(response).toBeUndefined();
       }, 10000);
     });
-});
+
+    describe("CartController", () => {
+      test("It should checkout the user's cart if possible", async () => {
+        const checkoutCartSpy = jest.spyOn(CartController.prototype, "checkoutCart").mockResolvedValueOnce(true);
+        
+        const controller = new CartController();
+        const response = await controller.checkoutCart(testCustomer);
+  
+        expect(checkoutCartSpy).toHaveBeenCalledTimes(1);
+        expect(checkoutCartSpy).toHaveBeenCalledWith(testCustomer);
+        expect(response).toBe(true);
+      }, 10000);
+  
+      test("It should return false if the cart cannot be checked out", async () => {
+        const checkoutCartSpy = jest.spyOn(CartController.prototype, "checkoutCart").mockResolvedValueOnce(false);
+        
+        const controller = new CartController();
+        const response = await controller.checkoutCart(testCustomer);
+  
+        expect(checkoutCartSpy).toHaveBeenCalledTimes(1);
+        expect(checkoutCartSpy).toHaveBeenCalledWith(testCustomer);
+        expect(response).toBe(false);
+      }, 10000);
+    });
+  });
   
 
