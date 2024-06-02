@@ -9,6 +9,7 @@ import { app } from "../../index";
 import ErrorHandler from "../../src/helper"
 import { Category, Product } from "../../src/components/product";
 import { beforeEach } from "node:test";
+import { get } from "http";
 const baseURL = "/ezelectronics";
 
 let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
@@ -56,14 +57,7 @@ describe("controller unit tests", () => {
     }, 10000);
   })
 
-  /*
-   @param user - The user for whom to retrieve the cart.
-     * @returns A Promise that resolves to the user's cart or an empty one if there is no current cart.
-     
-   getCart(user: User): Promise<Cart> {
-    return this.dao.getCart(user);
-    }
-  */
+  
     describe("CartController", () => {
       test("It should add a product to the cart of the logged in user", async () => {
          
@@ -126,7 +120,7 @@ describe("controller unit tests", () => {
       }, 10000);
     });
     describe("CartController", () => {
-      test("Dovrebbe rimuovere il prodotto dal carrello dell'utente se possibile", async () => {
+      test("Should remocve the cart of the logged in user", async () => {
         const removeProductFromCartSpy = jest.spyOn(CartController.prototype, "removeProductFromCart").mockResolvedValueOnce(true);
         
         const controller = new CartController();
@@ -137,7 +131,7 @@ describe("controller unit tests", () => {
         expect(response).toBe(true);
       }, 10000);
   
-      test("Dovrebbe restituire false se il prodotto non può essere rimosso dal carrello", async () => {
+      test("should return false if the product cannot be removed from the cart", async () => {
         const removeProductFromCartSpy = jest.spyOn(CartController.prototype, "removeProductFromCart").mockResolvedValueOnce(false);
         
         const controller = new CartController();
@@ -149,7 +143,7 @@ describe("controller unit tests", () => {
       }, 10000);
     });
     describe("CartController", () => {
-      test("Dovrebbe eliminare tutti i carrelli di tutti gli utenti se possibile", async () => {
+      test("Should remove all the carts of all the users", async () => {
         const deleteAllCartsSpy = jest.spyOn(CartController.prototype, "deleteAllCarts").mockResolvedValueOnce(true);
         
         const controller = new CartController();
@@ -159,7 +153,7 @@ describe("controller unit tests", () => {
         expect(response).toBe(true);
       }, 10000);
   
-      test("Dovrebbe restituire false se i carrelli non possono essere eliminati", async () => {
+      test("return false if the cart cannot be removed", async () => {
         const deleteAllCartsSpy = jest.spyOn(CartController.prototype, "deleteAllCarts").mockResolvedValueOnce(false);
         
         const controller = new CartController();
@@ -169,6 +163,26 @@ describe("controller unit tests", () => {
         expect(response).toBe(false);
       }, 10000);
     });
-  });
-  
 
+    /*@returns A Promise that resolves to an array of carts.
+     
+    async getAllCarts(): Promise<Cart[]>{
+      return this.dao.getAllCarts()
+    }
+    */
+    describe("CartController", () => {
+      test("Dovrebbe eliminare tutti i carrelli di tutti gli utenti se possibile", async () => {
+        const getAllCarts = jest.spyOn(CartController.prototype, "getAllCarts").mockResolvedValueOnce([testCart]);
+        
+        const controller = new CartController();
+        const response = await controller.getAllCarts();
+  
+        expect(getAllCarts).toHaveBeenCalledTimes(1);
+        expect(getAllCarts).toHaveBeenCalledWith(testCart);
+        expect(response).toBe(true);
+      }, 10000);
+  
+      
+    });
+    
+});
