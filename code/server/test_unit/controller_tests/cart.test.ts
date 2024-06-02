@@ -21,15 +21,34 @@ jest.mock("../../src/routers/auth")
 
 jest.mock("../../src/routers/auth")
 
-
-describe("CartController", () => {
-    test("It should add a product to the cart of th elogged in user", async() => {
-      jest.spyOn(CartDAO.prototype, "addToCart").mockResolvedValueOnce(true);
+describe("controller unit tests", () => {
+  describe("CartController", () => {
+    test("It should add a product to the cart of the logged in user", async () => {
+      // Spia il metodo addToCart del CartController
+      const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(true);
+      
       const controller = new CartController();
       const response = await controller.addToCart(testCustomer, "test");
-      expect(CartDAO.prototype.addToCart).toHaveBeenCalledTimes(1);
-      expect(CartController.prototype.addToCart).toHaveBeenCalledWith(testCustomer, "test");
+
+      expect(addToCartSpy).toHaveBeenCalledTimes(1);
+      expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
+      expect(response).toBe(true);
+    }, 10000);
+  })
+
+    
+  describe("CartController", () => {
+    test("It should add a product to the cart of the logged in user", async () => {
+      // Spia il metodo addToCart del CartController
+      const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(undefined);
+      
+      const controller = new CartController();
+      const response = await controller.addToCart(testCustomer, "test");
+
+      expect(addToCartSpy).toHaveBeenCalledTimes(2);
+      expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
       expect(response).toBe(undefined);
     }, 10000);
   })
+})
 
