@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeAll, afterAll, jest } from "@jest/globals"
+import { describe, test, expect, afterEach, beforeAll, afterAll, jest } from "@jest/globals"
 import {User, Role} from "../../src/components/user";
 import { Cart } from "../../src/components/cart";
 import CartController from "../../src/controllers/cartController";
@@ -21,10 +21,15 @@ jest.mock("../../src/routers/auth")
 
 jest.mock("../../src/routers/auth")
 
+
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
 describe("controller unit tests", () => {
   describe("CartController", () => {
     test("It should add a product to the cart of the logged in user", async () => {
-      // Spia il metodo addToCart del CartController
+       
       const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(true);
       
       const controller = new CartController();
@@ -39,16 +44,17 @@ describe("controller unit tests", () => {
     
   describe("CartController", () => {
     test("It should add a product to the cart of the logged in user", async () => {
-      // Spia il metodo addToCart del CartController
+       
       const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(undefined);
       
       const controller = new CartController();
       const response = await controller.addToCart(testCustomer, "test");
-
-      expect(addToCartSpy).toHaveBeenCalledTimes(2);
+  
+      expect(addToCartSpy).toHaveBeenCalledTimes(1);
       expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
       expect(response).toBe(undefined);
     }, 10000);
   })
+  
 })
 
