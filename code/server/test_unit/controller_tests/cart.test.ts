@@ -180,8 +180,20 @@ describe("controller unit tests", () => {
         expect(getAllCarts).toHaveBeenCalledTimes(1);
         expect(response).toBe(undefined);
       }, 10000);
-  
-      
+
     });
+      describe("CartController", () => {
+        test("Should get all the carts, if possible", async () => {
+          const getAllCarts = jest.spyOn(CartController.prototype, "getAllCarts").mockResolvedValueOnce([testCart]);
+          
+          const controller = new CartController();
+          const response = await controller.getAllCarts();
+    
+          expect(getAllCarts).toHaveBeenCalledTimes(1);
+          expect(response).toStrictEqual([testCart]);
+        }, 10000);
+      });
+      
+    
     
 });
