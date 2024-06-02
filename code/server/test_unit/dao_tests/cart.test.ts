@@ -166,7 +166,7 @@ test("getCart - user does not have a cart", async () => {
     const cartDao = new CartDAO()
     const productDao = new ProductDAO()
     let testCart = new Cart(0, "customer", false, "17-04-2002", 200, []);
-    const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(testCart);
+    const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(new Cart(+1, "test_user", false, "", 0, []));
     const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
     const mockDBGet = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
         callback(null, null)
@@ -174,6 +174,55 @@ test("getCart - user does not have a cart", async () => {
     });
     
     const result = await cartDao.getCart(user, false)
-    expect(result).toEqual(new Cart(-1, user.username, false, "", 0, []))
+    expect(result).toEqual(new Cart(+1, user.username, false, "", 0, []))
     mockDBGet.mockRestore()
+});
+
+test("createCart - user does not have a cart", async () => {
+    const cartDao = new CartDAO()
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+        callback(null)
+        return {} as Database
+    });
+    
+    await cartDao.createCart(user)
+    expect(mockDBRun).toHaveBeenCalledWith("INSERT INTO cart (customer, paid, paymentDate, total) VALUES (?, 0, '', 0)", [user.username], expect.any(Function))
+    mockDBRun.mockRestore()
+});
+
+test("createCart - database error", async () => {
+    const cartDao = new CartDAO()
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+        callback(new Error("Database error"))
+        return {} as Database
+    });
+    
+    await expect(cartDao.createCart(user)).rejects.toThrow("Database error")
+    mockDBRun.mockRestore()
+});
+
+test("createCart - user already has a cart", async () => {
+    const cartDao = new CartDAO()
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+        callback(new Error("SQLITE_CONSTRAINT: UNIQUE constraint failed: cart.customer"))
+        return {} as Database
+    });
+    
+    await expect(cartDao.createCart(user)).rejects.toThrow("SQLITE_CONSTRAINT: UNIQUE constraint failed: cart.customer")
+    mockDBRun.mockRestore()
+});
+
+test("createCart - user is not a customer", async () => {
+    const cartDao = new CartDAO()
+    const user = new User("test_user", "Test", "User", Role.ADMIN, "Test Address", "1990-01-01");
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+        callback(null)
+        return {} as Database
+    });
+    
+    await expect(cartDao.createCart(user)).rejects.toThrow("User is not a customer")
+    mockDBRun.mockRestore()
 });
