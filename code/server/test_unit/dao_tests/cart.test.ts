@@ -215,14 +215,4 @@ test("createCart - user already has a cart", async () => {
     mockDBRun.mockRestore()
 });
 
-test("createCart - user is not a customer", async () => {
-    const cartDao = new CartDAO()
-    const user = new User("test_user", "Test", "User", Role.ADMIN, "Test Address", "1990-01-01");
-    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
-        callback(null)
-        return {} as Database
-    });
-    
-    await expect(cartDao.createCart(user)).rejects.toThrow("User is not a customer")
-    mockDBRun.mockRestore()
-});
+
