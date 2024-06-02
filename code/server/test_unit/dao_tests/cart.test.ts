@@ -117,3 +117,63 @@ test("addToCart - product is not in the cart", async () => {
     expect(result).toBe(true)
     mockDBRun.mockRestore()
 });
+
+
+
+test("getCart - user has a cart and cart is not empty", async () => {
+    const cartDao = new CartDAO()
+    const productDao = new ProductDAO()
+    const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(testCart);
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+        callback(null, null)
+        return {} as Database
+    });
+    
+    const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+        callback(null, [])
+        return {} as Database
+    });
+    
+    const result = await cartDao.getCart(user, false)
+    expect(result).toEqual(testCart)
+    mockDBGet.mockRestore()
+    mockDBAll.mockRestore()
+});
+
+test("getCart - user has a cart and cart is empty", async () => {
+    const cartDao = new CartDAO()
+    const productDao = new ProductDAO()
+    let testCart = new Cart(0, "customer", false, "17-04-2002", 200, []);
+    const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(testCart);
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+        callback(null, null)
+        return {} as Database
+    });
+    
+    const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+        callback(null, [])
+        return {} as Database
+    });    
+    const result = await cartDao.getCart(user, true)
+    expect(result).toEqual({ ...testCart, products: [] })
+    mockDBGet.mockRestore()
+    mockDBAll.mockRestore()
+});
+
+test("getCart - user does not have a cart", async () => {
+    const cartDao = new CartDAO()
+    const productDao = new ProductDAO()
+    let testCart = new Cart(0, "customer", false, "17-04-2002", 200, []);
+    const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(testCart);
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+        callback(null, null)
+        return {} as Database
+    });
+    
+    const result = await cartDao.getCart(user, false)
+    expect(result).toEqual(new Cart(-1, user.username, false, "", 0, []))
+    mockDBGet.mockRestore()
+});
