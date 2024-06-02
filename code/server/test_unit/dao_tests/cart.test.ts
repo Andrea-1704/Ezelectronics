@@ -5,20 +5,33 @@ import { Role, User } from "../../src/components/user"
 import db from "../../src/db/db"
 import { Database } from "sqlite3"
 import { ProductNotFoundError } from "../../src/errors/productError";
-import { Category } from "../../src/components/product"
+import { Category, Product } from "../../src/components/product"
+import { Cart, ProductInCart } from "../../src/components/cart"
 
 jest.mock("../../src/db/db.ts")
+
+let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
+let testProduct= new Product(10, "test", Category.SMARTPHONE, "10-04-2002"," " , 3);
+let productInCart = new ProductInCart("test", 100, Category.SMARTPHONE , 30);
+let testCart = new Cart(0, "customer", false, "17-04-2002", 200, [productInCart]);
+
 
 afterEach(() => {
     jest.restoreAllMocks();
 });
 
-test("addToCart - product exists and user has no cart", async () => {
+test("addToCart - product exists and user has cart", async () => {
     const cartDao = new CartDAO()
     const productDao = new ProductDAO()
-    const user = new User("test_user", "Test", "User", Role.MANAGER, "Test Address", "1990-01-01");
+    //const testProduct = { model: "test_model", sellingPrice: 100 };
+    //const testCart = { products: [testProduct] }; // Il carrello contiene il prodotto
+    const getProductSpy = jest.spyOn(ProductDAO.prototype, "getProductByModel").mockResolvedValueOnce(testProduct);
+    const hasCartSpy = jest.spyOn(CartDAO.prototype, "hasCart").mockResolvedValueOnce(true);
+    const getCartSpy= jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(testCart);
+     
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
     const product = {
-        model: "test_model",
+        model: "test",
         sellingPrice: 100
     };
 
@@ -27,7 +40,7 @@ test("addToCart - product exists and user has no cart", async () => {
         return {} as Database
     });
 
-    await productDao.registerProducts(product.model, Category.SMARTPHONE, 1, "details", product.sellingPrice, "date")
+    //await productDao.registerProducts(product.model, Category.SMARTPHONE, 1, "details", product.sellingPrice, "date")
     const result = await cartDao.addToCart(user, product.model)
     expect(result).toBe(true)
     mockDBRun.mockRestore()
