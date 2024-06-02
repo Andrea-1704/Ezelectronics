@@ -148,6 +148,27 @@ describe("controller unit tests", () => {
         expect(response).toBe(false);
       }, 10000);
     });
+    describe("CartController", () => {
+      test("Dovrebbe eliminare tutti i carrelli di tutti gli utenti se possibile", async () => {
+        const deleteAllCartsSpy = jest.spyOn(CartController.prototype, "deleteAllCarts").mockResolvedValueOnce(true);
+        
+        const controller = new CartController();
+        const response = await controller.deleteAllCarts();
+  
+        expect(deleteAllCartsSpy).toHaveBeenCalledTimes(1);
+        expect(response).toBe(true);
+      }, 10000);
+  
+      test("Dovrebbe restituire false se i carrelli non possono essere eliminati", async () => {
+        const deleteAllCartsSpy = jest.spyOn(CartController.prototype, "deleteAllCarts").mockResolvedValueOnce(false);
+        
+        const controller = new CartController();
+        const response = await controller.deleteAllCarts();
+  
+        expect(deleteAllCartsSpy).toHaveBeenCalledTimes(1);
+        expect(response).toBe(false);
+      }, 10000);
+    });
   });
   
 
