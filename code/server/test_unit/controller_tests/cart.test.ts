@@ -125,6 +125,29 @@ describe("controller unit tests", () => {
         expect(response).toBe(false);
       }, 10000);
     });
+    describe("CartController", () => {
+      test("Dovrebbe rimuovere il prodotto dal carrello dell'utente se possibile", async () => {
+        const removeProductFromCartSpy = jest.spyOn(CartController.prototype, "removeProductFromCart").mockResolvedValueOnce(true);
+        
+        const controller = new CartController();
+        const response = await controller.removeProductFromCart(testCustomer, testProduct.model);
+  
+        expect(removeProductFromCartSpy).toHaveBeenCalledTimes(1);
+        expect(removeProductFromCartSpy).toHaveBeenCalledWith(testCustomer, testProduct.model);
+        expect(response).toBe(true);
+      }, 10000);
+  
+      test("Dovrebbe restituire false se il prodotto non può essere rimosso dal carrello", async () => {
+        const removeProductFromCartSpy = jest.spyOn(CartController.prototype, "removeProductFromCart").mockResolvedValueOnce(false);
+        
+        const controller = new CartController();
+        const response = await controller.removeProductFromCart(testCustomer, testProduct.model);
+  
+        expect(removeProductFromCartSpy).toHaveBeenCalledTimes(1);
+        expect(removeProductFromCartSpy).toHaveBeenCalledWith(testCustomer, testProduct.model);
+        expect(response).toBe(false);
+      }, 10000);
+    });
   });
   
 
