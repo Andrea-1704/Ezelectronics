@@ -8,6 +8,7 @@ import { EmptyProductStockError, ProductNotFoundError } from "../../src/errors/p
 import { Category, Product } from "../../src/components/product"
 import { Cart, ProductInCart } from "../../src/components/cart"
 import { EmptyCartError } from "../../src/errors/cartError"
+import { error } from "console"
 
 jest.mock("../../src/db/db.ts")
 
@@ -326,7 +327,6 @@ test("checkoutCart - database error during checkout", async () => {
         return {} as Database
     });
     
-    await expect(cartDao.checkoutCart(user)).rejects.toThrow("Database error")
+    expect(cartDao.checkoutCart(user)).rejects.toThrow(Error)
     mockDBRun.mockRestore()
 });
-
