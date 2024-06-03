@@ -244,10 +244,16 @@ test("checkoutCart - product not found", async () => {
     await expect(cartDao.checkoutCart(user)).rejects.toThrow(ProductNotFoundError)
     mockDBRun.mockRestore()
 }, 10000);
-/*
+
 test("checkoutCart - product stock is empty", async () => {
     const cartDao = new CartDAO()
     const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    let productInCart = new ProductInCart("test", 100, Category.SMARTPHONE , 30);
+    let testCart = new Cart(0, "test_user", false, "17-04-2002", 200, [productInCart]);
+    let testProduct= new Product(10, "test", Category.SMARTPHONE, "10-04-2002"," " , 0);
+    jest.spyOn(cartDao, 'getCart').mockResolvedValue(testCart);
+    jest.spyOn(ProductDAO.prototype, 'getProductByModel').mockResolvedValue(testProduct);
+
     const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
         callback(null)
         return {} as Database
@@ -256,19 +262,61 @@ test("checkoutCart - product stock is empty", async () => {
     await expect(cartDao.checkoutCart(user)).rejects.toThrow(EmptyProductStockError)
     mockDBRun.mockRestore()
 });
-
+/*
 test("checkoutCart - successful checkout", async () => {
     const cartDao = new CartDAO()
     const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    let productInCart = new ProductInCart("test", 100, Category.SMARTPHONE , 30);
+    let testCart = new Cart(0, "test_user", false, "17-04-2002", 200, [productInCart]);
+    let testProduct= new Product(10, "test", Category.SMARTPHONE, "10-04-2002"," " , 1);
+    jest.spyOn(cartDao, 'getCart').mockResolvedValue(testCart);
+    jest.spyOn(ProductDAO.prototype, 'getProductByModel').mockResolvedValue(testProduct);
+
     const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
         callback(null)
         return {} as Database
     });
     
-    const result = await cartDao.checkoutCart(user)
-    expect(result).toBe(true)
+    await expect(cartDao.checkoutCart(user)).rejects.toThrow(EmptyProductStockError)
     mockDBRun.mockRestore()
 });
+*/
+test("checkoutCart - successful checkout", async () => {
+    const cartDao = new CartDAO()
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    let productInCart = new ProductInCart("test", 20, Category.SMARTPHONE , 30);
+    let testCart = new Cart(0, "test_user", false, "17-04-2002", 200, [productInCart]);
+    let testProduct= new Product(10, "test", Category.SMARTPHONE, "10-04-2002"," " , 35);
+    jest.spyOn(cartDao, 'getCart').mockResolvedValue(testCart);
+    jest.spyOn(ProductDAO.prototype, 'getProductByModel').mockResolvedValue(testProduct);
+
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+        callback(null)
+        return {} as Database
+    });
+
+    await cartDao.checkoutCart(user)
+
+    // Verifica che db.run sia stato chiamato con la query SQL corretta per aggiornare il carrello
+    expect(mockDBRun).toHaveBeenCalledWith(
+        "UPDATE cart SET paid = 1, paymentDate = ?, total = ? WHERE id = ?",
+        [expect.any(String), testCart.total, testCart.id],
+        expect.any(Function)
+    )
+
+    // Verifica che db.run sia stato chiamato con la query SQL corretta per aggiornare il magazzino
+    testCart.products.forEach((productInCart) => {
+        expect(mockDBRun).toHaveBeenCalledWith(
+            "UPDATE product SET quantity = quantity - ? WHERE model = ?",
+            [productInCart.quantity, productInCart.model],
+            expect.any(Function)
+        )
+    })
+
+    mockDBRun.mockRestore()
+});
+
+
 
 test("checkoutCart - database error during checkout", async () => {
     const cartDao = new CartDAO()
@@ -280,5 +328,5 @@ test("checkoutCart - database error during checkout", async () => {
     
     await expect(cartDao.checkoutCart(user)).rejects.toThrow("Database error")
     mockDBRun.mockRestore()
-});*/
+});
 
