@@ -427,7 +427,7 @@ test("removeProductFromCart - database error on update quantity", async () => {
 
     jest.spyOn(cartDao, 'getCart').mockResolvedValue(testCart);
 
-    // Aspettiamo che venga lanciata l'eccezione del database
+   
     await expect(cartDao.removeProductFromCart(user, "test")).rejects.toThrow("Database error")
 
     mockDBRun.mockRestore()
@@ -451,7 +451,7 @@ test("removeProductFromCart - database error on delete product", async () => {
 
     jest.spyOn(cartDao, 'getCart').mockResolvedValue(testCart);
 
-    // Aspettiamo che venga lanciata l'eccezione del database
+    
     await expect(cartDao.removeProductFromCart(user, "test")).rejects.toThrow("Database error")
 
     mockDBRun.mockRestore()
@@ -475,7 +475,7 @@ test("removeProductFromCart - database error on update total", async () => {
 
     jest.spyOn(cartDao, 'getCart').mockResolvedValue(testCart);
 
-    // Aspettiamo che venga lanciata l'eccezione del database
+    
     await expect(cartDao.removeProductFromCart(user, "test")).rejects.toThrow("Database error")
 
     mockDBRun.mockRestore()
@@ -498,28 +498,27 @@ test("clearCart - successful operation", async () => {
 
     const result = await cartDao.clearCart(user)
 
-    // Verifica che db.get sia stato chiamato con la query SQL corretta per ottenere il carrello
+   
     expect(mockDBGet).toHaveBeenCalledWith(
         "SELECT * FROM cart WHERE customer = ? AND paid = 0",
         [user.username],
         expect.any(Function)
     )
 
-    // Verifica che db.run sia stato chiamato con la query SQL corretta per eliminare i prodotti dal carrello
     expect(mockDBRun).toHaveBeenCalledWith(
         "DELETE FROM cart_product WHERE cartId = ?",
         [testCart.id],
         expect.any(Function)
     )
 
-    // Verifica che db.run sia stato chiamato con la query SQL corretta per aggiornare il totale del carrello
+    
     expect(mockDBRun).toHaveBeenCalledWith(
         "UPDATE cart SET total = 0 WHERE id = ?",
         [testCart.id],
         expect.any(Function)
     )
 
-    // Verifica che il risultato sia corretto
+    
     expect(result).toEqual(true)
 
     mockDBGet.mockRestore()
@@ -537,14 +536,13 @@ test("clearCart - cart not found", async () => {
 
     const result = await cartDao.clearCart(user)
 
-    // Verifica che db.get sia stato chiamato con la query SQL corretta per ottenere il carrello
+    
     expect(mockDBGet).toHaveBeenCalledWith(
         "SELECT * FROM cart WHERE customer = ? AND paid = 0",
         [user.username],
         expect.any(Function)
     )
 
-    // Verifica che il risultato sia corretto
     expect(result).toEqual(false)
 
     mockDBGet.mockRestore()
@@ -559,7 +557,7 @@ test("clearCart - database error on get cart", async () => {
         return {} as Database
     });
 
-    // Aspettiamo che venga lanciata l'eccezione del database
+    
     await expect(cartDao.clearCart(user)).rejects.toThrow("Database error")
 
     mockDBGet.mockRestore()
@@ -584,7 +582,7 @@ test("clearCart - database error on delete products", async () => {
         return {} as Database
     });
 
-    // Aspettiamo che venga lanciata l'eccezione del database
+    
     await expect(cartDao.clearCart(user)).rejects.toThrow("Database error")
 
     mockDBGet.mockRestore()
@@ -610,10 +608,48 @@ test("clearCart - database error on update cart total", async () => {
         return {} as Database
     });
 
-    // Aspettiamo che venga lanciata l'eccezione del database
+    
     await expect(cartDao.clearCart(user)).rejects.toThrow("Database error")
 
     mockDBGet.mockRestore()
+    mockDBRun.mockRestore()
+});
+
+
+test("deleteAllCarts - successful operation", async () => {
+    const cartDao = new CartDAO()
+
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+        callback(null)
+        return {} as Database
+    });
+
+    const result = await cartDao.deleteAllCarts()
+
+    
+    expect(mockDBRun).toHaveBeenCalledWith(
+        "DELETE FROM cart",
+        [],
+        expect.any(Function)
+    )
+
+    
+    expect(result).toEqual(true)
+
+    mockDBRun.mockRestore()
+});
+
+test("deleteAllCarts - database error", async () => {
+    const cartDao = new CartDAO()
+
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+        callback(new Error("Database error"))
+        return {} as Database
+    });
+
+    
+    await expect(cartDao.deleteAllCarts()).rejects.toThrow("Database error")
+
     mockDBRun.mockRestore()
 });
 
