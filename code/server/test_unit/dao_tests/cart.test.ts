@@ -230,6 +230,12 @@ test("checkoutCart - cart is empty", async () => {
 test("checkoutCart - product not found", async () => {
     const cartDao = new CartDAO()
     const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    let productInCart = new ProductInCart("test", 100, Category.SMARTPHONE , 30);
+    let testCart = new Cart(0, "test_user", false, "17-04-2002", 200, [productInCart]);
+    
+    jest.spyOn(cartDao, 'getCart').mockResolvedValue(testCart);
+    jest.spyOn(ProductDAO.prototype, 'getProductByModel').mockResolvedValue(undefined);
+
     const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
         callback(null)
         return {} as Database
