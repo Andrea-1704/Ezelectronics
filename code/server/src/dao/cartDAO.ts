@@ -312,6 +312,8 @@ class CartDAO {
           return
         }
         const carts: Cart[] = []
+        console.log("rows");
+        console.log(rows);
         for (const row of rows) {
           const products = await new Promise<ProductInCart[]>((resolve, reject) => {
             const sqlProducts = "SELECT * FROM cart_product WHERE cartId = ?"
@@ -323,7 +325,10 @@ class CartDAO {
               resolve(rows)
             })
           })
+          console.log("products");
+          
           for(const product of products) {
+            console.log(product.model);
             const productInDb = await this.productDao.getProductByModel(product.model)
             product.category = productInDb.category
             product.price = productInDb.sellingPrice
