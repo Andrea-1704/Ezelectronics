@@ -10,6 +10,7 @@ import ErrorHandler from "../../src/helper"
 import { Category, Product } from "../../src/components/product";
 import { beforeEach } from "node:test";
 import { get } from "http";
+import { error } from "console";
 const baseURL = "/ezelectronics";
 
 let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
@@ -31,14 +32,30 @@ describe("controller unit tests", () => {
   describe("CartController", () => {
     test("It should add a product to the cart of the logged in user", async () => {
        
-      const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(true);
+      const addToCartSpy = jest.spyOn(CartDAO.prototype, "addToCart").mockResolvedValueOnce(true);
       
       const controller = new CartController();
-      const response = await controller.addToCart(testCustomer, "test");
-
-      expect(addToCartSpy).toHaveBeenCalledTimes(1);
-      expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
+      //const response = await controller.addToCart(testCustomer, "test");
+      const response=await controller.addToCart(testCustomer, "test");
+      expect(CartController.prototype.addToCart).toHaveBeenCalledTimes(1);
+      expect(CartController.prototype.addToCart).toHaveBeenCalledWith(testCustomer, "test");
       expect(response).toBe(true);
+    }, 10000);
+  })
+
+  describe("CartController", () => {
+    let testCustomer = new User("customer2", "customer2", "customer2", Role.CUSTOMER, "", "")
+
+    test("Error cart not found error", async () => {
+       
+      const addToCartSpy = jest.spyOn(CartDAO.prototype, "addToCart").mockResolvedValueOnce(false);
+      
+      const controller = new CartController();
+      //const response = await controller.addToCart(testCustomer, "test");
+      const response=await controller.addToCart(testCustomer, "test2");
+      expect(CartController.prototype.addToCart).toHaveBeenCalledTimes(1);
+      expect(CartController.prototype.addToCart).toHaveBeenCalledWith(testCustomer, "test2");
+      expect(response).toBe(false);
     }, 10000);
   })
 
@@ -58,19 +75,19 @@ describe("controller unit tests", () => {
   })
 
   
-    describe("CartController", () => {
-      test("It should add a product to the cart of the logged in user", async () => {
+    // describe("CartController", () => {
+    //   test("It should add a product to the cart of the logged in user", async () => {
          
-        const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(undefined);
+    //     const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(undefined);
         
-        const controller = new CartController();
-        const response = await controller.addToCart(testCustomer, "test");
+    //     const controller = new CartController();
+    //     const response = await controller.addToCart(testCustomer, "test");
     
-        expect(addToCartSpy).toHaveBeenCalledTimes(1);
-        expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
-        expect(response).toBe(undefined);
-      }, 10000);
-    })
+    //     expect(addToCartSpy).toHaveBeenCalledTimes(1);
+    //     expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
+    //     expect(response).toBe(undefined);
+    //   }, 10000);
+    // })
 
     describe("CartController", () => {
       test("It should retrieve the user's cart if it exists", async () => {
@@ -119,6 +136,64 @@ describe("controller unit tests", () => {
         expect(response).toBe(false);
       }, 10000);
     });
+
+    describe("CartController", () => {
+      test("It should handle errors when adding a product to the cart", async () => {
+        const error = new Error("Database error");
+        const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockRejectedValueOnce(error);
+        
+        const controller = new CartController();
+        let caughtError;
+        try {
+          await controller.addToCart(testCustomer, "test");
+        } catch (e) {
+          caughtError = e;
+        }
+    
+        expect(addToCartSpy).toHaveBeenCalledTimes(1);
+        expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
+        expect(caughtError).toEqual(error);
+      }, 10000);
+    });
+
+
+    describe("CartController", () => {
+      test("It should handle errors when the product does not exist", async () => {
+        const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(false);
+        
+        const controller = new CartController();
+        const response = await controller.addToCart(testCustomer, "non-existing-product");
+    
+        expect(addToCartSpy).toHaveBeenCalledTimes(1);
+        expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "non-existing-product");
+        expect(response).toBe(false);
+      }, 10000);
+    
+      test("It should handle errors when the user does not exist", async () => {
+        const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(false);
+        
+        const controller = new CartController();
+        const response = await controller.addToCart(testCustomer, "test");
+    
+        expect(addToCartSpy).toHaveBeenCalledTimes(1);
+        expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
+        expect(response).toBe(false);
+      }, 10000);
+    
+      test("It should handle errors when the cart cannot be checked out", async () => {
+        const checkoutCartSpy = jest.spyOn(CartController.prototype, "checkoutCart").mockResolvedValueOnce(false);
+        
+        const controller = new CartController();
+        const response = await controller.checkoutCart(testCustomer);
+    
+        expect(checkoutCartSpy).toHaveBeenCalledTimes(1);
+        expect(checkoutCartSpy).toHaveBeenCalledWith(testCustomer);
+        expect(response).toBe(false);
+      }, 10000);
+    });
+    
+    
+
     describe("CartController", () => {
       test("Should remocve the cart of the logged in user", async () => {
         const removeProductFromCartSpy = jest.spyOn(CartController.prototype, "removeProductFromCart").mockResolvedValueOnce(true);

@@ -186,6 +186,37 @@ test("addToCart - SQL error when updating product quantity in cart", async () =>
 });
 
 
+/*test("addToCart - SQL error when inserting new product in cart", async () => {
+    const cartDao = new CartDAO()
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    let productInCart = new ProductInCart("test", 20, Category.SMARTPHONE, 30);
+    let testCart = new Cart(0, "test_user", true, "17-04-2002", 200, [productInCart]);
+    let testProduct = new Product(10, "test", Category.SMARTPHONE, "10-04-2002", " ", 35);
+    const productDao = new ProductDAO()
+    const getProductSpy = jest.spyOn(ProductDAO.prototype, "getProductByModel").mockResolvedValueOnce(testProduct);
+    const hasCartSpy = jest.spyOn(CartDAO.prototype, "hasCart").mockResolvedValueOnce(true);
+    const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(testCart);
+    const product = {
+        model: "test",
+        sellingPrice: 100
+    };
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((_sql, _params, callback) => {
+        if (_sql.includes("INSERT INTO cart_product")) {
+            callback(new Error("SQL error"))
+        } else {
+            callback(null)
+        }
+        return {} as Database
+    });
+    await expect(cartDao.addToCart(user, product.model)).rejects.toThrow("SQL error");
+    mockDBRun.mockRestore();
+    getProductSpy.mockRestore();
+    hasCartSpy.mockRestore();
+    getCartSpy.mockRestore();
+});*/
+
+
+
 
 
 
@@ -246,6 +277,20 @@ test("getCart - user does not have a cart", async () => {
     expect(result).toEqual(new Cart(+1, user.username, false, "", 0, []))
     mockDBGet.mockRestore()
 });
+
+
+test("getCart - SQL error when retrieving cart", async () => {
+    const cartDao = new CartDAO()
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((_sql, _params, callback) => {
+        callback(new Error("SQL error"), null)
+        return {} as Database
+    });
+
+    await expect(cartDao.getCart(user, false)).rejects.toThrow("SQL error");
+    mockDBGet.mockRestore()
+});
+
 
 test("createCart - user does not have a cart", async () => {
     const cartDao = new CartDAO()
@@ -379,6 +424,10 @@ test("checkoutCart - database error during checkout", async () => {
     expect(cartDao.checkoutCart(user)).rejects.toThrow(Error)
     mockDBRun.mockRestore()
 });
+
+
+
+
 
 
 test("getCustomerCarts - successful operation", async () => {
@@ -789,6 +838,30 @@ test("getAllCarts - database error on get carts", async () => {
 
     mockDBAll.mockRestore()
 });
+
+
+/*test("getAllCarts - database error on get products", async () => {
+    const cartDao = new CartDAO()
+
+    let testCart = new Cart(0, "test_user", false, "17-04-2002", 600, []);
+
+    const mockDBAll = jest.spyOn(db, "all").mockImplementationOnce((_sql, _params, callback) => {
+        callback(null, [testCart])
+        return {} as Database
+    });
+
+    const mockDBAll2 = jest.spyOn(db, "all").mockImplementationOnce((_sql, _params, callback) => {
+        callback(new Error("Database error"))
+        return {} as Database
+    });
+
+    await expect(cartDao.getAllCarts()).rejects.toThrow("Database error")
+
+    mockDBAll.mockRestore()
+});*/
+
+
+
 
 test("hasCart - successful operation", async () => {
     const cartDao = new CartDAO()
