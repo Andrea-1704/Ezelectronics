@@ -1,71 +1,271 @@
-import { describe, test, expect, beforeAll, afterAll, jest } from "@jest/globals"
+import { describe, test, expect, jest, afterEach } from "@jest/globals";
+import db from "../../src/db/db";
+import { Category, Product } from "../../src/components/product";
+import ProductDAO from "../../src/dao/productDAO";
+import {
+  EmptyProductStockError,
+  LowProductStockError,
+  ProductAlreadyExistsError,
+  ProductNotFoundError
+} from "../../src/errors/productError";
 
-import UserController from "../../src/controllers/userController"
-import UserDAO from "../../src/dao/userDAO"
-// @ts-ignore
-import crypto from "crypto"
-import db from "../../src/db/db"
-import { Database } from "sqlite3"
-import {User} from "../../src/components/user";
-import {UserNotFoundError} from "../../src/errors/userError";
+jest.mock("../../src/db/db");
 
-jest.mock("crypto")
-jest.mock("../../src/db/db.ts")
+afterEach(() => {
+  jest.restoreAllMocks();
+});
 
-//Example of unit test for the createUser method
-//It mocks the database run method to simulate a successful insertion and the crypto randomBytes and scrypt methods,
-//to simulate the hashing of the password,
-//It then calls the createUser method and expects it to resolve true
+describe("ProductDAO unit tests", () => {
+  const testProduct = new Product(10, "iPhone13", Category.SMARTPHONE, "2022-06-05", "Latest model", 100);
+  const anotherProduct = new Product(15, "GalaxyS21", Category.SMARTPHONE, "2021-08-10", "Top-notch model", 50);
 
-// test("It should resolve true", async () => {
-//   const userDAO = new UserDAO()
-//   const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
-//     callback(null)
-//     return {} as Database
-//   });
-//   const mockRandomBytes = jest.spyOn(crypto, "randomBytes").mockImplementation((size) => {
-//     return (Buffer.from("salt"))
-//   })
-//   const mockScrypt = jest.spyOn(crypto, "scrypt").mockImplementation(async (password, salt, keylen) => {
-//     return Buffer.from("hashedPassword")
-//   })
-//
-//   const result = await userDAO.createUser("username", "name", "surname", "password", "role")
-//   expect(result).toBe(true)
-//   mockRandomBytes.mockRestore()
-//   mockDBRun.mockRestore()
-//   mockScrypt.mockRestore()
-// })
+  test("registerProducts - successful registration", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(undefined);
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+      callback(null);
+      return db;
+    });
 
+    await productDAO.registerProducts(testProduct.model, testProduct.category, testProduct.quantity, testProduct.details, testProduct.sellingPrice, testProduct.arrivalDate);
 
-//test to run for products
-//register product
-//test1. add product with all fields filled
-//test2. add two products both with the same model the second one should fail
-//test3. add product with invalid fileds (can be expanded into more tests)
+    expect(mockDBRun).toHaveBeenCalledWith(
+        "INSERT INTO product (model, category, quantity, details, sellingPrice, arrivalDate) VALUES (?, ?, ?, ?, ?, ?)",
+        [
+          testProduct.model,
+          testProduct.category,
+          testProduct.quantity,
+          testProduct.details,
+          testProduct.sellingPrice,
+          testProduct.arrivalDate
+        ],
+        expect.any(Function)
+    );
 
-//update quantity
-//test1. update quantity and add to it, verify the new value is the sum of the previous + the added
-//test2. try to do the same operating but with wrong product model, verify error (check other fields maybe the changeDate and verify the function)
+    mockDBRun.mockRestore();
+  });
 
-//sell product
-//test1. sell a product, verify the quantity is updated
-//test2. sell a product with wrong model, verify error
-//test3. sell a product with quantity 0, verify error
-//test4. sell a product that has an available quantity non zero but less than the quantity to be sold, verify error
+  test("registerProducts - product already exists", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
 
+    await expect(productDAO.registerProducts(testProduct.model, testProduct.category, testProduct.quantity, testProduct.details, testProduct.sellingPrice, testProduct.arrivalDate))
+        .rejects
+        .toThrow(ProductAlreadyExistsError);
+  });
 
-//view products
-//test1. add products, view them and chefck if they are ok maybe do a count of the products thats easier
-//test2. view products with no products, verify empty array
-//test3. view products with invalid model, verify error
-//add products of different categories, verify that the counts are correct
+  test("changeProductQuantity - successful operation", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+      callback(null);
+      return db;
+    });
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+      callback(null, { quantity: testProduct.quantity + 50 });
+      return db;
+    });
 
-//delete product(s)
-//what if the product is not found
-//what if the stock is empty? (idk) no use case
-//successfull deletion
+    const newQuantity = await productDAO.changeProductQuantity(testProduct.model, 50, null);
 
+    expect(mockDBRun).toHaveBeenCalledWith(
+        "UPDATE product SET quantity = quantity + ? WHERE model = ?",
+        [50, testProduct.model],
+        expect.any(Function)
+    );
 
-//mixed tests
-//test2 add a product, update the quantity, sell the product, view the product, delete the product, control count of products
+    expect(newQuantity).toBe(150);
+
+    mockDBRun.mockRestore();
+    mockDBGet.mockRestore();
+  });
+
+  test("changeProductQuantity - product not found", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(undefined);
+
+    await expect(productDAO.changeProductQuantity(testProduct.model, 50, null))
+        .rejects
+        .toThrow(ProductNotFoundError);
+  });
+
+  test("sellProduct - successful operation", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+      callback(null);
+      return db;
+    });
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+      callback(null, { quantity: testProduct.quantity - 20 });
+      return db;
+    });
+
+    const newQuantity = await productDAO.sellProduct(testProduct.model, 20, null);
+
+    expect(mockDBRun).toHaveBeenCalledWith(
+        "UPDATE product SET quantity = quantity - ? WHERE model = ?",
+        [20, testProduct.model],
+        expect.any(Function)
+    );
+
+    expect(newQuantity).toBe(80);
+
+    mockDBRun.mockRestore();
+    mockDBGet.mockRestore();
+  });
+
+  test("sellProduct - product not found", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(undefined);
+
+    await expect(productDAO.sellProduct(testProduct.model, 20, null))
+        .rejects
+        .toThrow(ProductNotFoundError);
+  });
+
+  test("sellProduct - empty stock", async () => {
+    const productDAO = new ProductDAO();
+    const emptyProduct = { ...testProduct, quantity: 0 };
+
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(emptyProduct);
+
+    await expect(productDAO.sellProduct(emptyProduct.model, 20, null))
+        .rejects
+        .toThrow(EmptyProductStockError);
+  });
+
+  test("sellProduct - low stock", async () => {
+    const productDAO = new ProductDAO();
+    const lowStockProduct = { ...testProduct, quantity: 10 };
+
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(lowStockProduct);
+
+    await expect(productDAO.sellProduct(lowStockProduct.model, 20, null))
+        .rejects
+        .toThrow(LowProductStockError);
+  });
+
+  test("getProducts - successful operation", async () => {
+    const productDAO = new ProductDAO();
+    const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+      callback(null, [testProduct, anotherProduct]);
+      return db;
+    });
+
+    const products = await productDAO.getProducts(null, null, null);
+
+    expect(mockDBAll).toHaveBeenCalledWith(
+        "SELECT * FROM product",
+        [],
+        expect.any(Function)
+    );
+
+    expect(products).toEqual([testProduct, anotherProduct]);
+
+    mockDBAll.mockRestore();
+  });
+
+  test("getProducts - filter by category", async () => {
+    const productDAO = new ProductDAO();
+    const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+      callback(null, [testProduct]);
+      return db;
+    });
+
+    const products = await productDAO.getProducts("category", "Smartphone", null);
+
+    expect(mockDBAll).toHaveBeenCalledWith(
+        "SELECT * FROM product WHERE category = ?",
+        ["Smartphone"],
+        expect.any(Function)
+    );
+
+    expect(products).toEqual([testProduct]);
+
+    mockDBAll.mockRestore();
+  });
+
+  test("getAvailableProducts - successful operation", async () => {
+    const productDAO = new ProductDAO();
+    const availableProducts = [testProduct, anotherProduct];
+    const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+      callback(null, availableProducts);
+      return db;
+    });
+
+    const products = await productDAO.getAvailableProducts(null, null, null);
+
+    expect(mockDBAll).toHaveBeenCalledWith(
+        "SELECT * FROM product WHERE quantity > 0",
+        [],
+        expect.any(Function)
+    );
+
+    expect(products).toEqual(availableProducts);
+
+    mockDBAll.mockRestore();
+  });
+
+  test("deleteAllProducts - successful operation", async () => {
+    const productDAO = new ProductDAO();
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, callback) => {
+      callback(null);
+      return db;
+    });
+
+    const result = await productDAO.deleteAllProducts();
+
+    expect(mockDBRun).toHaveBeenCalledWith(
+        "DELETE FROM product",
+        expect.any(Function)
+    );
+
+    expect(result).toBe(true);
+
+    mockDBRun.mockRestore();
+  });
+
+  test("deleteAllProducts - database error", async () => {
+    const productDAO = new ProductDAO();
+    const errorMessage = "Database error";
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, callback) => {
+      callback(new Error(errorMessage));
+      return db;
+    });
+
+    await expect(productDAO.deleteAllProducts()).rejects.toThrow(errorMessage);
+    mockDBRun.mockRestore();
+  });
+
+  test("deleteProduct - successful operation", async () => {
+    const productDAO = new ProductDAO();
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+      callback(null);
+      return db;
+    });
+
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+
+    const result = await productDAO.deleteProduct(testProduct.model);
+
+    expect(mockDBRun).toHaveBeenCalledWith(
+        "DELETE FROM product WHERE model = ?",
+        [testProduct.model],
+        expect.any(Function)
+    );
+
+    expect(result).toBe(true);
+
+    mockDBRun.mockRestore();
+  });
+
+  test("deleteProduct - product not found", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(undefined);
+
+    await expect(productDAO.deleteProduct(testProduct.model))
+        .rejects
+        .toThrow(ProductNotFoundError);
+  });
+});
