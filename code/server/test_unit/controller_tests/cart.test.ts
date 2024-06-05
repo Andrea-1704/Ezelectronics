@@ -11,6 +11,7 @@ import { Category, Product } from "../../src/components/product";
 import { beforeEach } from "node:test";
 import { get } from "http";
 import { error } from "console";
+import { EmptyCartError } from "../../src/errors/cartError";
 const baseURL = "/ezelectronics";
 
 let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
@@ -63,7 +64,7 @@ describe("controller unit tests", () => {
   describe("CartController", () => {
     test("It should add a product to the cart of the logged in user", async () => {
        
-      const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(undefined);
+      const addToCartSpy = jest.spyOn(CartDAO.prototype, "addToCart").mockResolvedValueOnce(undefined);
       
       const controller = new CartController();
       const response = await controller.addToCart(testCustomer, "test");
@@ -75,23 +76,23 @@ describe("controller unit tests", () => {
   })
 
   
-    // describe("CartController", () => {
-    //   test("It should add a product to the cart of the logged in user", async () => {
+    describe("CartController", () => {
+      test("It should add a product to the cart of the logged in user", async () => {
          
-    //     const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(undefined);
+        const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(undefined);
         
-    //     const controller = new CartController();
-    //     const response = await controller.addToCart(testCustomer, "test");
+        const controller = new CartController();
+        const response = await controller.addToCart(testCustomer, "test");
     
-    //     expect(addToCartSpy).toHaveBeenCalledTimes(1);
-    //     expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
-    //     expect(response).toBe(undefined);
-    //   }, 10000);
-    // })
+        expect(addToCartSpy).toHaveBeenCalledTimes(1);
+        expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
+        expect(response).toBe(undefined);
+      }, 10000);
+    })
 
     describe("CartController", () => {
       test("It should retrieve the user's cart if it exists", async () => {
-        const getCartSpy = jest.spyOn(CartController.prototype, "getCart").mockResolvedValueOnce(testCart);
+        const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(testCart);
         
         const controller = new CartController();
         const response = await controller.getCart(testCustomer);
@@ -100,9 +101,22 @@ describe("controller unit tests", () => {
         expect(getCartSpy).toHaveBeenCalledWith(testCustomer);
         expect(response).toEqual(testCart);
       }, 10000);
+
+      describe("CartController", () => {
+        let emptyCart = new Cart(0, "customer", false, "17-04-2002", 0, []);
+        test("It should retrieve the user's cart if it exists", async () => {
+          const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(emptyCart);
+          
+          const controller = new CartController();
+          const response = await controller.getCart(testCustomer);
+    
+          expect(getCartSpy).toHaveBeenCalledTimes(1);
+          expect(getCartSpy).toHaveBeenCalledWith(testCustomer);
+          expect(response).toEqual(emptyCart);
+        }, 10000);
   
       test("It should return undefined if there is no current cart for the user", async () => {
-        const getCartSpy = jest.spyOn(CartController.prototype, "getCart").mockResolvedValueOnce(undefined);
+        const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(undefined);
         
         const controller = new CartController();
         const response = await controller.getCart(testCustomer);
@@ -115,7 +129,7 @@ describe("controller unit tests", () => {
 
     describe("CartController", () => {
       test("It should checkout the user's cart if possible", async () => {
-        const checkoutCartSpy = jest.spyOn(CartController.prototype, "checkoutCart").mockResolvedValueOnce(true);
+        const checkoutCartSpy = jest.spyOn(CartDAO.prototype, "checkoutCart").mockResolvedValueOnce(true);
         
         const controller = new CartController();
         const response = await controller.checkoutCart(testCustomer);
@@ -126,7 +140,7 @@ describe("controller unit tests", () => {
       }, 10000);
   
       test("It should return false if the cart cannot be checked out", async () => {
-        const checkoutCartSpy = jest.spyOn(CartController.prototype, "checkoutCart").mockResolvedValueOnce(false);
+        const checkoutCartSpy = jest.spyOn(CartDAO.prototype, "checkoutCart").mockResolvedValueOnce(false);
         
         const controller = new CartController();
         const response = await controller.checkoutCart(testCustomer);
@@ -140,7 +154,7 @@ describe("controller unit tests", () => {
     describe("CartController", () => {
       test("It should handle errors when adding a product to the cart", async () => {
         const error = new Error("Database error");
-        const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockRejectedValueOnce(error);
+        const addToCartSpy = jest.spyOn(CartDAO.prototype, "addToCart").mockRejectedValueOnce(error);
         
         const controller = new CartController();
         let caughtError;
@@ -159,7 +173,7 @@ describe("controller unit tests", () => {
 
     describe("CartController", () => {
       test("It should handle errors when the product does not exist", async () => {
-        const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(false);
+        const addToCartSpy = jest.spyOn(CartDAO.prototype, "addToCart").mockResolvedValueOnce(false);
         
         const controller = new CartController();
         const response = await controller.addToCart(testCustomer, "non-existing-product");
@@ -170,7 +184,7 @@ describe("controller unit tests", () => {
       }, 10000);
     
       test("It should handle errors when the user does not exist", async () => {
-        const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(false);
+        const addToCartSpy = jest.spyOn(CartDAO.prototype, "addToCart").mockResolvedValueOnce(false);
         
         const controller = new CartController();
         const response = await controller.addToCart(testCustomer, "test");
@@ -181,7 +195,7 @@ describe("controller unit tests", () => {
       }, 10000);
     
       test("It should handle errors when the cart cannot be checked out", async () => {
-        const checkoutCartSpy = jest.spyOn(CartController.prototype, "checkoutCart").mockResolvedValueOnce(false);
+        const checkoutCartSpy = jest.spyOn(CartDAO.prototype, "checkoutCart").mockResolvedValueOnce(false);
         
         const controller = new CartController();
         const response = await controller.checkoutCart(testCustomer);
@@ -196,7 +210,7 @@ describe("controller unit tests", () => {
 
     describe("CartController", () => {
       test("Should remocve the cart of the logged in user", async () => {
-        const removeProductFromCartSpy = jest.spyOn(CartController.prototype, "removeProductFromCart").mockResolvedValueOnce(true);
+        const removeProductFromCartSpy = jest.spyOn(CartDAO.prototype, "removeProductFromCart").mockResolvedValueOnce(true);
         
         const controller = new CartController();
         const response = await controller.removeProductFromCart(testCustomer, testProduct.model);
@@ -207,7 +221,7 @@ describe("controller unit tests", () => {
       }, 10000);
   
       test("should return false if the product cannot be removed from the cart", async () => {
-        const removeProductFromCartSpy = jest.spyOn(CartController.prototype, "removeProductFromCart").mockResolvedValueOnce(false);
+        const removeProductFromCartSpy = jest.spyOn(CartDAO.prototype, "removeProductFromCart").mockResolvedValueOnce(false);
         
         const controller = new CartController();
         const response = await controller.removeProductFromCart(testCustomer, testProduct.model);
@@ -219,7 +233,7 @@ describe("controller unit tests", () => {
     });
     describe("CartController", () => {
       test("Should remove all the carts of all the users", async () => {
-        const deleteAllCartsSpy = jest.spyOn(CartController.prototype, "deleteAllCarts").mockResolvedValueOnce(true);
+        const deleteAllCartsSpy = jest.spyOn(CartDAO.prototype, "deleteAllCarts").mockResolvedValueOnce(true);
         
         const controller = new CartController();
         const response = await controller.deleteAllCarts();
@@ -229,7 +243,7 @@ describe("controller unit tests", () => {
       }, 10000);
   
       test("return false if the cart cannot be removed", async () => {
-        const deleteAllCartsSpy = jest.spyOn(CartController.prototype, "deleteAllCarts").mockResolvedValueOnce(false);
+        const deleteAllCartsSpy = jest.spyOn(CartDAO.prototype, "deleteAllCarts").mockResolvedValueOnce(false);
         
         const controller = new CartController();
         const response = await controller.deleteAllCarts();
@@ -247,7 +261,7 @@ describe("controller unit tests", () => {
     */
     describe("CartController", () => {
       test("Should get all the carts, if possible", async () => {
-        const getAllCarts = jest.spyOn(CartController.prototype, "getAllCarts").mockResolvedValueOnce(undefined);
+        const getAllCarts = jest.spyOn(CartDAO.prototype, "getAllCarts").mockResolvedValueOnce(undefined);
         
         const controller = new CartController();
         const response = await controller.getAllCarts();
@@ -259,7 +273,7 @@ describe("controller unit tests", () => {
     });
       describe("CartController", () => {
         test("Should get all the carts, if possible", async () => {
-          const getAllCarts = jest.spyOn(CartController.prototype, "getAllCarts").mockResolvedValueOnce([testCart]);
+          const getAllCarts = jest.spyOn(CartDAO.prototype, "getAllCarts").mockResolvedValueOnce([testCart]);
           
           const controller = new CartController();
           const response = await controller.getAllCarts();
@@ -271,4 +285,5 @@ describe("controller unit tests", () => {
       
     
     
+});
 });
