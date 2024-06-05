@@ -42,7 +42,7 @@ class ReviewController {
      * @param model The model of the product to get reviews from
      * @returns A Promise that resolves to an array of ProductReview objects
      */
-    async getProductReviews(model: string) :Promise<ProductReview> {
+    async getProductReviews(model: string) :Promise<ProductReview[]> {
         const product = await this.productDao.getProductByModel(model)
         if(!product) throw new ProductNotFoundError()
         return this.dao.getProductReviews(model)
