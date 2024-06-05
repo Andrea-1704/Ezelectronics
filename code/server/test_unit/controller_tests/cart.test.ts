@@ -34,7 +34,7 @@ afterEach(() => {
 describe("controller unit tests", () => {
   describe("CartController", () => {
     test("It should add a product to the cart of the logged in user", async () => {
-       
+      
       const addToCartSpy = jest.spyOn(CartDAO.prototype, "addToCart").mockResolvedValueOnce(true);
       
       const controller = new CartController();

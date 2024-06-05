@@ -186,7 +186,7 @@ test("addToCart - SQL error when updating product quantity in cart", async () =>
 });
 
 
-/*test("addToCart - SQL error when inserting new product in cart", async () => {
+test("addToCart - SQL error when inserting new product in cart", async () => {
     const cartDao = new CartDAO()
     const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
     let productInCart = new ProductInCart("test", 20, Category.SMARTPHONE, 30);
@@ -200,20 +200,25 @@ test("addToCart - SQL error when updating product quantity in cart", async () =>
         model: "test",
         sellingPrice: 100
     };
-    const mockDBRun = jest.spyOn(db, "run").mockImplementation((_sql, _params, callback) => {
-        if (_sql.includes("INSERT INTO cart_product")) {
-            callback(new Error("SQL error"))
-        } else {
-            callback(null)
-        }
+
+    const mockDBAll = jest.spyOn(db, "run").mockImplementationOnce((_sql, _params, callback) => {
+        callback(null)
         return {} as Database
     });
-    await expect(cartDao.addToCart(user, product.model)).rejects.toThrow("SQL error");
-    mockDBRun.mockRestore();
+
+    const mockDBAll2 = jest.spyOn(db, "run").mockImplementationOnce((_sql, _params, callback) => {
+        callback(new Error())
+        
+        return {} as Database
+    });
+
+    await expect(cartDao.addToCart(user, product.model)).rejects.toThrow(Error);
+    mockDBAll.mockRestore();
+    mockDBAll2.mockRestore();
     getProductSpy.mockRestore();
     hasCartSpy.mockRestore();
     getCartSpy.mockRestore();
-});*/
+});
 
 
 
@@ -392,14 +397,12 @@ test("checkoutCart - successful checkout", async () => {
 
     await cartDao.checkoutCart(user)
 
-    // Verifica che db.run sia stato chiamato con la query SQL corretta per aggiornare il carrello
     expect(mockDBRun).toHaveBeenCalledWith(
         "UPDATE cart SET paid = 1, paymentDate = ?, total = ? WHERE id = ?",
         [expect.any(String), testCart.total, testCart.id],
         expect.any(Function)
     )
 
-    // Verifica che db.run sia stato chiamato con la query SQL corretta per aggiornare il magazzino
     testCart.products.forEach((productInCart) => {
         expect(mockDBRun).toHaveBeenCalledWith(
             "UPDATE product SET quantity = quantity - ? WHERE model = ?",
@@ -450,21 +453,18 @@ test("getCustomerCarts - successful operation", async () => {
 
     const carts = await cartDao.getCustomerCarts(user)
 
-    // Verifica che db.all sia stato chiamato con la query SQL corretta per ottenere i carrelli
     expect(mockDBAll).toHaveBeenCalledWith(
         "SELECT * FROM cart WHERE customer = ? AND paid = 1",
         [user.username],
         expect.any(Function)
     )
 
-    // Verifica che db.all sia stato chiamato con la query SQL corretta per ottenere i prodotti nel carrello
     expect(mockDBAll).toHaveBeenCalledWith(
         "SELECT * FROM cart_product WHERE cartId = ?",
         [testCart.id],
         expect.any(Function)
     )
 
-    // Verifica che il risultato sia corretto
     expect(carts).toEqual([testCart])
 
     mockDBAll.mockRestore()
@@ -479,7 +479,6 @@ test("getCustomerCarts - database error", async () => {
         return {} as Database
     });
 
-    // Verifica che venga rifiutata con un errore quando c'è un errore del database
     await expect(cartDao.getCustomerCarts(user)).rejects.toThrow(Error)
 
     mockDBAll.mockRestore()
