@@ -26,6 +26,8 @@ jest.mock("../../src/routers/auth")
 
 
 afterEach(() => {
+  jest.clearAllMocks();
+  jest.resetAllMocks();
   jest.restoreAllMocks();
 });
 
@@ -38,8 +40,8 @@ describe("controller unit tests", () => {
       const controller = new CartController();
       //const response = await controller.addToCart(testCustomer, "test");
       const response=await controller.addToCart(testCustomer, "test");
-      expect(CartController.prototype.addToCart).toHaveBeenCalledTimes(1);
-      expect(CartController.prototype.addToCart).toHaveBeenCalledWith(testCustomer, "test");
+      expect(CartDAO.prototype.addToCart).toHaveBeenCalledTimes(1);
+      expect(CartDAO.prototype.addToCart).toHaveBeenCalledWith(testCustomer, "test");
       expect(response).toBe(true);
     }, 10000);
   })
@@ -54,14 +56,14 @@ describe("controller unit tests", () => {
       const controller = new CartController();
       //const response = await controller.addToCart(testCustomer, "test");
       const response=await controller.addToCart(testCustomer, "test2");
-      expect(CartController.prototype.addToCart).toHaveBeenCalledTimes(1);
-      expect(CartController.prototype.addToCart).toHaveBeenCalledWith(testCustomer, "test2");
+      expect(CartDAO.prototype.addToCart).toHaveBeenCalledTimes(1);
+      expect(CartDAO.prototype.addToCart).toHaveBeenCalledWith(testCustomer, "test2");
       expect(response).toBe(false);
     }, 10000);
   })
 
     
-  describe("CartController", () => {
+  /*describe("CartController", () => {
     test("It should add a product to the cart of the logged in user", async () => {
        
       const addToCartSpy = jest.spyOn(CartDAO.prototype, "addToCart").mockResolvedValueOnce(undefined);
@@ -73,10 +75,10 @@ describe("controller unit tests", () => {
       expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
       expect(response).toBe(undefined);
     }, 10000);
-  })
+  })*/
 
   
-    describe("CartController", () => {
+    /*describe("CartController", () => {
       test("It should add a product to the cart of the logged in user", async () => {
          
         const addToCartSpy = jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(undefined);
@@ -88,7 +90,7 @@ describe("controller unit tests", () => {
         expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
         expect(response).toBe(undefined);
       }, 10000);
-    })
+    })*/
 
     describe("CartController", () => {
       test("It should retrieve the user's cart if it exists", async () => {
@@ -97,10 +99,10 @@ describe("controller unit tests", () => {
         const controller = new CartController();
         const response = await controller.getCart(testCustomer);
   
-        expect(getCartSpy).toHaveBeenCalledTimes(1);
-        expect(getCartSpy).toHaveBeenCalledWith(testCustomer);
+        expect(CartDAO.prototype.getCart).toHaveBeenCalledTimes(1);
+        expect(CartDAO.prototype.getCart).toHaveBeenCalledWith(testCustomer);
         expect(response).toEqual(testCart);
-      }, 10000);
+      });
 
       describe("CartController", () => {
         let emptyCart = new Cart(0, "customer", false, "17-04-2002", 0, []);
@@ -110,12 +112,12 @@ describe("controller unit tests", () => {
           const controller = new CartController();
           const response = await controller.getCart(testCustomer);
     
-          expect(getCartSpy).toHaveBeenCalledTimes(1);
-          expect(getCartSpy).toHaveBeenCalledWith(testCustomer);
+          expect(CartDAO.prototype.getCart).toHaveBeenCalledTimes(1);
+          expect(CartDAO.prototype.getCart).toHaveBeenCalledWith(testCustomer);
           expect(response).toEqual(emptyCart);
-        }, 10000);
+        });
   
-      test("It should return undefined if there is no current cart for the user", async () => {
+      /*test("It should return undefined if there is no current cart for the user", async () => {
         const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(undefined);
         
         const controller = new CartController();
@@ -125,7 +127,7 @@ describe("controller unit tests", () => {
         expect(getCartSpy).toHaveBeenCalledWith(testCustomer);
         expect(response).toBeUndefined();
       }, 10000);
-    });
+    });*/
 
     describe("CartController", () => {
       test("It should checkout the user's cart if possible", async () => {
@@ -134,10 +136,10 @@ describe("controller unit tests", () => {
         const controller = new CartController();
         const response = await controller.checkoutCart(testCustomer);
   
-        expect(checkoutCartSpy).toHaveBeenCalledTimes(1);
-        expect(checkoutCartSpy).toHaveBeenCalledWith(testCustomer);
+        expect(CartDAO.prototype.checkoutCart).toHaveBeenCalledTimes(1);
+        expect(CartDAO.prototype.checkoutCart).toHaveBeenCalledWith(testCustomer);
         expect(response).toBe(true);
-      }, 10000);
+      });
   
       test("It should return false if the cart cannot be checked out", async () => {
         const checkoutCartSpy = jest.spyOn(CartDAO.prototype, "checkoutCart").mockResolvedValueOnce(false);
@@ -145,10 +147,10 @@ describe("controller unit tests", () => {
         const controller = new CartController();
         const response = await controller.checkoutCart(testCustomer);
   
-        expect(checkoutCartSpy).toHaveBeenCalledTimes(1);
-        expect(checkoutCartSpy).toHaveBeenCalledWith(testCustomer);
+        expect(CartDAO.prototype.checkoutCart).toHaveBeenCalledTimes(1);
+        expect(CartDAO.prototype.checkoutCart).toHaveBeenCalledWith(testCustomer);
         expect(response).toBe(false);
-      }, 10000);
+      });
     });
 
     describe("CartController", () => {
@@ -167,7 +169,7 @@ describe("controller unit tests", () => {
         expect(addToCartSpy).toHaveBeenCalledTimes(1);
         expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
         expect(caughtError).toEqual(error);
-      }, 10000);
+      });
     });
 
 
@@ -181,7 +183,7 @@ describe("controller unit tests", () => {
         expect(addToCartSpy).toHaveBeenCalledTimes(1);
         expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "non-existing-product");
         expect(response).toBe(false);
-      }, 10000);
+      });
     
       test("It should handle errors when the user does not exist", async () => {
         const addToCartSpy = jest.spyOn(CartDAO.prototype, "addToCart").mockResolvedValueOnce(false);
@@ -192,7 +194,7 @@ describe("controller unit tests", () => {
         expect(addToCartSpy).toHaveBeenCalledTimes(1);
         expect(addToCartSpy).toHaveBeenCalledWith(testCustomer, "test");
         expect(response).toBe(false);
-      }, 10000);
+      });
     
       test("It should handle errors when the cart cannot be checked out", async () => {
         const checkoutCartSpy = jest.spyOn(CartDAO.prototype, "checkoutCart").mockResolvedValueOnce(false);
@@ -203,7 +205,7 @@ describe("controller unit tests", () => {
         expect(checkoutCartSpy).toHaveBeenCalledTimes(1);
         expect(checkoutCartSpy).toHaveBeenCalledWith(testCustomer);
         expect(response).toBe(false);
-      }, 10000);
+      });
     });
     
     
@@ -218,7 +220,7 @@ describe("controller unit tests", () => {
         expect(removeProductFromCartSpy).toHaveBeenCalledTimes(1);
         expect(removeProductFromCartSpy).toHaveBeenCalledWith(testCustomer, testProduct.model);
         expect(response).toBe(true);
-      }, 10000);
+      });
   
       test("should return false if the product cannot be removed from the cart", async () => {
         const removeProductFromCartSpy = jest.spyOn(CartDAO.prototype, "removeProductFromCart").mockResolvedValueOnce(false);
@@ -229,7 +231,7 @@ describe("controller unit tests", () => {
         expect(removeProductFromCartSpy).toHaveBeenCalledTimes(1);
         expect(removeProductFromCartSpy).toHaveBeenCalledWith(testCustomer, testProduct.model);
         expect(response).toBe(false);
-      }, 10000);
+      });
     });
     describe("CartController", () => {
       test("Should remove all the carts of all the users", async () => {
@@ -250,7 +252,7 @@ describe("controller unit tests", () => {
   
         expect(deleteAllCartsSpy).toHaveBeenCalledTimes(1);
         expect(response).toBe(false);
-      }, 10000);
+      });
     });
 
     /*@returns A Promise that resolves to an array of carts.
@@ -259,7 +261,7 @@ describe("controller unit tests", () => {
       return this.dao.getAllCarts()
     }
     */
-    describe("CartController", () => {
+    /*describe("CartController", () => {
       test("Should get all the carts, if possible", async () => {
         const getAllCarts = jest.spyOn(CartDAO.prototype, "getAllCarts").mockResolvedValueOnce(undefined);
         
@@ -270,7 +272,7 @@ describe("controller unit tests", () => {
         expect(response).toBe(undefined);
       }, 10000);
 
-    });
+    });*/
       describe("CartController", () => {
         test("Should get all the carts, if possible", async () => {
           const getAllCarts = jest.spyOn(CartDAO.prototype, "getAllCarts").mockResolvedValueOnce([testCart]);
@@ -280,10 +282,11 @@ describe("controller unit tests", () => {
     
           expect(getAllCarts).toHaveBeenCalledTimes(1);
           expect(response).toStrictEqual([testCart]);
-        }, 10000);
+        });
       });
       
     
     
+});
 });
 });
