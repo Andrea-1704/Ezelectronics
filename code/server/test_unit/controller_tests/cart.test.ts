@@ -233,6 +233,74 @@ describe("controller unit tests", () => {
         expect(response).toBe(false);
       });
     });
+
+
+    describe("CartController", () => {
+      test("It should clear all the carts", async () => {
+         
+        const addToCartSpy = jest.spyOn(CartDAO.prototype, "clearCart").mockResolvedValueOnce(true);
+        
+        const controller = new CartController();
+        //const response = await controller.addToCart(testCustomer, "test");
+        const response=await controller.clearCart(testCustomer);
+        expect(CartDAO.prototype.clearCart).toHaveBeenCalledTimes(1);
+        expect(CartDAO.prototype.clearCart).toHaveBeenCalledWith(testCustomer);
+        expect(response).toBe(true);
+      });
+    })
+
+    describe("CartController", () => {
+      test("error in clear cart", async () => {
+         
+        const addToCartSpy = jest.spyOn(CartDAO.prototype, "clearCart").mockResolvedValueOnce(false);
+        
+        const controller = new CartController();
+        //const response = await controller.addToCart(testCustomer, "test");
+        const response=await controller.clearCart(testCustomer);
+        expect(CartDAO.prototype.clearCart).toHaveBeenCalledTimes(1);
+        expect(CartDAO.prototype.clearCart).toHaveBeenCalledWith(testCustomer);
+        expect(response).toBe(false);
+      });
+    })
+
+
+
+    describe("CartController", () => {
+      test("It should get customer's cart", async () => {
+        let testCart = new Cart(0, "customer", false, "17-04-2002", 0, []);
+        let testProduct= new Product(10, "iphone13", Category.SMARTPHONE, "10-04-2002"," " , 3);
+
+
+        const addToCartSpy = jest.spyOn(CartDAO.prototype, "getCustomerCarts").mockResolvedValueOnce([testCart]);
+        
+        const controller = new CartController();
+        //const response = await controller.addToCart(testCustomer, "test");
+        const response=await controller.getCustomerCarts(testCustomer);
+        expect(CartDAO.prototype.getCustomerCarts).toHaveBeenCalledTimes(1);
+        expect(CartDAO.prototype.getCustomerCarts).toHaveBeenCalledWith(testCustomer);
+        expect(response).toEqual([testCart]);
+      });
+    })
+
+    describe("CartController", () => {
+      test("error in clear cart", async () => {
+         
+        let testCart = new Cart(0, "customer4", false, "17-04-2002", 0, []);
+        let testProduct= new Product(10, "iphone13", Category.SMARTPHONE, "10-04-2002"," " , 3);
+
+
+        const addToCartSpy = jest.spyOn(CartDAO.prototype, "getCustomerCarts").mockResolvedValueOnce([]);
+        
+        const controller = new CartController();
+        //const response = await controller.addToCart(testCustomer, "test");
+        const response=await controller.getCustomerCarts(testCustomer);
+        expect(CartDAO.prototype.getCustomerCarts).toHaveBeenCalledTimes(1);
+        expect(CartDAO.prototype.getCustomerCarts).toHaveBeenCalledWith(testCustomer);
+        expect(response).toEqual([]);
+      });
+    })
+
+
     describe("CartController", () => {
       test("Should remove all the carts of all the users", async () => {
         const deleteAllCartsSpy = jest.spyOn(CartDAO.prototype, "deleteAllCarts").mockResolvedValueOnce(true);
