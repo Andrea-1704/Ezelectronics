@@ -1,9 +1,9 @@
-import {describe, test, expect, beforeAll, afterAll, jest} from "@jest/globals";
+import { describe, test, expect, beforeAll, afterAll, jest } from "@jest/globals";
 import { User, Role } from "../../src/components/user";
 import { Category, Product } from "../../src/components/product";
 import ReviewController from "../../src/controllers/reviewController";
 import request from "supertest";
-import {app} from "../../index";
+import { app } from "../../index";
 import ErrorHandler from "../../src/helper";
 import { beforeEach } from "node:test";
 import Authenticator from "../../src/routers/auth";
@@ -12,27 +12,27 @@ import exp from "node:constants";
 const baseURL = "/ezelectronics";
 
 let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
-let testProduct= new Product(10, "iphone13", Category.SMARTPHONE, "10-04-2002"," " , 3);
+let testProduct = new Product(10, "iphone13", Category.SMARTPHONE, "10-04-2002", " ", 3);
 let testReviews = [
     {
-        model: "iphone13", 
-        user: "username1", 
-        score: 3, 
-        date: "25-04-2022", 
+        model: "iphone13",
+        user: "username1",
+        score: 3,
+        date: "25-04-2022",
         comment: "comment1"
     },
     {
         model: "iphone14",
-        user: "username2", 
-        score: 4, 
-        date: "26-04-2023", 
+        user: "username2",
+        score: 4,
+        date: "26-04-2023",
         comment: "comment2"
     },
     {
-        model: "iphone13", 
-        user: "username3", 
-        score: 4, 
-        date: "13-11-2023", 
+        model: "iphone13",
+        user: "username3",
+        score: 4,
+        date: "13-11-2023",
         comment: "comment3"
     }
 ];
@@ -42,8 +42,16 @@ jest.mock("../../src/routers/auth");
 
 describe("Route unit tests", () => {
     describe("POST /reviews/:model", () => {
-        test("it adds a review to the corresponding product", async() => {
-            const user = {username: "customer"};
+        test("it adds a review to the corresponding product", async () => {
+            //all user instead of username
+            const user = {
+                username: "customer1",
+                name: "john",
+                surname: "smith",
+                role: Role.CUSTOMER,
+                address: "address1",
+                birthdate: "2004-12-06"
+            };
             const model = "iphone13";
             const score = 4;
             const comment = "test_comment";
@@ -62,35 +70,88 @@ describe("Route unit tests", () => {
                 body: jest.fn().mockImplementation((field) => {
                     if (field === 'score') {
                         return {
-                            isInt: ({min, max}) => {
+                            isInt: ({ min, max }) => {
                                 if (min === 1 && max === 5) {
                                     return {};
                                 }
-                                return { custom: () => ({})};
+                                return { custom: () => ({}) };
                             },
                         };
                     };
                     if (field === 'comment') {
-                        return { optional: () => ({ isString: () => ({})})};
+                        return { optional: () => ({ isString: () => ({}) }) };
                     }
                     return {};
                 }),
-              }));
-              jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => {
+            }));
+            jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => {
                 return next();
-              });
-              jest.spyOn(ReviewController.prototype, "addReview").mockResolvedValueOnce();
+            });
+            jest.spyOn(ReviewController.prototype, "addReview").mockResolvedValueOnce();
 
-              const response = await request(app).post('{$baseURL}/reviews/${model}').send({score, comment});
-              expect(response.status).toBe(200);
-              expect(ReviewController.prototype.addReview).toHaveBeenCalled();
-              expect(ReviewController.prototype.addReview).toHaveBeenLastCalledWith(user, model);
+            const response = await request(app).post(`${baseURL}/reviews/${model}`).send({ score, comment });
+            expect(response.status).toBe(200);
+            expect(ReviewController.prototype.addReview).toHaveBeenCalled();
+            expect(ReviewController.prototype.addReview).toHaveBeenLastCalledWith(user, model);
+        }, 1000);
+
+        test("it handles the error", async () => {
+            const error = new Error("testing error");
+            const user = {
+                username: "customer1",
+                name: "john",
+                surname: "smith",
+                role: Role.CUSTOMER,
+                address: "address1",
+                birthdate: "2004-12-06"
+            };
+            const model = "iphone13";
+            const score = 4;
+            const comment = "test_comment";
+
+            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                req.user = user;
+                return next();
+            });
+            jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                param: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+                body: jest.fn().mockImplementation((field) => {
+                    if (field === 'score') {
+                        return {
+                            isInt: ({ min, max }) => {
+                                if (min === 1 && max === 5) {
+                                    return {};
+                                }
+                                return { custom: () => ({}) };
+                            },
+                        };
+                    };
+                    if (field === 'comment') {
+                        return { optional: () => ({ isString: () => ({}) }) };
+                    }
+                    return {};
+                }),
+            }));
+            jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.spyOn(ReviewController.prototype, "addReview").mockRejectedValueOnce(error);
+
+            const response = await request(app).post(`${baseURL}/reviews/${model}`).send({ score, comment });
+            expect(response.status).toBe(200);
+            expect(ReviewController.prototype.addReview).toHaveBeenCalled();
+            expect(ReviewController.prototype.addReview).toHaveBeenLastCalledWith(user, model);
         }, 1000);
     });
 
 
     describe("GET /reviews/:model", () => {
-        test("it returns the reviews of the corresponding product model", async() => {
+        test("it returns the reviews of the corresponding product model", async () => {
             const model = "iphone13";
             jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
                 return next();
@@ -102,33 +163,77 @@ describe("Route unit tests", () => {
             }));
             jest.spyOn(ReviewController.prototype, "getProductReviews").mockResolvedValueOnce(testReviews);
 
-            const response = await request(app).get('{$baseURL}/reviews/${model}');
+            const response = await request(app).get(`${baseURL}/reviews/${model}`);
             expect(response.status).toBe(200);
             expect(ReviewController.prototype.getProductReviews).toHaveBeenCalled();
             expect(ReviewController.prototype.getProductReviews).toHaveBeenCalledWith(model);
             expect(response.body).toEqual(testReviews);
-        })
-    })
+        });
+
+        test("it handles error", async () => {
+            const user = {
+                username: "customer1",
+                name: "john",
+                surname: "smith",
+                role: Role.CUSTOMER,
+                address: "address1",
+                birthdate: "2004-12-06"
+            };
+            const model = "iphone13";
+            const error = new Error("testing error");
+            const next = jest.fn();
+            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.spyOn(ReviewController.prototype, "getProductReviews").mockRejectedValueOnce(error);
+            const response = await request(app).get(`&{baseURL}/reviews/${model}`);
+            expect(response.status).not.toBe(200);
+        });
+    });
 
     describe("DELETE /reviews/:model", () => {
-        const model = "iphone13";
-        const user = {username: "customer"};
-        jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
-            req.user = user;
-            return next();
-        });
-        jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
-            return next();
-        });
-        jest.mock('express-validator', () => ({
-            body: jest.fn().mockImplementation(() => ({
-                isString: () => ({ notEmpty: () => ({}) }),
-            })),
-        }));
-        jest.spyOn(ReviewController.prototype, "deleteReview").mockResolvedValueOnce();
 
-        test("it deletes the reviews made by the current user on the corresponding product", async() => {
-            const response = await request(app).delete('${baseURL}/reviews/${model}');
+        test("it deletes the reviews made by the current user on the corresponding product", async () => {
+            const model = "iphone13";
+            const user = { username: "customer" };
+            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                req.user = user;
+                return next();
+            });
+            jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                body: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
+            jest.spyOn(ReviewController.prototype, "deleteReview").mockResolvedValueOnce();
+
+            const response = await request(app).delete(`${baseURL}/reviews/${model}`);
+            expect(response.status).toBe(200);
+            expect(ReviewController.prototype.deleteReview).toHaveBeenCalledWith(model, user);
+        });
+
+        test("it deletes the reviews made by the current user on the corresponding product", async () => {
+            const error = new Error("testing error");
+            const model = "iphone13";
+            const user = { username: "customer" };
+            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                req.user = user;
+                return next();
+            });
+            jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                body: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
+            jest.spyOn(ReviewController.prototype, "deleteReview").mockRejectedValueOnce(error);
+
+            const response = await request(app).delete(`${baseURL}/reviews/${model}`);
             expect(response.status).toBe(200);
             expect(ReviewController.prototype.deleteReview).toHaveBeenCalledWith(model, user);
         });
@@ -136,53 +241,95 @@ describe("Route unit tests", () => {
     });
 
     describe("DELETE /reviews/:model/all", () => {
-        const model = "iphone13";
-        const user = {username: "manager"};
-        jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
-            req.user = user;
-            return next();
-        });
-        //is admin or manager?
-        jest.spyOn(Authenticator.prototype, "isManager").mockImplementation((req, res, next) => {
-            return next();
-        });
-        jest.mock('express-validator', () => ({
-            body: jest.fn().mockImplementation(() => ({
-                isString: () => ({ notEmpty: () => ({}) }),
-            })),
-        }));
-        jest.spyOn(ReviewController.prototype, "deleteReviewsOfProduct").mockResolvedValueOnce();
+        test("it deletes the reviews made by the current user on the corresponding product", async () => {
+            const model = "iphone13";
+            const user = { username: "manager" };
+            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                req.user = user;
+                return next();
+            });
 
-        test("it deletes the reviews made by the current user on the corresponding product", async() => {
-            const response = await request(app).delete('${baseURL}/reviews/${model}/all');
+            jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                param: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
+            jest.spyOn(ReviewController.prototype, "deleteReviewsOfProduct").mockResolvedValueOnce();
+
+            const response = await request(app).delete(`${baseURL}/reviews/${model}/all`);
             expect(response.status).toBe(200);
             expect(ReviewController.prototype.deleteReviewsOfProduct).toHaveBeenCalledWith(model);
+        });
+
+        test("it handles errors while deleting all reviews on product", async () => {
+            const model = "iphone13";
+            const error = new Error("error while deleting reviews");
+
+            jest.mock('express-validator', () => ({
+                body: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
+            jest.spyOn(ReviewController.prototype, "deleteAllReviews").mockRejectedValueOnce(error);
+
+            const response = await request(app).delete(`${baseURL}/reviews/${model}/all`);
+            expect(ReviewController.prototype.deleteAllReviews).toHaveBeenCalledWith(model);
+            expect(response.status).not.toBe(200);
         });
     });
 
     describe("DELETE /reviews", () => {
-        const model = "iphone13";
-        const user = {username: "manager"};
-        jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
-            req.user = user;
-            return next();
-        });
-        //is admin or manager?
-        jest.spyOn(Authenticator.prototype, "isManager").mockImplementation((req, res, next) => {
-            return next();
-        });
-        jest.mock('express-validator', () => ({
-            body: jest.fn().mockImplementation(() => ({
-                isString: () => ({ notEmpty: () => ({}) }),
-            })),
-        }));
-        jest.spyOn(ReviewController.prototype, "deleteAllReviews").mockResolvedValueOnce();
 
-        test("it deletes the reviews made by the current user on the corresponding product", async() => {
-            const response = await request(app).delete('${baseURL}/reviews');
-            expect(response.status).toBe(200);
+        test("it deletes the reviews made by the current user on the corresponding product", async () => {
+            const model = "iphone13";
+            const user = { username: "manager" };
+            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                req.user = user;
+                return next();
+            });
+            //is admin or manager?
+            jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                body: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
+            jest.spyOn(ReviewController.prototype, "deleteAllReviews").mockResolvedValueOnce();
+
+            const response = await request(app).delete(`${baseURL}/reviews`);
             expect(ReviewController.prototype.deleteAllReviews).toHaveBeenCalled();
+            expect(response.status).toBe(200);
         });
+
+        test("it handles errors while deleting all reviews made by user on product", async () => {
+            const model = "iphone13";
+            const user = { username: "manager" };
+            const error = new Error("error while deleting reviews");
+            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                req.user = user;
+                return next();
+            });
+            //is admin or manager?
+            jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                body: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
+            jest.spyOn(ReviewController.prototype, "deleteAllReviews").mockRejectedValueOnce(error);
+
+            const response = await request(app).delete(`${baseURL}/reviews`);
+            expect(ReviewController.prototype.deleteAllReviews).toHaveBeenCalled();
+            expect(response.status).not.toBe(200);
+        });
+
     });
 });
 
