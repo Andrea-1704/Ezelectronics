@@ -35,6 +35,20 @@ describe("Review Controller", () => {
             jest.spyOn(ReviewDAO.prototype, "hasReviewed").mockResolvedValueOnce(false);
             const addReviewSpy = jest.spyOn(ReviewDAO.prototype, "addReview").mockResolvedValueOnce(undefined);
             
+            const response = await controller.addReview("iphone13", testCustomer, 3);
+
+            expect(addReviewSpy).toHaveBeenCalledTimes(1);
+            expect(addReviewSpy).toHaveBeenCalledWith("iphone13", testCustomer, 3);
+            expect(response).resolves.toBeUndefined();
+        }, 10000);
+    });
+    describe("Add Review Successful", () => {
+        test("It should add a review to the corresponding product", async () => {
+            const controller = new ReviewController();
+            jest.spyOn(ProductDAO.prototype, "getProductByModel").mockResolvedValueOnce(testProduct);
+            jest.spyOn(ReviewDAO.prototype, "hasReviewed").mockResolvedValueOnce(false);
+            const addReviewSpy = jest.spyOn(ReviewDAO.prototype, "addReview").mockResolvedValueOnce(undefined);
+            
             const response = await controller.addReview("iphone13", testCustomer, 3, "test_comment");
 
             expect(addReviewSpy).toHaveBeenCalledTimes(1);
@@ -145,13 +159,19 @@ describe("Delete Product Review Error - product is not yet reviewed by user", ()
         const controller = new ReviewController();
         jest.spyOn(ProductDAO.prototype, "getProductByModel").mockResolvedValueOnce(testProduct);
         jest.spyOn(ReviewDAO.prototype, "hasReviewed").mockResolvedValueOnce(false);
-        const addReviewSpy = jest.spyOn(ReviewDAO.prototype, "addReview").mockResolvedValueOnce(undefined);
+        const deleteReviewSpy = jest.spyOn(ReviewDAO.prototype, "deleteReview").mockResolvedValueOnce(undefined);
         
-        const response = await controller.addReview("iphone13", testCustomer, 3, "test_comment");
+        const response = await controller.deleteReview("iphone13", testCustomer);
 
-        expect(addReviewSpy).toHaveBeenCalledTimes(1);
-        expect(addReviewSpy).toHaveBeenCalledWith("iphone13", testCustomer, 3, "test_comment");
+        expect(deleteReviewSpy).toHaveBeenCalledTimes(1);
+        expect(deleteReviewSpy).toHaveBeenCalledWith("iphone13", testCustomer);
         expect(response).rejects.toThrow(NoReviewProductError);
+    }, 10000);
+});
+describe("Delete Product Review Error - product does not exist", () => {
+    test("It should return an error if the user has already reviewed the product", async () => {
+        const controller = new ReviewController();
+        await expect(controller.deleteReview("", testCustomer)).rejects.toThrow(ProductNotFoundError);
     }, 10000);
 });
 describe("ReviewController", () => {
