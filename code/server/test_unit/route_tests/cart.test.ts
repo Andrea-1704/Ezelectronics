@@ -8,6 +8,7 @@ import { app } from "../../index";
 import ErrorHandler from "../../src/helper"
 import { Category, Product } from "../../src/components/product";
 import { beforeEach } from "node:test";
+import { error } from "node:console";
 const baseURL = "/ezelectronics";
 
 let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
@@ -39,6 +40,39 @@ describe("Route unit tests", () => {
       expect(response.body).toEqual(testCart)
     }, 10000);
   })
+
+
+  describe("GET /carts", () => {
+    test("It returns the cart of the logged in user", async() => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        return next();
+      })
+      jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+        return next();
+      })
+      jest.spyOn(CartController.prototype, "getCart").mockResolvedValueOnce(testCart);
+      const response = await request(app).get(baseURL + "/carts")
+      expect(response.status).toBe(200)
+      expect(CartController.prototype.getCart).toHaveBeenCalled()
+      expect(response.body).toEqual(testCart)
+    }, 10000);
+
+    test("It handles errors from getCart", async() => {
+      const error = new Error('Errore fittizio');
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        return next();
+      })
+      jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+        return next();
+      })
+      jest.spyOn(CartController.prototype, "getCart").mockRejectedValueOnce(error);
+      const response = await request(app).get(baseURL + "/carts")
+      expect(response.status).toBe(503)
+      expect(response.body).toEqual({ error: 'Internal Server Error', status: 503 })
+    });
+    
+})
+
 
 /*
 test this function:
@@ -113,7 +147,38 @@ this.router.get(
       expect(CartController.prototype.addToCart).toHaveBeenCalled();
       expect(CartController.prototype.addToCart).toHaveBeenCalledWith(user, model);
   
-    }, 10000);
+    });
+
+
+    test("error in adding a product to cart", async() => {
+      // Simula un oggetto `req` che includa `user` e `body`
+      const user = { username: "customer" }; // Assumi che questo sia l'utente loggato
+      const model = "iPhone13";
+      
+      // Setup mock
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        req.user = user; // Aggiungi l'utente al req
+        return next();
+      });
+      jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.mock('express-validator', () => ({
+        body: jest.fn().mockImplementation(() => ({
+            isString: () => ({ notEmpty: () => ({}) }),
+        })),
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => {
+        return next();
+      });
+      jest.spyOn(CartController.prototype, "addToCart").mockResolvedValueOnce(true);
+      
+      const response = await request(app).post(baseURL + "/carts").send({ model });
+      expect(response.status).toBe(200);
+      expect(CartController.prototype.addToCart).toHaveBeenCalled();
+      expect(CartController.prototype.addToCart).toHaveBeenCalledWith(user, model);
+  
+    });
   });
   
   /*
