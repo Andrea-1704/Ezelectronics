@@ -91,6 +91,7 @@ class CartDAO {
           return
         }
         if (cartEmpty) {
+          //console.log(new Cart(row.id, row.customer, row.paid, row.paymentDate, row.total, []));
           resolve(new Cart(row.id, row.customer, row.paid, row.paymentDate, row.total, []))
           return
         }
@@ -102,9 +103,13 @@ class CartDAO {
           }
           const products: ProductInCart[] = []
           for (const row1 of rows) {
+            
             const product = await this.productDao.getProductByModel(row1.model)
+            
             products.push(new ProductInCart(row1.model, row1.quantity, product.category, product.sellingPrice))
           }
+          console.log(row.id, row.customer, row.paid, row.paymentDate, row.total, products)
+          console.log(new Cart(row.id, row.customer, row.paid, row.paymentDate, row.total, products));
           resolve(new Cart(row.id, row.customer, row.paid, row.paymentDate, row.total, products))
         })
       })
