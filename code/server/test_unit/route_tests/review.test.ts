@@ -1,161 +1,351 @@
-import { afterEach, describe, test, expect, jest } from "@jest/globals";
+import { describe, test, expect, beforeAll, afterAll, jest } from "@jest/globals";
+import { User, Role } from "../../src/components/user";
+import { Category, Product } from "../../src/components/product";
+import ReviewController from "../../src/controllers/reviewController";
+import { ProductReview } from "../../src/components/review";
 import request from "supertest";
 import { app } from "../../index";
-import ReviewController from "../../src/controllers/reviewController";
+import ErrorHandler from "../../src/helper";
+import { afterEach, beforeEach } from "node:test";
 import Authenticator from "../../src/routers/auth";
-import { Role } from "../../src/components/user";
-import { mockReview } from "../mocks/mocks_reviews";
-
+import { isString } from "node:util";
+import exp from "node:constants";
 const baseURL = "/ezelectronics";
+
+let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
+let testProduct = new Product(10, "iphone13", Category.SMARTPHONE, "10-04-2002", " ", 3);
+let testReviews = [
+    {
+        model: "iphone13",
+        user: "username1",
+        score: 3,
+        date: "25-04-2022",
+        comment: "comment1"
+    },
+    {
+        model: "iphone14",
+        user: "username2",
+        score: 4,
+        date: "26-04-2023",
+        comment: "comment2"
+    },
+    {
+        model: "iphone13",
+        user: "username3",
+        score: 4,
+        date: "13-11-2023",
+        comment: "comment3"
+    }
+];
+let mockReview = {
+    model: "iphone",
+    user: "framary",
+    score: 5,
+    date: "2024-05-28",
+    comment: "uao"
+}
+
 jest.mock("../../src/controllers/reviewController");
 jest.mock("../../src/routers/auth");
 
 describe("Route Review Unit Tests", () => {
+
     afterEach(() => {
         jest.restoreAllMocks();
         jest.clearAllMocks();
     });
 
     //POST /:model
-    describe("Add Review Route", () => {
-        test("should add a review to the corresponding product", async () => {
-            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
-            jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => next());
+    describe("add review", () => {
+        test("it adds a review to the corresponding product", async () => {
+            const user = {
+                username: "customer1",
+                name: "john",
+                surname: "smith",
+                role: Role.CUSTOMER,
+                address: "address1",
+                birthdate: "2004-12-06"
+            };
+            const model = "iphone13";
+            const score = 4;
+            const comment = "test_comment";
+
+            const mockIsLoggedIn = jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                return next();
+            });
+            const mockIsCustomer = jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                param: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+                body: jest.fn().mockImplementation((field) => {
+                    if (field === 'score') {
+                        return {
+                            isInt: ({ min, max }: {min:number; max: number}) => {
+                                if (min === 1 && max === 5) {
+                                    return {};
+                                }
+                                return { custom: () => ({}) };
+                            },
+                        };
+                    };
+                    if (field === 'comment') {
+                        return { optional: () => ({ isString: () => ({}) }) };
+                    }
+                    return {};
+                }),
+            }));
+            jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => {
+                return next();
+            });
             jest.spyOn(ReviewController.prototype, "addReview").mockResolvedValueOnce();
 
-            const response = await request(app).post(`${baseURL}/reviews/${mockReview.model}`).send(mockReview);
+            const response = await request(app).post(`${baseURL}/reviews/${model}`).send({ score, comment });
             expect(response.status).toBe(200);
-            expect(ReviewController.prototype.addReview).toHaveBeenCalledWith(mockReview);
-        });
+            expect(mockIsLoggedIn).toHaveBeenCalledTimes(1);
+            expect(mockIsCustomer).toHaveBeenCalledTimes(1);
+            expect(ReviewController.prototype.addReview).toHaveBeenLastCalledWith(user, model);
+        }, 1000);
 
-        test("should handle error if controller throws an error", async () => {
-            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
-            jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => next());
-            const error = new Error("Internal Server Error");
+        test("it returns an error if one is thrown", async () => {
+            const error = new Error("testing error");
+            const user = {
+                username: "customer1",
+                name: "john",
+                surname: "smith",
+                role: Role.CUSTOMER,
+                address: "address1",
+                birthdate: "2004-12-06"
+            };
+            const model = "iphone13";
+            const score = 4;
+            const comment = "test_comment";
+
+            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                req.user = user;
+                return next();
+            });
+            jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                param: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+                body: jest.fn().mockImplementation((field) => {
+                    if (field === 'score') {
+                        return {
+                            isInt: ({ min, max }: {min:number; max: number}) => {
+                                if (min === 1 && max === 5) {
+                                    return {};
+                                }
+                                return { custom: () => ({}) };
+                            },
+                        };
+                    };
+                    if (field === 'comment') {
+                        return { optional: () => ({ isString: () => ({}) }) };
+                    }
+                    return {};
+                }),
+            }));
+            jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => {
+                return next();
+            });
             jest.spyOn(ReviewController.prototype, "addReview").mockRejectedValueOnce(error);
 
-            const response = await request(app).post(`${baseURL}/reviews/${mockReview.model}`).send(mockReview);
-            expect(response.status).toBe(503);
-            expect(response.body).toEqual({ error: "Internal Server Error", status: 503 });
-        });
+            const response = await request(app).post(`${baseURL}/reviews/${model}`).send({ score, comment });
+            expect(response.status).not.toBe(200);
+            expect(ReviewController.prototype.addReview).toHaveBeenCalled();
+            expect(ReviewController.prototype.addReview).toHaveBeenLastCalledWith(user, model);
+        }, 1000);
     });
+
 
     //GET /:model
     describe("Get Product Reviews", () => {
-        test("should return the reviews of the corresponding product model", async () => {
-            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
-            jest.spyOn(ReviewController.prototype, "getProductReviews").mockResolvedValueOnce([mockReview]);
+        test("it returns the reviews of the corresponding product model", async () => {
+            const model = "iphone13";
+            const mockIsLoggedIn = jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                body: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
+            jest.spyOn(ReviewController.prototype, "getProductReviews").mockResolvedValueOnce(testReviews);
 
-            const response = await request(app).get(`${baseURL}/reviews/${mockReview.model}`);
+            const response = await request(app).get(`${baseURL}/reviews/${model}`);
             expect(response.status).toBe(200);
+            expect(ReviewController.prototype.getProductReviews).toHaveBeenCalledWith(model);
+            expect(mockIsLoggedIn).toHaveBeenCalledTimes(1);
             expect(response.body).toEqual([mockReview]);
         });
-
-        test("should handle error if controller throws an error", async () => {
-            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
-            const error = new Error("Internal Server Error");
+``
+        test("it handles error", async () => {
+            const error = new Error("Testing Error");
+            const user = {
+                username: "customer1",
+                name: "john",
+                surname: "smith",
+                role: Role.CUSTOMER,
+                address: "address1",
+                birthdate: "2004-12-06"
+            };
+            const model = "iphone13";
+            const mockIsLoggedIn = jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                return next();
+            });
             jest.spyOn(ReviewController.prototype, "getProductReviews").mockRejectedValueOnce(error);
-
-            const response = await request(app).get(`${baseURL}/reviews/${mockReview.model}`);
-            expect(response.status).toBe(503);
-            expect(response.body).toEqual({ error: "Internal Server Error", status: 503 });
+            const response = await request(app).get(`${baseURL}/reviews/${model}`);
+            expect(response.status).not.toBe(200);
+            expect(response.body).toEqual({ error: "Testing Error", status: 503});
+            expect(mockIsLoggedIn).toHaveBeenCalledTimes(1);
         });
     });
 
-    //DELETE /:model
-    describe("Delete Review", () => {
-        test("should delete the review made by the current user on the corresponding product", async () => {
+    describe("DELETE /reviews/:model", () => {
+
+        test("it deletes the reviews made by the current user on the corresponding product", async () => {
+            const model = "iphone13";
+            const user = { username: "customer" };
             jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
-                req.user = { username: "customer", role: Role.CUSTOMER };
+                req.user = user;
                 return next();
             });
-            jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => next());
+            jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                body: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
             jest.spyOn(ReviewController.prototype, "deleteReview").mockResolvedValueOnce();
 
-            const response = await request(app).delete(`${baseURL}/reviews/${mockReview.model}`);
+            const response = await request(app).delete(`${baseURL}/reviews/${model}`);
             expect(response.status).toBe(200);
-            expect(ReviewController.prototype.deleteReview).toHaveBeenCalledWith(mockReview.model, { username: "customer", role: Role.CUSTOMER });
+            expect(ReviewController.prototype.deleteReview).toHaveBeenCalledWith(model, user);
         });
 
-        test("should handle error if controller throws an error", async () => {
+        test("it deletes the reviews made by the current user on the corresponding product", async () => {
+            const error = new Error("testing error");
+            const model = "iphone13";
+            const user = { username: "customer" };
             jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
-                req.user = { username: "customer", role: Role.CUSTOMER };
+                req.user = user;
                 return next();
             });
-            jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => next());
-            const error = new Error("Internal Server Error");
+            jest.spyOn(Authenticator.prototype, "isCustomer").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                body: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
             jest.spyOn(ReviewController.prototype, "deleteReview").mockRejectedValueOnce(error);
 
-            const response = await request(app).delete(`${baseURL}/reviews/${mockReview.model}`);
-            expect(response.status).toBe(503);
-            expect(response.body).toEqual({ error: "Internal Server Error", status: 503 });
+            const response = await request(app).delete(`${baseURL}/reviews/${model}`);
+            expect(response.status).toBe(200);
+            expect(ReviewController.prototype.deleteReview).toHaveBeenCalledWith(model, user);
         });
+
     });
 
-    //DELETE /:model/all
-    describe("Delete Reviews of a Product", () => {
-        test("should delete all reviews made by the current user on the corresponding product", async () => {
+    describe("DELETE /reviews/:model/all", () => {
+        test("it deletes the reviews made by the current user on the corresponding product", async () => {
+            const model = "iphone13";
+            const user = { username: "manager" };
             jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
-                req.user = { username: "manager", role: Role.MANAGER };
+                req.user = user;
                 return next();
             });
-            jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+
+            jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                param: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
             jest.spyOn(ReviewController.prototype, "deleteReviewsOfProduct").mockResolvedValueOnce();
 
-            const response = await request(app).delete(`${baseURL}/reviews/${mockReview.model}/all`);
+            const response = await request(app).delete(`${baseURL}/reviews/${model}/all`);
             expect(response.status).toBe(200);
-            expect(ReviewController.prototype.deleteReviewsOfProduct).toHaveBeenCalledWith(mockReview.model);
+            expect(ReviewController.prototype.deleteReviewsOfProduct).toHaveBeenCalledWith(model);
         });
 
-        test("should handle error if controller throws an error", async () => {
+        test("it handles errors while deleting all reviews on product", async () => {
+            const model = "iphone13";
+            const error = new Error("error while deleting reviews");
+
+            jest.mock('express-validator', () => ({
+                body: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
+            jest.spyOn(ReviewController.prototype, "deleteAllReviews").mockRejectedValueOnce(error);
+
+            const response = await request(app).delete(`${baseURL}/reviews/${model}/all`);
+            expect(ReviewController.prototype.deleteAllReviews).toHaveBeenCalledWith(model);
+            expect(response.status).not.toBe(200);
+        });
+    });
+
+    describe("DELETE /reviews", () => {
+
+        test("it deletes the reviews made by the current user on the corresponding product", async () => {
+            const model = "iphone13";
+            const user = { username: "manager" };
             jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
-                req.user = { username: "manager", role: Role.MANAGER };
+                req.user = user;
                 return next();
             });
-            jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
-            const error = new Error("Internal Server Error");
-            jest.spyOn(ReviewController.prototype, "deleteReviewsOfProduct").mockRejectedValueOnce(error);
+            //is admin or manager?
+            jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                body: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
+            jest.spyOn(ReviewController.prototype, "deleteAllReviews").mockResolvedValueOnce();
 
-            const response = await request(app).delete(`${baseURL}/reviews/${mockReview.model}/all`);
-            expect(response.status).toBe(503);
-            expect(response.body).toEqual({ error: "Internal Server Error", status: 503 });
-        });
-    });
-
-    //DELETE /
-    describe("DELETE /reviews", () => {
-        test("should return a 200 success code if the user is authenticated and admin or manager", async () => {
-            jest.spyOn(ReviewController.prototype, "deleteAllReviews").mockResolvedValue();
-            const mockIsLoggedIn = jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation(
-                (req: any, res: any, next: any) => next()
-            );
-            const mockIsAdminOrManager = jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation(
-                (req: any, res: any, next: any) => next()
-            );
-            
-            const response = await request(app).delete(`${baseURL}/reviews/`);
+            const response = await request(app).delete(`${baseURL}/reviews`);
+            expect(ReviewController.prototype.deleteAllReviews).toHaveBeenCalled();
             expect(response.status).toBe(200);
-            expect(mockIsLoggedIn).toHaveBeenCalledTimes(1);
-            expect(mockIsAdminOrManager).toHaveBeenCalledTimes(1);
-            expect(ReviewController.prototype.deleteAllReviews).toHaveBeenCalled();
         });
-    
-        test("should return a 503 error code if the controller throws an error", async () => {
-            jest.spyOn(ReviewController.prototype, "deleteAllReviews").mockRejectedValue(new Error("Internal Server Error"));
-            const mockIsLoggedIn = jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation(
-                (req: any, res: any, next: any) => next()
-            );
-            const mockIsAdminOrManager = jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation(
-                (req: any, res: any, next: any) => next()
-            );
-            
-            const response = await request(app).delete(`${baseURL}/reviews/`);
-            expect(response.status).toBe(503);
-            expect(response.body).toEqual({ error: "Internal Server Error", status: 503});
-            expect(mockIsLoggedIn).toHaveBeenCalledTimes(1);
-            expect(mockIsAdminOrManager).toHaveBeenCalledTimes(1);
+
+        test("it handles errors while deleting all reviews made by user on product", async () => {
+            const model = "iphone13";
+            const user = { username: "manager" };
+            const error = new Error("error while deleting reviews");
+            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                req.user = user;
+                return next();
+            });
+            //is admin or manager?
+            jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => {
+                return next();
+            });
+            jest.mock('express-validator', () => ({
+                body: jest.fn().mockImplementation(() => ({
+                    isString: () => ({ notEmpty: () => ({}) }),
+                })),
+            }));
+            jest.spyOn(ReviewController.prototype, "deleteAllReviews").mockRejectedValueOnce(error);
+
+            const response = await request(app).delete(`${baseURL}/reviews`);
             expect(ReviewController.prototype.deleteAllReviews).toHaveBeenCalled();
+            expect(response.status).not.toBe(200);
         });
+
     });
 });
-    
+

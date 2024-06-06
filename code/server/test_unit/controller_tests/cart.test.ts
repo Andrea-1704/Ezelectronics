@@ -203,7 +203,7 @@ describe("controller unit tests", () => {
     
 
     describe("CartController", () => {
-      test("Should remocve the cart of the logged in user", async () => {
+      test("Should remove the cart of the logged in user", async () => {
         const removeProductFromCartSpy = jest.spyOn(CartDAO.prototype, "removeProductFromCart").mockResolvedValueOnce(true);
         
         const controller = new CartController();

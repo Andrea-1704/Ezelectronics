@@ -30,12 +30,8 @@ class ReviewController {
     
         // comment are not mandatory:
         const safeComment = comment || ' ';
-    
         return this.dao.addReview(model, user, score, safeComment);
     }
-    
-    
-    
 
     /**
      * Returns all reviews for a product
