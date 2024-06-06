@@ -91,6 +91,7 @@ class CartDAO {
           return
         }
         if (cartEmpty) {
+          //console.log(new Cart(row.id, row.customer, row.paid, row.paymentDate, row.total, []));
           resolve(new Cart(row.id, row.customer, row.paid, row.paymentDate, row.total, []))
           return
         }
@@ -102,9 +103,13 @@ class CartDAO {
           }
           const products: ProductInCart[] = []
           for (const row1 of rows) {
+            
             const product = await this.productDao.getProductByModel(row1.model)
+            
             products.push(new ProductInCart(row1.model, row1.quantity, product.category, product.sellingPrice))
           }
+          console.log(row.id, row.customer, row.paid, row.paymentDate, row.total, products)
+          console.log(new Cart(row.id, row.customer, row.paid, row.paymentDate, row.total, products));
           resolve(new Cart(row.id, row.customer, row.paid, row.paymentDate, row.total, products))
         })
       })
@@ -312,8 +317,6 @@ class CartDAO {
           return
         }
         const carts: Cart[] = []
-        console.log("rows");
-        console.log(rows);
         for (const row of rows) {
           const products = await new Promise<ProductInCart[]>((resolve, reject) => {
             const sqlProducts = "SELECT * FROM cart_product WHERE cartId = ?"
@@ -325,10 +328,9 @@ class CartDAO {
               resolve(rows)
             })
           })
-          console.log("products");
           
           for(const product of products) {
-            console.log(product.model);
+           
             const productInDb = await this.productDao.getProductByModel(product.model)
             product.category = productInDb.category
             product.price = productInDb.sellingPrice

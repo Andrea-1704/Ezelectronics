@@ -267,6 +267,7 @@ class ProductDAO {
       return new Promise<Product>((resolve, reject) => {
         try {
           const sql = "SELECT * FROM product WHERE model = ?"
+          //console.log("sono dentro il product dao")
           db.get(sql, [model], (err: Error, row: Product) => {
             if (err) {
               reject(err)

@@ -189,8 +189,8 @@ test("addToCart - SQL error when updating product quantity in cart", async () =>
 test("addToCart - SQL error when inserting new product in cart", async () => {
     const cartDao = new CartDAO()
     const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
-    let productInCart = new ProductInCart("test", 20, Category.SMARTPHONE, 30);
-    let testCart = new Cart(0, "test_user", true, "17-04-2002", 200, [productInCart]);
+    let productInCart = new ProductInCart("test2", 20, Category.SMARTPHONE, 30);
+    let testCart = new Cart(0, "test_user5", true, "17-04-2002", 200, [productInCart]);
     let testProduct = new Product(10, "test", Category.SMARTPHONE, "10-04-2002", " ", 35);
     const productDao = new ProductDAO()
     const getProductSpy = jest.spyOn(ProductDAO.prototype, "getProductByModel").mockResolvedValueOnce(testProduct);
@@ -201,10 +201,10 @@ test("addToCart - SQL error when inserting new product in cart", async () => {
         sellingPrice: 100
     };
 
-    const mockDBAll = jest.spyOn(db, "run").mockImplementationOnce((_sql, _params, callback) => {
-        callback(null)
-        return {} as Database
-    });
+    // const mockDBAll = jest.spyOn(db, "run").mockImplementationOnce((_sql, _params, callback) => {
+    //     callback(null)
+    //     return {} as Database
+    // });
 
     const mockDBAll2 = jest.spyOn(db, "run").mockImplementationOnce((_sql, _params, callback) => {
         callback(new Error())
@@ -213,7 +213,48 @@ test("addToCart - SQL error when inserting new product in cart", async () => {
     });
 
     await expect(cartDao.addToCart(user, product.model)).rejects.toThrow(Error);
-    mockDBAll.mockRestore();
+    //mockDBAll.mockRestore();
+    mockDBAll2.mockRestore();
+    getProductSpy.mockRestore();
+    hasCartSpy.mockRestore();
+    getCartSpy.mockRestore();
+});
+
+
+test("addToCart - error sql (update cart error)", async () => {
+    const cartDao = new CartDAO()
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    let productInCart = new ProductInCart("test2", 20, Category.SMARTPHONE, 30);
+    let testCart = new Cart(0, "test_user5", true, "17-04-2002", 200, [productInCart]);
+    let testProduct = new Product(10, "test", Category.SMARTPHONE, "10-04-2002", " ", 35);
+    const productDao = new ProductDAO()
+    const getProductSpy = jest.spyOn(ProductDAO.prototype, "getProductByModel").mockResolvedValueOnce(testProduct);
+    const hasCartSpy = jest.spyOn(CartDAO.prototype, "hasCart").mockResolvedValueOnce(true);
+    const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(testCart);
+    const product = {
+        model: "test",
+        sellingPrice: 100
+    };
+
+    // const mockDBAll = jest.spyOn(db, "run").mockImplementationOnce((_sql, _params, callback) => {
+    //     callback(null)
+    //     return {} as Database
+    // });
+
+    const mockDBAll2 = jest.spyOn(db, "run").mockImplementationOnce((_sql, _params, callback) => {
+        callback(null)
+        
+        return {} as Database
+    });
+
+    const mockDBAll3 = jest.spyOn(db, "run").mockImplementationOnce((_sql, _params, callback) => {
+        callback(new Error())
+        
+        return {} as Database
+    });
+
+    await expect(cartDao.addToCart(user, product.model)).rejects.toThrow(Error);
+    mockDBAll3.mockRestore();
     mockDBAll2.mockRestore();
     getProductSpy.mockRestore();
     hasCartSpy.mockRestore();
@@ -284,6 +325,40 @@ test("getCart - user does not have a cart", async () => {
 });
 
 
+test("getCart - no cart", async () => {
+    const cartDao = new CartDAO()
+    const productDao = new ProductDAO()
+    let testCart = new Cart(-1, "test_user", false, "", 0, []);
+    //const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(new Cart(+1, "test_user", false, "", 0, []));
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((_sql, _params, callback) => {
+        callback(null, false)
+        return {} as Database
+    });
+
+    const result = await cartDao.getCart(user, false)
+    expect(result).toEqual(testCart)
+    mockDBGet.mockRestore()
+});
+
+
+test("getCart - empty cart", async () => {
+    const cartDao = new CartDAO()
+    const productDao = new ProductDAO()
+    let testCart = new Cart(-1, "test_user", false, "", 0, []);
+    //const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(new Cart(+1, "test_user", false, "", 0, []));
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((_sql, _params, callback) => {
+        callback(null, testCart)
+        return {} as Database
+    });
+
+    const result = await cartDao.getCart(user, true)
+    expect(result).toEqual(testCart)
+    mockDBGet.mockRestore()
+});
+
+
 test("getCart - SQL error when retrieving cart", async () => {
     const cartDao = new CartDAO()
     const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
@@ -294,6 +369,65 @@ test("getCart - SQL error when retrieving cart", async () => {
 
     await expect(cartDao.getCart(user, false)).rejects.toThrow("SQL error");
     mockDBGet.mockRestore()
+});
+
+
+test("getCart - error sql cart product", async () => {
+    const cartDao = new CartDAO()
+    const productDao = new ProductDAO()
+    let testCart = new Cart(-1, "test_user", false, "", 0, []);
+    let prodottoTest=new ProductInCart("test", 100, Category.SMARTPHONE, 30);            
+    //const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(new Cart(+1, "test_user", false, "", 0, []));
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((_sql, _params, callback) => {
+        callback(null, testCart)
+        return {} as Database
+    });
+    const mockDBGet2 = jest.spyOn(db, "all").mockImplementation((_sql, _params, callback) => {
+        callback(new Error())
+        return {} as Database
+    });
+
+    //const result = await cartDao.getCart(user, false)
+    await expect(cartDao.getCart(user, false)).rejects.toThrow(Error);
+    //expect(result).toEqual(new Error())
+    mockDBGet.mockRestore()
+    mockDBGet2.mockRestore()
+});
+
+
+test("getCart - All goes right", async () => {
+    const cartDao = new CartDAO()
+    const productDao = new ProductDAO()
+    let prodottoTest=new ProductInCart("test", 30, Category.SMARTPHONE, 30);     
+    let testProduct=new Product(30, "test", Category.SMARTPHONE, "", null, 30);            
+    let testCart = new Cart(-1, "test_user", false, "", 0, [prodottoTest]);
+    //const getCartSpy = jest.spyOn(CartDAO.prototype, "getCart").mockResolvedValueOnce(new Cart(+1, "test_user", false, "", 0, []));
+    const user = new User("test_user", "Test", "User", Role.CUSTOMER, "Test Address", "1990-01-01");
+
+    
+    
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((_sql, _params, callback) => {
+        callback(null, testCart)
+        return {} as Database
+    });
+
+   
+
+    const mockDBGet2 = jest.spyOn(db, "all").mockImplementation((_sql, _params, callback) => {
+        jest.spyOn(ProductDAO.prototype, "getProductByModel").mockResolvedValueOnce(testProduct); 
+        callback(null, [prodottoTest])
+        return {} as Database
+    });
+    
+    
+
+    const result = await cartDao.getCart(user, true)
+    console.log(result)
+    
+    expect(result).toEqual(testCart)
+    mockDBGet.mockRestore()
+    mockDBGet2.mockRestore()
 });
 
 
@@ -799,7 +933,7 @@ test("getAllCarts - successful operation", async () => {
     // });
 
 
-    jest.spyOn(ProductDAO.prototype, 'getProductByModel').mockResolvedValue(testProduct);
+    jest.spyOn(ProductDAO.prototype, 'getProductByModel').mockResolvedValueOnce(testProduct);
 
     const result = await cartDao.getAllCarts()
 
