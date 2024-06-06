@@ -3,12 +3,11 @@ import {User, Role} from "../../src/components/user";
 import { Cart } from "../../src/components/cart";
 import CartController from "../../src/controllers/cartController";
 import Authenticator from "../../src/routers/auth";
+// @ts-ignore
 import request from 'supertest';
 import { app } from "../../index";
 import ErrorHandler from "../../src/helper"
 import { Category, Product } from "../../src/components/product";
-import { beforeEach } from "node:test";
-import { error } from "node:console";
 const baseURL = "/ezelectronics";
 
 let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")

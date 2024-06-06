@@ -328,9 +328,8 @@ class CartDAO {
               resolve(rows)
             })
           })
-          
+
           for(const product of products) {
-           
             const productInDb = await this.productDao.getProductByModel(product.model)
             product.category = productInDb.category
             product.price = productInDb.sellingPrice

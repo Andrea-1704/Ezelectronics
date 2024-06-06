@@ -1,71 +1,160 @@
-import { describe, test, expect, beforeAll, afterAll, jest } from "@jest/globals"
-
-import UserController from "../../src/controllers/userController"
-import UserDAO from "../../src/dao/userDAO"
+import { describe, test, expect, jest, beforeEach } from '@jest/globals';
 // @ts-ignore
-import crypto from "crypto"
-import db from "../../src/db/db"
-import { Database } from "sqlite3"
-import {User} from "../../src/components/user";
-import {UserNotFoundError} from "../../src/errors/userError";
+import request from 'supertest';
+import Authenticator from "../../src/routers/auth";
+import ErrorHandler from "../../src/helper";
+import ProductController from "../../src/controllers/productController";
+import {Category, Product} from "../../src/components/product";
+import {cleanup} from "../../src/db/cleanup";
+import {app} from "../../index";
+const baseURL = "/ezelectronics/products";
 
-jest.mock("crypto")
-jest.mock("../../src/db/db.ts")
+jest.mock('../../src/routers/auth');
+jest.mock('../../src/controllers/productController');
+jest.mock('../../src/helper');
 
-//Example of unit test for the createUser method
-//It mocks the database run method to simulate a successful insertion and the crypto randomBytes and scrypt methods,
-//to simulate the hashing of the password,
-//It then calls the createUser method and expects it to resolve true
+// Sample data for testing
+const testProduct: Product = {
+  model: 'iPhone13',
+  category: Category.SMARTPHONE,
+  quantity: 100,
+  details: 'Latest model',
+  sellingPrice: 999.99,
+  arrivalDate: undefined
+};
 
-// test("It should resolve true", async () => {
-//   const userDAO = new UserDAO()
-//   const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
-//     callback(null)
-//     return {} as Database
-//   });
-//   const mockRandomBytes = jest.spyOn(crypto, "randomBytes").mockImplementation((size) => {
-//     return (Buffer.from("salt"))
-//   })
-//   const mockScrypt = jest.spyOn(crypto, "scrypt").mockImplementation(async (password, salt, keylen) => {
-//     return Buffer.from("hashedPassword")
-//   })
-//
-//   const result = await userDAO.createUser("username", "name", "surname", "password", "role")
-//   expect(result).toBe(true)
-//   mockRandomBytes.mockRestore()
-//   mockDBRun.mockRestore()
-//   mockScrypt.mockRestore()
-// })
+describe('ProductRoutes unit tests', () => {
+  beforeEach(() => {
+    cleanup()
+  });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
+  })
 
-//test to run for products
-//register product
-//test1. add product with all fields filled
-//test2. add two products both with the same model the second one should fail
-//test3. add product with invalid fileds (can be expanded into more tests)
+  describe("POST /products", () => {
+    test("It should register product arrival", async () => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+      jest.mock('express-validator', () => ({
+        body: jest.fn().mockImplementation(() => ({
+          isString: () => ({ notEmpty: () => ({}) }),
+          isIn: () => ({}),
+          optional: () => ({ isISO8601: () => ({ toDate: () => ({}) }) })
+        }))
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "registerProducts").mockResolvedValueOnce();
 
-//update quantity
-//test1. update quantity and add to it, verify the new value is the sum of the previous + the added
-//test2. try to do the same operating but with wrong product model, verify error (check other fields maybe the changeDate and verify the function)
+      const response = await request(app).post(baseURL).send(testProduct);
+      expect(response.status).toBe(200);
 
-//sell product
-//test1. sell a product, verify the quantity is updated
-//test2. sell a product with wrong model, verify error
-//test3. sell a product with quantity 0, verify error
-//test4. sell a product that has an available quantity non zero but less than the quantity to be sold, verify error
+      // Convert arrivalDate to string format for the comparison
+      expect(ProductController.prototype.registerProducts).toHaveBeenCalledTimes(1);
+      expect(ProductController.prototype.registerProducts).toHaveBeenCalledWith(
+          testProduct.model,
+          testProduct.category,
+          testProduct.quantity,
+          testProduct.details,
+          testProduct.sellingPrice,
+          testProduct.arrivalDate
+      );
+    }, 10000);
+  });
 
+  describe("PATCH /products/:model", () => {
+    test("It should register increase in product quantity", async () => {
+      const updatedQuantity = 50;
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+      jest.mock('express-validator', () => ({
+        param: jest.fn().mockImplementation(() => ({ isString: () => ({ notEmpty: () => ({}) }) })),
+        body: jest.fn().mockImplementation(() => ({ isNumeric: () => ({ isInt: () => ({}) }) }))
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "changeProductQuantity").mockResolvedValueOnce(updatedQuantity);
 
-//view products
-//test1. add products, view them and chefck if they are ok maybe do a count of the products thats easier
-//test2. view products with no products, verify empty array
-//test3. view products with invalid model, verify error
-//add products of different categories, verify that the counts are correct
+      const response = await request(app).patch(`${baseURL}/${testProduct.model}`).send({ quantity: updatedQuantity });
+      expect(response.status).toBe(200);
+      expect(response.body.quantity).toBe(updatedQuantity);
+      expect(ProductController.prototype.changeProductQuantity).toHaveBeenCalledWith(
+          testProduct.model,
+          updatedQuantity,
+          undefined
+      );
+    }, 10000);
+  });
 
-//delete product(s)
-//what if the product is not found
-//what if the stock is empty? (idk) no use case
-//successfull deletion
+  describe("PATCH /products/:model/sell", () => {
+    test("It should sell the product", async () => {
+      const sellQuantity = 10;
+      const remainingQuantity = 90;
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+      jest.mock('express-validator', () => ({
+        param: jest.fn().mockImplementation(() => ({ isString: () => ({ notEmpty: () => ({}) }) })),
+        body: jest.fn().mockImplementation(() => ({ isNumeric: () => ({ isInt: () => ({}) }) }))
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "sellProduct").mockResolvedValueOnce(remainingQuantity);
 
+      const response = await request(app).patch(`${baseURL}/${testProduct.model}/sell`).send({ quantity: sellQuantity });
+      expect(response.status).toBe(200);
+      expect(response.body.quantity).toBe(remainingQuantity);
+      expect(ProductController.prototype.sellProduct).toHaveBeenCalledWith(
+          testProduct.model,
+          sellQuantity,
+          undefined
+      );
+    }, 10000);
+  });
 
-//mixed tests
-//test2 add a product, update the quantity, sell the product, view the product, delete the product, control count of products
+  describe("GET /products", () => {
+    test("It should retrieve all products", async () => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+      jest.mock('express-validator', () => ({
+        query: jest.fn().mockImplementation(() => ({
+          optional: () => ({ isString: () => ({ isIn: () => ({}) }), notEmpty: () => ({}) })
+        }))
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "getProducts").mockResolvedValueOnce([testProduct]);
+
+      const response = await request(app).get(baseURL);
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual([testProduct]);
+      expect(ProductController.prototype.getProducts).toHaveBeenCalledWith(undefined, undefined, undefined);
+    }, 10000);
+  });
+
+  describe("DELETE /products", () => {
+    test("It should delete all products", async () => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "deleteAllProducts").mockResolvedValueOnce(null);
+
+      const response = await request(app).delete(baseURL);
+      expect(response.status).toBe(200);
+      expect(ProductController.prototype.deleteAllProducts).toHaveBeenCalled();
+    }, 10000);
+  });
+
+  describe("DELETE /products/:model", () => {
+    test("It should delete a product by model", async () => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+      jest.mock('express-validator', () => ({
+        param: jest.fn().mockImplementation(() => ({ isString: () => ({ notEmpty: () => ({}) }) }))
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "deleteProduct").mockResolvedValueOnce(null);
+
+      const response = await request(app).delete(`${baseURL}/${testProduct.model}`);
+      expect(response.status).toBe(200);
+      expect(ProductController.prototype.deleteProduct).toHaveBeenCalledWith(testProduct.model);
+    }, 10000);
+  });
+});

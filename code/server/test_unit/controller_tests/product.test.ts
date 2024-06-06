@@ -1,71 +1,140 @@
-import { describe, test, expect, beforeAll, afterAll, jest } from "@jest/globals"
+import { describe, test, expect, jest, afterEach, beforeEach } from "@jest/globals";
+import ProductController from "../../src/controllers/productController";
+import { Category, Product } from "../../src/components/product";
+import ProductDAO from "../../src/dao/productDAO";
 
-import UserController from "../../src/controllers/userController"
-import UserDAO from "../../src/dao/userDAO"
-// @ts-ignore
-import crypto from "crypto"
-import db from "../../src/db/db"
-import { Database } from "sqlite3"
-import {User} from "../../src/components/user";
-import {UserNotFoundError} from "../../src/errors/userError";
+jest.mock('../../src/dao/productDAO');
 
-jest.mock("crypto")
-jest.mock("../../src/db/db.ts")
+const testProduct = new Product(10, "iPhone13", Category.SMARTPHONE, "2022-06-05", "Latest model", 100);
+const anotherProduct = new Product(15, "GalaxyS21", Category.SMARTPHONE, "2021-08-10", "Top-notch model", 50);
 
-//Example of unit test for the createUser method
-//It mocks the database run method to simulate a successful insertion and the crypto randomBytes and scrypt methods,
-//to simulate the hashing of the password,
-//It then calls the createUser method and expects it to resolve true
+describe("ProductController unit tests", () => {
 
-// test("It should resolve true", async () => {
-//   const userDAO = new UserDAO()
-//   const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
-//     callback(null)
-//     return {} as Database
-//   });
-//   const mockRandomBytes = jest.spyOn(crypto, "randomBytes").mockImplementation((size) => {
-//     return (Buffer.from("salt"))
-//   })
-//   const mockScrypt = jest.spyOn(crypto, "scrypt").mockImplementation(async (password, salt, keylen) => {
-//     return Buffer.from("hashedPassword")
-//   })
-//
-//   const result = await userDAO.createUser("username", "name", "surname", "password", "role")
-//   expect(result).toBe(true)
-//   mockRandomBytes.mockRestore()
-//   mockDBRun.mockRestore()
-//   mockScrypt.mockRestore()
-// })
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
+  });
 
+  describe("registerProducts", () => {
+    test("It should register a new product", async () => {
+      const registerProductsSpy = jest.spyOn(ProductDAO.prototype, "registerProducts").mockResolvedValueOnce(undefined);
 
-//test to run for products
-//register product
-//test1. add product with all fields filled
-//test2. add two products both with the same model the second one should fail
-//test3. add product with invalid fileds (can be expanded into more tests)
+      const controller = new ProductController();
+      const response = await controller.registerProducts(
+          testProduct.model,
+          testProduct.category,
+          testProduct.quantity,
+          testProduct.details,
+          testProduct.sellingPrice,
+          testProduct.arrivalDate
+      );
 
-//update quantity
-//test1. update quantity and add to it, verify the new value is the sum of the previous + the added
-//test2. try to do the same operating but with wrong product model, verify error (check other fields maybe the changeDate and verify the function)
+      expect(registerProductsSpy).toHaveBeenCalledTimes(1);
+      expect(registerProductsSpy).toHaveBeenCalledWith(
+          testProduct.model,
+          testProduct.category,
+          testProduct.quantity,
+          testProduct.details,
+          testProduct.sellingPrice,
+          testProduct.arrivalDate
+      );
+      expect(response).toBeUndefined();
+    });
+  });
 
-//sell product
-//test1. sell a product, verify the quantity is updated
-//test2. sell a product with wrong model, verify error
-//test3. sell a product with quantity 0, verify error
-//test4. sell a product that has an available quantity non zero but less than the quantity to be sold, verify error
+  describe("changeProductQuantity", () => {
+    test("It should increase the quantity of a product", async () => {
+      const changeProductQuantitySpy = jest.spyOn(ProductDAO.prototype, "changeProductQuantity").mockResolvedValueOnce(150);
 
+      const controller = new ProductController();
+      const response = await controller.changeProductQuantity(testProduct.model, 50, null);
 
-//view products
-//test1. add products, view them and chefck if they are ok maybe do a count of the products thats easier
-//test2. view products with no products, verify empty array
-//test3. view products with invalid model, verify error
-//add products of different categories, verify that the counts are correct
+      expect(changeProductQuantitySpy).toHaveBeenCalledTimes(1);
+      expect(changeProductQuantitySpy).toHaveBeenCalledWith(testProduct.model, 50, null);
+      expect(response).toBe(150);
+    });
+  });
 
-//delete product(s)
-//what if the product is not found
-//what if the stock is empty? (idk) no use case
-//successfull deletion
+  describe("sellProduct", () => {
+    test("It should decrease the quantity of a product through a sale", async () => {
+      const sellProductSpy = jest.spyOn(ProductDAO.prototype, "sellProduct").mockResolvedValueOnce(80);
 
+      const controller = new ProductController();
+      const response = await controller.sellProduct(testProduct.model, 20, null);
 
-//mixed tests
-//test2 add a product, update the quantity, sell the product, view the product, delete the product, control count of products
+      expect(sellProductSpy).toHaveBeenCalledTimes(1);
+      expect(sellProductSpy).toHaveBeenCalledWith(testProduct.model, 20, null);
+      expect(response).toBe(80);
+    });
+  });
+
+  describe("getProducts", () => {
+    test("It should return all products", async () => {
+      const getProductsSpy = jest.spyOn(ProductDAO.prototype, "getProducts").mockResolvedValueOnce([testProduct, anotherProduct]);
+
+      const controller = new ProductController();
+      const response = await controller.getProducts(null, null, null);
+
+      expect(getProductsSpy).toHaveBeenCalledTimes(1);
+      expect(response).toEqual([testProduct, anotherProduct]);
+    });
+
+    test("It should throw an error if category is required but not provided", async () => {
+      const controller = new ProductController();
+      await expect(controller.getProducts("category", null, null)).rejects.toThrow("Category is required");
+    });
+
+    test("It should throw an error if model is required but not provided", async () => {
+      const controller = new ProductController();
+      await expect(controller.getProducts("model", null, null)).rejects.toThrow("Model is required");
+    });
+  });
+
+  describe("getAvailableProducts", () => {
+    test("It should return all available products", async () => {
+      const getAvailableProductsSpy = jest.spyOn(ProductDAO.prototype, "getAvailableProducts").mockResolvedValueOnce([testProduct]);
+
+      const controller = new ProductController();
+      const response = await controller.getAvailableProducts(null, null, null);
+
+      expect(getAvailableProductsSpy).toHaveBeenCalledTimes(1);
+      expect(response).toEqual([testProduct]);
+    });
+
+    test("It should throw an error if category is required but not provided", async () => {
+      const controller = new ProductController();
+      await expect(controller.getAvailableProducts("category", null, null)).rejects.toThrow("Category is required");
+    });
+
+    test("It should throw an error if model is required but not provided", async () => {
+      const controller = new ProductController();
+      await expect(controller.getAvailableProducts("model", null, null)).rejects.toThrow("Model is required");
+    });
+  });
+
+  describe("deleteAllProducts", () => {
+    test("It should delete all products", async () => {
+      const deleteAllProductsSpy = jest.spyOn(ProductDAO.prototype, "deleteAllProducts").mockResolvedValueOnce(true);
+
+      const controller = new ProductController();
+      const response = await controller.deleteAllProducts();
+
+      expect(deleteAllProductsSpy).toHaveBeenCalledTimes(1);
+      expect(response).toBe(true);
+    });
+  });
+
+  describe("deleteProduct", () => {
+    test("It should delete a product by model", async () => {
+      const deleteProductSpy = jest.spyOn(ProductDAO.prototype, "deleteProduct").mockResolvedValueOnce(true);
+
+      const controller = new ProductController();
+      const response = await controller.deleteProduct(testProduct.model);
+
+      expect(deleteProductSpy).toHaveBeenCalledTimes(1);
+      expect(deleteProductSpy).toHaveBeenCalledWith(testProduct.model);
+      expect(response).toBe(true);
+    });
+  });
+});

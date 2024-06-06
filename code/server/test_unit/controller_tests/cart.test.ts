@@ -3,15 +3,7 @@ import {User, Role} from "../../src/components/user";
 import { Cart } from "../../src/components/cart";
 import CartController from "../../src/controllers/cartController";
 import CartDAO from "../../src/dao/cartDAO";
-import Authenticator from "../../src/routers/auth";
-import request from 'supertest';
-import { app } from "../../index";
-import ErrorHandler from "../../src/helper"
 import { Category, Product } from "../../src/components/product";
-import { beforeEach } from "node:test";
-import { get } from "http";
-import { error } from "console";
-import { EmptyCartError } from "../../src/errors/cartError";
 const baseURL = "/ezelectronics";
 
 let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")

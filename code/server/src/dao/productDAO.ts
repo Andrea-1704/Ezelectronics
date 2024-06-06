@@ -30,7 +30,7 @@ class ProductDAO {
         throw new ProductAlreadyExistsError()
       }
       if(!arrivalDate){
-        arrivalDate = new Date().toISOString().slice(0, 10)
+        arrivalDate = new Date().toISOString().slice(0, 10).toString()
       }
 
       return new Promise<void>((resolve, reject) => {
