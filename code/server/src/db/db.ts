@@ -13,7 +13,7 @@ const sqlite = require("sqlite3")
 // A separate database needs to be used for testing to avoid corrupting the development database and ensuring a clean state for each test.
 
 //The environment variable is set in the package.json file in the test script.
-let env = process.env.NODE_ENV ? process.env.NODE_ENV.trim() : "development"
+let env = process.env.NODE_ENV ? process.env.NODE_ENV.trim() : "test"
 
 // The database file path is determined based on the environment variable.
 const dbFilePath = env === "test" ? "./src/db/testdb.db" : "./src/db/db.db"
@@ -25,4 +25,91 @@ const db: Database = new sqlite.Database(dbFilePath, (err: Error | null) => {
     db.run("PRAGMA foreign_keys = ON")
 })
 
-export default db;
+/*function deleteAllData() {
+    const tables = ['cart', 'cart_product', 'product',  'users']; // REVIEW TO BE ADDED
+    let promises = tables.map(table => {
+        return new Promise<void>((resolve, reject) => {
+            db.run(`DELETE FROM ${table}`, function(err) {
+                if (err) {
+                    console.error('Errore completo:', err);
+                    reject(err);
+                } else {
+                    console.log(`Rows deleted from ${table}: ${this.changes}`);
+                    resolve();
+                }
+            });
+        });
+    });
+
+    return Promise.all(promises);
+}*/
+
+
+
+
+function createTables() {
+    db.run(`CREATE TABLE IF NOT EXISTS cart (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        customer TEXT NOT NULL,
+        paid BOOLEAN NOT NULL,
+        paymentDate TEXT,
+        total REAL NOT NULL
+    )`, (err) => {
+        if (err) {
+            console.log('Error creating cart table', err);
+        } else {
+            console.log('Cart table created successfully');
+        }
+    });
+
+    db.run(`CREATE TABLE IF NOT EXISTS product (
+        sellingPrice REAL NOT NULL,
+        model TEXT NOT NULL PRIMARY KEY,
+        category TEXT,
+        arrivalDate TEXT,
+        details TEXT,
+        quantity INTEGER NOT NULL
+    )`, (err) => {
+        if (err) {
+            console.log('Error creating product table', err);
+        } 
+        else {
+            console.log('Cart table created successfully');
+        }
+    });
+
+    db.run(`CREATE TABLE IF NOT EXISTS cart_product (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        cartId INTEGER NOT NULL,
+        model TEXT NOT NULL,
+        quantity INTEGER NOT NULL,
+        FOREIGN KEY (cartId) REFERENCES cart(id) ON UPDATE CASCADE ON DELETE CASCADE,
+        FOREIGN KEY (model) REFERENCES product(model) ON UPDATE CASCADE ON DELETE CASCADE
+    )`, (err) => {
+        if (err) {
+            console.log('Error creating cart_product table', err);
+        } 
+        else {
+            console.log('Cart table created successfully');
+        }
+    });
+
+    db.run(`CREATE TABLE IF NOT EXISTS review (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        model TEXT NOT NULL,
+        user TEXT NOT NULL,
+        score INTEGER NOT NULL,
+        date TEXT NOT NULL,
+        comment TEXT,
+        FOREIGN KEY (model) REFERENCES product(model) ON UPDATE CASCADE ON DELETE CASCADE
+    )`, (err) => {
+        if (err) {
+            console.log('Error creating review table', err);
+        } 
+        else {
+            console.log('Cart table created successfully');
+        }
+    });
+}
+export default  db;
+export {createTables}

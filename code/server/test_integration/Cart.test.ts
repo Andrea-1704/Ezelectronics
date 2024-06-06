@@ -1,0 +1,132 @@
+import { test, expect, jest, beforeEach, afterEach } from "@jest/globals"
+import request from 'supertest'
+const baseURL = "/ezelectronics"
+import db, {createTables}  from "../src/db/db"
+import exp from "node:constants"
+
+
+//get cart
+test("should get cart", async () => {
+    //await deleteAllData();
+    await createTables()
+
+    const customer = {
+        username: "customer",
+        name: "customer",
+        surname: "customer",
+        password: "customer",
+        role: "Customer"
+    }
+
+    const customerRegisterResponse = await request('http://localhost:3001')
+    .post(`${baseURL}/users`)
+    .send(customer);
+  
+    // Check that the registration was successful
+    expect(customerRegisterResponse.status).toBe(200);
+     // Get the token for the customer
+    const customerLoginResponse = await request('http://localhost:3001')
+    .post(`${baseURL}/sessions`)
+    .send({ username: customer.username, password: customer.password });
+
+    // Check that the login was successful
+    expect(customerLoginResponse.status).toBe(200);
+    const customerCookie = customerLoginResponse.headers['set-cookie'];
+
+    const testCart = {
+        "customer": "1",
+        "paid": false,
+        "paymentDate": "1",
+        "total": 1
+    }
+
+    const response2 = await request('http://localhost:3001')
+    .get(`${baseURL}/carts`) 
+    .set('Cookie', customerCookie)
+    
+
+    /*db.run(`DELETE FROM users WHERE username='customer'`, (err) => {
+        if (err) {
+            console.log('Error creating review table', err);
+        } else {
+            console.log('Review table created successfully');
+        }
+    });*/
+
+    expect(response2.status).toBe(200)
+})
+
+
+//add to cart
+test("should add product to cart", async () => {
+
+    // First, create a manager account
+    const manager = {
+        username: "manager",
+        name: "manager",
+        surname: "manager",
+        password: "manager",
+        role: "Manager"
+    }
+
+    const managerRegisterResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/users`)
+        .send(manager);
+
+    // Check that the manager account was created successfully
+    expect(managerRegisterResponse.status).toBe(200);
+
+    // Then, authenticate and get a token for the manager
+    const managerLoginResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/sessions`)
+        .send({ username: manager.username, password: manager.password });
+
+    const managerCookie = managerLoginResponse.headers['set-cookie'];
+
+    const product = {
+        model: 'model',
+        category: 'Smartphone',
+        sellingPrice: 100,
+        arrivalDate: '2022-01-01',
+        details: 'Details about the product',
+        quantity: 10
+    }
+
+    // Manager adds the product
+    const addProductResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/products`)
+        .set('Cookie', managerCookie)
+        .send(product);
+
+    expect(addProductResponse.status).toBe(200);
+
+    // Create a customer account
+    const customer = {
+        username: "customer",
+        name: "customer",
+        surname: "customer",
+        password: "customer",
+        role: "Customer"
+    }
+
+    
+
+    // Then, authenticate and get a token for the customer
+    const customerLoginResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/sessions`)
+        .send({ username: customer.username, password: customer.password });
+
+    const customerCookie = customerLoginResponse.headers['set-cookie'];
+
+    // Customer adds the product to the cart
+    const addToCartResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/carts`)
+        .set('Cookie', customerCookie)
+        .send({ model: product.model });
+
+    expect(addToCartResponse.status).toBe(200);
+    
+});
+
+
+
