@@ -17,6 +17,7 @@ let env = process.env.NODE_ENV ? process.env.NODE_ENV.trim() : "development"
 
 // The database file path is determined based on the environment variable.
 const dbFilePath = env === "test" ? "./src/db/testdb.db" : "./src/db/db.db"
+//change line
 
 // The database is created and the foreign keys are enabled.
 const db: Database = new sqlite.Database(dbFilePath, (err: Error | null) => {
