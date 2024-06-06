@@ -22,7 +22,7 @@ class ProductController {
      * @param arrivalDate The optional date in which the product arrived.
      * @returns A Promise that resolves to nothing.
      */
-    async registerProducts(model: string, category: string, quantity: number, details: string | null, sellingPrice: number, arrivalDate: string | null): Promise<void> /**:Promise<void> */ {
+    async registerProducts(model: string, category: string, quantity: number, details: string | null, sellingPrice: number, arrivalDate: string | null): Promise<void>  {
         return this.dao.registerProducts(model, category, quantity, details, sellingPrice, arrivalDate)
     }
 
