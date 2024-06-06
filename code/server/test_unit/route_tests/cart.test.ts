@@ -9,7 +9,7 @@ import { app } from "../../index";
 import ErrorHandler from "../../src/helper"
 import { Category, Product } from "../../src/components/product";
 const baseURL = "/ezelectronics";
-
+//mi chiamo ANDREA
 let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
 let testCart = new Cart(0, "customer", false, "17-04-2002", 0, []);
 let testProduct= new Product(10, "iphone13", Category.SMARTPHONE, "10-04-2002"," " , 3);
