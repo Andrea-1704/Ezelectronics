@@ -1,14 +1,15 @@
 import { test, expect, jest, beforeEach, afterEach } from "@jest/globals"
 import request from 'supertest'
 const baseURL = "/ezelectronics"
-import db, {createTables}  from "../src/db/db"
+import db, {createTables, deleteAllData}  from "../src/db/db"
 import exp from "node:constants"
 
 
 //get cart
 test("should get cart", async () => {
-    //await deleteAllData();
+    
     await createTables()
+    deleteAllData();
 
     const customer = {
         username: "customer",
@@ -45,20 +46,17 @@ test("should get cart", async () => {
     .set('Cookie', customerCookie)
     
 
-    /*db.run(`DELETE FROM users WHERE username='customer'`, (err) => {
-        if (err) {
-            console.log('Error creating review table', err);
-        } else {
-            console.log('Review table created successfully');
-        }
-    });*/
+    deleteAllData();
 
     expect(response2.status).toBe(200)
 })
 
 
+
 //add to cart
 test("should add product to cart", async () => {
+    deleteAllData();
+    createTables();
 
     // First, create a manager account
     const manager = {
@@ -98,9 +96,10 @@ test("should add product to cart", async () => {
         .set('Cookie', managerCookie)
         .send(product);
 
+    
     expect(addProductResponse.status).toBe(200);
 
-    // Create a customer account
+    // Create a new customer account
     const customer = {
         username: "customer",
         name: "customer",
@@ -109,7 +108,12 @@ test("should add product to cart", async () => {
         role: "Customer"
     }
 
-    
+    const customerRegisterResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/users`)
+        .send(customer);
+
+  
+    expect(customerRegisterResponse.status).toBe(200);
 
     // Then, authenticate and get a token for the customer
     const customerLoginResponse = await request('http://localhost:3001')
@@ -125,7 +129,7 @@ test("should add product to cart", async () => {
         .send({ model: product.model });
 
     expect(addToCartResponse.status).toBe(200);
-    
+    deleteAllData();
 });
 
 

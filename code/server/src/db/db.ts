@@ -25,25 +25,35 @@ const db: Database = new sqlite.Database(dbFilePath, (err: Error | null) => {
     db.run("PRAGMA foreign_keys = ON")
 })
 
-/*function deleteAllData() {
-    const tables = ['cart', 'cart_product', 'product',  'users']; // REVIEW TO BE ADDED
-    let promises = tables.map(table => {
-        return new Promise<void>((resolve, reject) => {
-            db.run(`DELETE FROM ${table}`, function(err) {
-                if (err) {
-                    console.error('Errore completo:', err);
-                    reject(err);
-                } else {
-                    console.log(`Rows deleted from ${table}: ${this.changes}`);
-                    resolve();
-                }
-            });
-        });
+
+function deleteAllData() {
+    db.run(`DELETE FROM users`, (err) => {
+        if (err) {
+            console.log('Error deleting data from user table', err);
+        } 
     });
-
-    return Promise.all(promises);
-}*/
-
+    db.run(`DELETE FROM cart`, (err) => {
+        if (err) {
+            console.log('Error deleting data from user table', err);
+        } 
+    });
+    db.run(`DELETE FROM product`, (err) => {
+        if (err) {
+            console.log('Error deleting data from user table', err);
+        } 
+    });
+    db.run(`DELETE FROM cart_product`, (err) => {
+        if (err) {
+            console.log('Error deleting data from user table', err);
+        }
+    });
+    db.run(`DELETE FROM review`, (err) => {
+        if (err) {
+            console.log('Error deleting data from user table', err);
+        }
+    });
+    
+}
 
 
 
@@ -112,4 +122,4 @@ function createTables() {
     });
 }
 export default  db;
-export {createTables}
+export {createTables, deleteAllData}
