@@ -751,7 +751,7 @@ test("Admin gets all cart", async () => {
         .send(admin);
 
     // Check that the admin account was created successfully
-    expect(managerRegisterResponse.status).toBe(200);
+    expect(adminRegisterResponse.status).toBe(200);
 
     // Then, authenticate and get a token for the manager
     const adminLoginResponse = await request('http://localhost:3001')
