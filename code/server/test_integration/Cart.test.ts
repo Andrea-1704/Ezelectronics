@@ -8,7 +8,7 @@ import exp from "node:constants"
 //get cart
 test("should get cart", async () => {
     
-    await createTables()
+    createTables()
     deleteAllData();
 
     const customer = {
