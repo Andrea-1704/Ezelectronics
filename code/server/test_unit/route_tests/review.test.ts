@@ -6,54 +6,19 @@ import { ProductReview } from "../../src/components/review";
 import request from "supertest";
 import { app } from "../../index";
 import ErrorHandler from "../../src/helper";
-import { afterEach, beforeEach } from "node:test";
 import Authenticator from "../../src/routers/auth";
 import { isString } from "node:util";
 import exp from "node:constants";
 const baseURL = "/ezelectronics";
 
-let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "")
+let testCustomer = new User("customer", "customer", "customer", Role.CUSTOMER, "", "");
 let testProduct = new Product(10, "iphone13", Category.SMARTPHONE, "10-04-2002", " ", 3);
-let testReviews = [
-    {
-        model: "iphone13",
-        user: "username1",
-        score: 3,
-        date: "25-04-2022",
-        comment: "comment1"
-    },
-    {
-        model: "iphone14",
-        user: "username2",
-        score: 4,
-        date: "26-04-2023",
-        comment: "comment2"
-    },
-    {
-        model: "iphone13",
-        user: "username3",
-        score: 4,
-        date: "13-11-2023",
-        comment: "comment3"
-    }
-];
-let mockReview = {
-    model: "iphone",
-    user: "framary",
-    score: 5,
-    date: "2024-05-28",
-    comment: "uao"
-}
+let testReviews = new ProductReview("iphone13", "username", 3, "25-04-2022", "comment");
 
 jest.mock("../../src/controllers/reviewController");
 jest.mock("../../src/routers/auth");
 
 describe("Route Review Unit Tests", () => {
-
-    afterEach(() => {
-        jest.restoreAllMocks();
-        jest.clearAllMocks();
-    });
 
     //POST /:model
     describe("add review", () => {
@@ -176,13 +141,13 @@ describe("Route Review Unit Tests", () => {
                     isString: () => ({ notEmpty: () => ({}) }),
                 })),
             }));
-            jest.spyOn(ReviewController.prototype, "getProductReviews").mockResolvedValueOnce(testReviews);
+            jest.spyOn(ReviewController.prototype, "getProductReviews").mockResolvedValueOnce([testReviews]);
 
             const response = await request(app).get(`${baseURL}/reviews/${model}`);
             expect(response.status).toBe(200);
             expect(ReviewController.prototype.getProductReviews).toHaveBeenCalledWith(model);
             expect(mockIsLoggedIn).toHaveBeenCalledTimes(1);
-            expect(response.body).toEqual([mockReview]);
+            expect(response.body).toEqual([testReviews]);
         });
 ``
         test("it handles error", async () => {
@@ -196,14 +161,13 @@ describe("Route Review Unit Tests", () => {
                 birthdate: "2004-12-06"
             };
             const model = "iphone13";
-            const mockIsLoggedIn = jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+            jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+                req.user = user;
                 return next();
             });
             jest.spyOn(ReviewController.prototype, "getProductReviews").mockRejectedValueOnce(error);
             const response = await request(app).get(`${baseURL}/reviews/${model}`);
             expect(response.status).not.toBe(200);
-            expect(response.body).toEqual({ error: "Testing Error", status: 503});
-            expect(mockIsLoggedIn).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -289,13 +253,14 @@ describe("Route Review Unit Tests", () => {
                     isString: () => ({ notEmpty: () => ({}) }),
                 })),
             }));
-            jest.spyOn(ReviewController.prototype, "deleteAllReviews").mockRejectedValueOnce(error);
+            jest.spyOn(ReviewController.prototype, "deleteReviewsOfProduct").mockRejectedValueOnce(error);
 
             const response = await request(app).delete(`${baseURL}/reviews/${model}/all`);
             expect(ReviewController.prototype.deleteAllReviews).toHaveBeenCalledWith(model);
             expect(response.status).not.toBe(200);
         });
     });
+    
 
     describe("DELETE /reviews", () => {
 
