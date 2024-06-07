@@ -129,7 +129,7 @@ describe("controller unit tests", () => {
 
       test("ProductInCartError (Information changed)", async () => {
         const prodottoInCarrello=new ProductInCart("iphone13", 20, Category.SMARTPHONE, 20);
-        const prodotto=new Product(20,"iphone13", Category.SMARTPHONE,null, null, 200);
+        const prodotto=new Product(20,"iphone13", Category.SMARTPHONE,null, null, 2);
         const testCart = new Cart(0, "customer", false, "17-04-2002", 0, [prodottoInCarrello]);
         const checkoutCartSpy = jest.spyOn(CartDAO.prototype, "checkoutCart").mockResolvedValueOnce(true);
         const checkoutCartSpy2 = jest.spyOn(CartController.prototype, "getCart").mockResolvedValueOnce(testCart);

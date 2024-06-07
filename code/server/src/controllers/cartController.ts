@@ -66,7 +66,7 @@ class CartController {
             if(product.quantity <=0){
                 throw new ProductInCartError();
             }
-            if(product.quantity > pro.products[i].quantity){
+            if(product.quantity < pro.products[i].quantity){
                 throw new ProductInCartError();
             }
         }   
