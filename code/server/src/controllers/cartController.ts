@@ -54,7 +54,9 @@ class CartController {
      * 
      */
     async checkoutCart(user: User): Promise<Boolean> {
+        console.log("popo")
         const pro = await this.getCart(user)
+        console.log(pro)
         if(!pro || pro.paid === true){
             throw new CartNotFoundError();
         }
@@ -63,10 +65,12 @@ class CartController {
         }
         for(let i = 0; i < pro.products.length; i++){
             const product = await this.productDao.getProductByModel(pro.products[i].model)
+            console.log("prodotto")
+            console.log(product)
             if(product.quantity <=0){
                 throw new ProductInCartError();
             }
-            if(product.quantity > pro.products[i].quantity){
+            if(product.quantity < pro.products[i].quantity){
                 throw new ProductInCartError();
             }
         }   
