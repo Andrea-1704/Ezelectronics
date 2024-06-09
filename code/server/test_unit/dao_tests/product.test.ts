@@ -54,6 +54,57 @@ describe("ProductDAO unit tests", () => {
         .toThrow(ProductAlreadyExistsError);
   });
 
+  test("registerProducts - successful registration without arrival date", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(undefined);
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+      callback(null);
+      return db;
+    });
+
+    const testProductWithoutDate = { ...testProduct, arrivalDate: null as any };
+
+    await productDAO.registerProducts(
+        testProductWithoutDate.model,
+        testProductWithoutDate.category,
+        testProductWithoutDate.quantity,
+        testProductWithoutDate.details,
+        testProductWithoutDate.sellingPrice,
+        null // no arrival date
+    );
+
+    expect(mockDBRun).toHaveBeenCalledWith(
+        "INSERT INTO product (model, category, quantity, details, sellingPrice, arrivalDate) VALUES (?, ?, ?, ?, ?, ?)",
+        [
+          testProductWithoutDate.model,
+          testProductWithoutDate.category,
+          testProductWithoutDate.quantity,
+          testProductWithoutDate.details,
+          testProductWithoutDate.sellingPrice,
+          expect.any(String) // should be the current date
+        ],
+        expect.any(Function)
+    );
+
+    mockDBRun.mockRestore();
+  });
+
+  test("registerProducts - database error", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(undefined);
+    const errorMessage = "Database error";
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+      callback(new Error(errorMessage));
+      return db;
+    });
+
+    await expect(productDAO.registerProducts(testProduct.model, testProduct.category, testProduct.quantity, testProduct.details, testProduct.sellingPrice, testProduct.arrivalDate))
+        .rejects
+        .toThrow(errorMessage);
+
+    mockDBRun.mockRestore();
+  });
+
   test("changeProductQuantity - successful operation", async () => {
     const productDAO = new ProductDAO();
     jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
@@ -87,6 +138,78 @@ describe("ProductDAO unit tests", () => {
     await expect(productDAO.changeProductQuantity(testProduct.model, 50, null))
         .rejects
         .toThrow(ProductNotFoundError);
+  });
+
+  test("changeProductQuantity - invalid change date", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+
+    await expect(productDAO.changeProductQuantity(testProduct.model, 50, '2100-01-01'))
+        .rejects
+        .toThrow("Invalid change date");
+  });
+
+  test("changeProductQuantity - successful operation without change date", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+      callback(null);
+      return db;
+    });
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+      callback(null, { quantity: testProduct.quantity + 50 });
+      return db;
+    });
+
+    const newQuantity = await productDAO.changeProductQuantity(testProduct.model, 50, null);
+
+    expect(mockDBRun).toHaveBeenCalledWith(
+        "UPDATE product SET quantity = quantity + ? WHERE model = ?",
+        [50, testProduct.model],
+        expect.any(Function)
+    );
+
+    expect(newQuantity).toBe(150);
+
+    mockDBRun.mockRestore();
+    mockDBGet.mockRestore();
+  })
+
+  test("changeProductQuantity - database error", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+    const errorMessage = "Database error";
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+      callback(new Error(errorMessage));
+      return db;
+    });
+
+    await expect(productDAO.changeProductQuantity(testProduct.model, 50, null))
+        .rejects
+        .toThrow(errorMessage);
+
+    mockDBRun.mockRestore();
+  });
+
+  test("changeProductQuantity - database error on get updated quantity", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+    const errorMessage = "Database error";
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+      callback(null);
+      return db;
+    });
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+      callback(new Error(errorMessage), null);
+      return db;
+    });
+
+    await expect(productDAO.changeProductQuantity(testProduct.model, 50, null))
+        .rejects
+        .toThrow(errorMessage);
+
+    mockDBRun.mockRestore();
+    mockDBGet.mockRestore();
   });
 
   test("sellProduct - successful operation", async () => {
@@ -146,6 +269,52 @@ describe("ProductDAO unit tests", () => {
         .toThrow(LowProductStockError);
   });
 
+  test("sellProduct - invalid selling date", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+
+    await expect(productDAO.sellProduct(testProduct.model, 20, '2100-01-01'))
+        .rejects
+        .toThrow("Invalid selling date");
+  });
+
+  test("sellProduct - database error", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+    const errorMessage = "Database error";
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+      callback(new Error(errorMessage));
+      return db;
+    });
+
+    await expect(productDAO.sellProduct(testProduct.model, 20, null))
+        .rejects
+        .toThrow(errorMessage);
+
+    mockDBRun.mockRestore();
+  });
+
+  test("sellProduct - database error on get updated quantity", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+    const errorMessage = "Database error";
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+      callback(null);
+      return db;
+    });
+    const mockDBGet = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+      callback(new Error(errorMessage), null);
+      return db;
+    });
+
+    await expect(productDAO.sellProduct(testProduct.model, 20, null))
+        .rejects
+        .toThrow(errorMessage);
+
+    mockDBRun.mockRestore();
+    mockDBGet.mockRestore();
+  });
+
   test("getProducts - successful operation", async () => {
     const productDAO = new ProductDAO();
     const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
@@ -162,6 +331,26 @@ describe("ProductDAO unit tests", () => {
     );
 
     expect(products).toEqual([testProduct, anotherProduct]);
+
+    mockDBAll.mockRestore();
+  });
+
+  test("getProducts - filter by model", async () => {
+    const productDAO = new ProductDAO();
+    const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+      callback(null, [testProduct]);
+      return db;
+    });
+
+    const products = await productDAO.getProducts("model", null, "iPhone13");
+
+    expect(mockDBAll).toHaveBeenCalledWith(
+        "SELECT * FROM product WHERE model = ?",
+        ["iPhone13"],
+        expect.any(Function)
+    );
+
+    expect(products).toEqual([testProduct]);
 
     mockDBAll.mockRestore();
   });
@@ -186,6 +375,19 @@ describe("ProductDAO unit tests", () => {
     mockDBAll.mockRestore();
   });
 
+  test("get Products - database error", async () => {
+    const productDAO = new ProductDAO();
+    const errorMessage = "Database error";
+    const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+      callback(new Error(errorMessage), null);
+      return db;
+    });
+
+    await expect(productDAO.getProducts(null, null, null)).rejects.toThrow(errorMessage);
+
+    mockDBAll.mockRestore();
+  });
+
   test("getAvailableProducts - successful operation", async () => {
     const productDAO = new ProductDAO();
     const availableProducts = [testProduct, anotherProduct];
@@ -203,6 +405,59 @@ describe("ProductDAO unit tests", () => {
     );
 
     expect(products).toEqual(availableProducts);
+
+    mockDBAll.mockRestore();
+  });
+
+  test("getAvailableProducts - filter by model", async () => {
+    const productDAO = new ProductDAO();
+    const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+      callback(null, [testProduct]);
+      return db;
+    });
+
+    const products = await productDAO.getAvailableProducts("model", null, "iPhone13");
+
+    expect(mockDBAll).toHaveBeenCalledWith(
+        "SELECT * FROM product WHERE quantity > 0 AND model = ?",
+        ["iPhone13"],
+        expect.any(Function)
+    );
+
+    expect(products).toEqual([testProduct]);
+
+    mockDBAll.mockRestore();
+  });
+
+  test("getAvailableProducts - filter by category", async () => {
+    const productDAO = new ProductDAO();
+    const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+      callback(null, [testProduct]);
+      return db;
+    });
+
+    const products = await productDAO.getAvailableProducts("category", "Smartphone", null);
+
+    expect(mockDBAll).toHaveBeenCalledWith(
+        "SELECT * FROM product WHERE quantity > 0 AND category = ?",
+        ["Smartphone"],
+        expect.any(Function)
+    );
+
+    expect(products).toEqual([testProduct]);
+
+    mockDBAll.mockRestore();
+  });
+
+  test("getAvailableProducts - database error", async () => {
+    const productDAO = new ProductDAO();
+    const errorMessage = "Database error";
+    const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+      callback(new Error(errorMessage), null);
+      return db;
+    });
+
+    await expect(productDAO.getAvailableProducts(null, null, null)).rejects.toThrow(errorMessage);
 
     mockDBAll.mockRestore();
   });
@@ -235,6 +490,7 @@ describe("ProductDAO unit tests", () => {
     });
 
     await expect(productDAO.deleteAllProducts()).rejects.toThrow(errorMessage);
+
     mockDBRun.mockRestore();
   });
 
@@ -260,6 +516,21 @@ describe("ProductDAO unit tests", () => {
     mockDBRun.mockRestore();
   });
 
+  test("deleteProduct - database error", async () => {
+    const productDAO = new ProductDAO();
+    const errorMessage = "Database error";
+    const mockDBRun = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+      callback(new Error(errorMessage));
+      return db;
+    });
+
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+
+    await expect(productDAO.deleteProduct(testProduct.model)).rejects.toThrow(errorMessage);
+
+    mockDBRun.mockRestore();
+  });
+
   test("deleteProduct - product not found", async () => {
     const productDAO = new ProductDAO();
     jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(undefined);
@@ -267,5 +538,46 @@ describe("ProductDAO unit tests", () => {
     await expect(productDAO.deleteProduct(testProduct.model))
         .rejects
         .toThrow(ProductNotFoundError);
+  });
+
+  describe("getProductByModel", () => {
+    test("should return the product when model exists", async () => {
+      const productDAO = new ProductDAO();
+      const mockDBGet = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+        callback(null, testProduct);
+        return db;
+      });
+
+      const product = await productDAO.getProductByModel(testProduct.model);
+
+      expect(mockDBGet).toHaveBeenCalledWith(
+          "SELECT * FROM product WHERE model = ?",
+          [testProduct.model],
+          expect.any(Function)
+      );
+
+      expect(product).toEqual(testProduct);
+
+      mockDBGet.mockRestore();
+    });
+
+    test("should handle database errors gracefully", async () => {
+      const productDAO = new ProductDAO();
+      const errorMessage = "Database error";
+      const mockDBGet = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+        callback(new Error(errorMessage), null);
+        return db;
+      });
+
+      await expect(productDAO.getProductByModel(testProduct.model)).rejects.toThrow(errorMessage);
+
+      expect(mockDBGet).toHaveBeenCalledWith(
+          "SELECT * FROM product WHERE model = ?",
+          [testProduct.model],
+          expect.any(Function)
+      );
+
+      mockDBGet.mockRestore();
+    });
   });
 });
