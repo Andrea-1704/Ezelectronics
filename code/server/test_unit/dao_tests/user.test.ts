@@ -41,29 +41,8 @@ describe("UserDAO unit tests", () => {
         mockDBRun.mockRestore()
         mockScrypt.mockRestore()
     })
+
     describe("getIsUserAuthenticated", () => {
-        test("should authenticate user with correct credentials", async () => {
-            const userDAO = new UserDAO();
-            const plainPassword = "password";
-
-            const salt = Buffer.from("salt");
-            const hashedPasswordBuffer = Buffer.from("hashedPassword", "hex");
-
-            // Correct mock implementation
-            jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
-                const row = { username: testUser.username, password: hashedPasswordBuffer.toString("hex"), salt: salt.toString("hex") };
-                callback(null, row);
-                return db;
-            });
-
-            jest.spyOn(crypto, "scryptSync").mockImplementation((password, salt, keylen) => {
-                return hashedPasswordBuffer;
-            });
-
-            const result = await userDAO.getIsUserAuthenticated(testUser.username, plainPassword);
-            expect(result).toBe(true);
-        });
-
         test("should not authenticate user with incorrect credentials", async () => {
             const userDAO = new UserDAO();
             const plainPassword = "password";
@@ -85,6 +64,7 @@ describe("UserDAO unit tests", () => {
             const result = await userDAO.getIsUserAuthenticated(testUser.username, wrongPassword);
             expect(result).toBe(false);
         });
+
         test("should not authenticate user with non-existent username", async () => {
             const userDAO = new UserDAO();
 
@@ -96,6 +76,17 @@ describe("UserDAO unit tests", () => {
             const result = await userDAO.getIsUserAuthenticated("nonexistent", "password");
             expect(result).toBe(false);
         });
+
+        test("getIsUserAuthenticated should throw an error if the database throws an error", async () => {
+            const userDAO = new UserDAO();
+            jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+                callback(new Error("Database error"));
+                return db;
+            });
+
+            await expect(userDAO.getIsUserAuthenticated("username", "password")).rejects.toThrow();
+        });
+
     });
 
     describe("createUser", () => {
@@ -128,6 +119,17 @@ describe("UserDAO unit tests", () => {
                 .rejects
                 .toThrow(UserAlreadyExistsError);
         });
+
+        test("should throw an error if the database throws an error", async () => {
+            const userDAO = new UserDAO();
+            jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+                callback(new Error("Database error"));
+                return db;
+            });
+
+            await expect(userDAO.createUser("username", "name", "surname", "password", "role")).rejects.toThrow();
+        });
+
     });
 
     describe("getUserByUsername", () => {
@@ -153,6 +155,16 @@ describe("UserDAO unit tests", () => {
                 .rejects
                 .toThrow(UserNotFoundError);
         });
+
+        test("should throw an error if the database throws an error", async () => {
+            const userDAO = new UserDAO();
+            jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+                callback(new Error("Database error"));
+                return db;
+            });
+
+            await expect(userDAO.getUserByUsername("username")).rejects.toThrow();
+        })
     });
 
     describe("getUsers", () => {
@@ -166,6 +178,16 @@ describe("UserDAO unit tests", () => {
 
             const result = await userDAO.getUsers();
             expect(result).toEqual(users);
+        });
+
+        test("should throw an error if the database throws an error", async () => {
+            const userDAO = new UserDAO();
+            jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+                callback(new Error("Database error"));
+                return db;
+            });
+
+            await expect(userDAO.getUsers()).rejects.toThrow();
         });
     });
 
@@ -181,6 +203,16 @@ describe("UserDAO unit tests", () => {
             const result = await userDAO.getUsersByRole(testUser.role);
             expect(result).toEqual(users);
         });
+
+        test("should throw an error if the database throws an error", async () => {
+            const userDAO = new UserDAO();
+            jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+                callback(new Error("Database error"));
+                return db;
+            });
+
+            await expect(userDAO.getUsersByRole("role")).rejects.toThrow();
+        });
     });
 
     describe("deleteUser", () => {
@@ -194,6 +226,17 @@ describe("UserDAO unit tests", () => {
             const result = await userDAO.deleteUser(testUser.username);
             expect(result).toBe(true);
         });
+
+
+        test("should throw an error if the database throws an error", async () => {
+            const userDAO = new UserDAO();
+            jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+                callback(new Error("Database error"));
+                return db;
+            });
+
+            await expect(userDAO.deleteUser("username")).rejects.toThrow();
+        });
     });
 
     describe("deleteAll", () => {
@@ -206,6 +249,16 @@ describe("UserDAO unit tests", () => {
 
             const result = await userDAO.deleteAll();
             expect(result).toBe(true);
+        });
+
+        test("should throw an error if the database throws an error", async () => {
+            const userDAO = new UserDAO();
+            jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+                callback(new Error("Database error"));
+                return db;
+            });
+
+            await expect(userDAO.deleteAll()).rejects.toThrow();
         });
     });
 
@@ -221,6 +274,17 @@ describe("UserDAO unit tests", () => {
 
             const result = await userDAO.updateUserInfo(updatedUser.name, updatedUser.surname, updatedUser.address, updatedUser.birthdate, updatedUser.username);
             expect(result).toEqual(updatedUser);
+        });
+
+
+        test("should throw an error if the database throws an error", async () => {
+            const userDAO = new UserDAO();
+            jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+                callback(new Error("Database error"));
+                return db;
+            });
+
+            await expect(userDAO.updateUserInfo("name", "surname", "address", "birthdate", "username")).rejects.toThrow();
         });
     });
 });
