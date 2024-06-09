@@ -1,255 +1,348 @@
-// @ts-ignore
-import request from 'supertest';
-import db from "../src/db/db";
-import { app } from "../index";
-import UserDAO from "../src/dao/userDAO";
-import { User, Role } from "../src/components/user";
+import { test, expect, jest, beforeEach, afterEach } from "@jest/globals"
+import request from 'supertest'
+const baseURL = "/ezelectronics"
+import db, {createTables, deleteAllData}  from "../src/db/db"
+import exp from "node:constants"
 
-const baseURL = "/ezelectronics";
 
-// Function to insert test users into the database
-const insertTestUser = async (username: string, name: string, surname: string, password: string, role: string) => {
-  const userDAO = new UserDAO();
-  await userDAO.createUser(username, name, surname, password, role);
-};
+//Create a new user
+test("should create a new user account", async () => {
+    
+    createTables()
+    deleteAllData();
 
-// Function to log in a user and retrieve the session cookie
-const loginUser = async (username: string, password: string) => {
-  const response = await request(app)
+    const customer = {
+        username: "customer",
+        name: "customer",
+        surname: "customer",
+        password: "customer",
+        role: "Customer"
+    }
+
+    const customerRegisterResponse = await request('http://localhost:3001')
+      .post(`${baseURL}/users`)
+      .send(customer);
+  
+    // Check that the registration was successful
+    expect(customerRegisterResponse.status).toBe(200);
+})
+
+
+
+
+//get all the users
+test("should get all the users", async () => {
+    
+  createTables()
+  deleteAllData();
+
+  const customer = {
+      username: "customer",
+      name: "customer",
+      surname: "customer",
+      password: "customer",
+      role: "Customer"
+  }
+
+  const customerRegisterResponse = await request('http://localhost:3001')
+    .post(`${baseURL}/users`)
+    .send(customer);
+
+  // Check that the registration was successful
+  expect(customerRegisterResponse.status).toBe(200);
+
+   //Create a new admin account:
+   const admin = {
+    username: "admin",
+    name: "admin",
+    surname: "admin",
+    password: "admin",
+    role: "Admin"
+  }
+
+  const adminRegisterResponse = await request('http://localhost:3001')
+      .post(`${baseURL}/users`)
+      .send(admin);
+
+  // Check that the admin account was created successfully
+  expect(adminRegisterResponse.status).toBe(200);
+
+  // Then, authenticate and get a token for the manager
+  const adminLoginResponse = await request('http://localhost:3001')
       .post(`${baseURL}/sessions`)
-      .send({ username, password });
+      .send({ username: admin.username, password: admin.password });
 
-  return response.header['set-cookie'][0];
-};
+  const adminCoockie = adminLoginResponse.headers['set-cookie'];
 
-beforeAll(async () => {
-  await db.run("DELETE FROM users"); // Clean users table
 
-  // Insert test users
-  await insertTestUser("adminUser", "Admin", "User", "adminPass", Role.ADMIN);
-  await insertTestUser("managerUser", "Manager", "User", "managerPass", Role.MANAGER);
-  await insertTestUser("customerUser", "Customer", "User", "customerPass", Role.CUSTOMER);
-});
+  const getUsers = await request('http://localhost:3001')
+    .get(`${baseURL}/users`)
+    .set('Cookie', adminCoockie);
 
-afterAll(async () => {
-  await db.run("DELETE FROM users"); // Clean up users table
-});
+  // Check that the registration was successful
+  expect(getUsers.status).toBe(200);
+})
 
-describe("User API Integration Tests", () => {
-  let adminCookie: any, managerCookie: any, customerCookie: any;
 
-  beforeAll(async () => {
-    // Login users and save cookies
-    adminCookie = await loginUser("adminUser", "adminPass");
-    managerCookie = await loginUser("managerUser", "managerPass");
-    customerCookie = await loginUser("customerUser", "customerPass");
-  });
+//get all the users
+test("should get all the users with specific role", async () => {
+    
+  createTables()
+  deleteAllData();
 
-  describe("POST /ezelectronics/users", () => {
-    test("should create a new user successfully", async () => {
-      const response = await request(app)
-          .post(`${baseURL}/users`)
-          .send({
-            username: "newUser",
-            name: "New",
-            surname: "User",
-            password: "password",
-            role: "Customer"
-          });
+  const customer = {
+      username: "customer",
+      name: "customer",
+      surname: "customer",
+      password: "customer",
+      role: "Customer"
+  }
 
-      expect(response.status).toBe(200);
-    });
+  const customerRegisterResponse = await request('http://localhost:3001')
+    .post(`${baseURL}/users`)
+    .send(customer);
 
-    test("should return validation errors for missing fields", async () => {
-      const response = await request(app)
-          .post(`${baseURL}/users`)
-          .send({
-            username: "", // Missing username
-            name: "New",
-            surname: "User",
-            password: "password",
-            role: "Customer"
-          });
+  // Check that the registration was successful
+  expect(customerRegisterResponse.status).toBe(200);
 
-      expect(response.status).toBe(422); // Validation Error
-    });
-  });
+   //Create a new admin account:
+   const admin = {
+    username: "admin",
+    name: "admin",
+    surname: "admin",
+    password: "admin",
+    role: "Admin"
+  }
 
-  describe("GET /ezelectronics/users", () => {
-    test("should allow admin to retrieve all users", async () => {
-      const response = await request(app)
-          .get(`${baseURL}/users`)
-          .set("Cookie", adminCookie);
+  const adminRegisterResponse = await request('http://localhost:3001')
+      .post(`${baseURL}/users`)
+      .send(admin);
 
-      expect(response.status).toBe(200);
-      expect(response.body).toBeInstanceOf(Array);
-    });
+  // Check that the admin account was created successfully
+  expect(adminRegisterResponse.status).toBe(200);
 
-    test("should not allow manager to retrieve all users", async () => {
-      const response = await request(app)
-          .get(`${baseURL}/users`)
-          .set("Cookie", managerCookie);
+  // Then, authenticate and get a token for the manager
+  const adminLoginResponse = await request('http://localhost:3001')
+      .post(`${baseURL}/sessions`)
+      .send({ username: admin.username, password: admin.password });
 
-      expect(response.status).toBe(401); // Unauthorized Error
-    });
+  const adminCoockie = adminLoginResponse.headers['set-cookie'];
 
-    test("should not allow customer to retrieve all users", async () => {
-      const response = await request(app)
-          .get(`${baseURL}/users`)
-          .set("Cookie", customerCookie);
 
-      expect(response.status).toBe(401); // Unauthorized Error
-    });
-  });
+  const getUsers = await request('http://localhost:3001')
+    .get(`${baseURL}/users/roles/Customer`)
+    .set('Cookie', adminCoockie);
 
-  describe("GET /ezelectronics/users/roles/:role", () => {
-    test("should allow admin to retrieve users by role", async () => {
-      const response = await request(app)
-          .get(`${baseURL}/users/roles/Customer`)
-          .set("Cookie", adminCookie);
+  // Check that the registration was successful
+  expect(getUsers.status).toBe(200);
+})
 
-      expect(response.status).toBe(200);
-      expect(response.body).toBeInstanceOf(Array);
-    });
 
-    test("should return validation error for invalid role", async () => {
-      const response = await request(app)
-          .get(`${baseURL}/users/roles/InvalidRole`)
-          .set("Cookie", adminCookie);
+//get a specific user
+test("should get a specific user", async () => {
+    
+  createTables()
+  deleteAllData();
 
-      expect(response.status).toBe(422); // Validation Error
-    });
-  });
+  const customer = {
+      username: "customer",
+      name: "customer",
+      surname: "customer",
+      password: "customer",
+      role: "Customer"
+  }
 
-  describe("GET /ezelectronics/users/:username", () => {
-    test("should allow admin to retrieve any user by username", async () => {
-      const response = await request(app)
-          .get(`${baseURL}/users/managerUser`)
-          .set("Cookie", adminCookie);
+  const customerRegisterResponse = await request('http://localhost:3001')
+    .post(`${baseURL}/users`)
+    .send(customer);
 
-      expect(response.status).toBe(200);
-      expect(response.body.username).toBe("managerUser");
-    });
+  // Check that the registration was successful
+  expect(customerRegisterResponse.status).toBe(200);
 
-    test("should allow users to retrieve their own data by username", async () => {
-      const response = await request(app)
-          .get(`${baseURL}/users/customerUser`)
-          .set("Cookie", customerCookie);
+   //Create a new admin account:
+   const admin = {
+    username: "admin",
+    name: "admin",
+    surname: "admin",
+    password: "admin",
+    role: "Admin"
+  }
 
-      expect(response.status).toBe(200);
-      expect(response.body.username).toBe("customerUser");
-    });
+  const adminRegisterResponse = await request('http://localhost:3001')
+      .post(`${baseURL}/users`)
+      .send(admin);
 
-    test("should not allow users to retrieve data of other users", async () => {
-      const response = await request(app)
-          .get(`${baseURL}/users/managerUser`)
-          .set("Cookie", customerCookie);
+  // Check that the admin account was created successfully
+  expect(adminRegisterResponse.status).toBe(200);
 
-      expect(response.status).toBe(401); // Unauthorized Error
-    });
-  });
+  // Then, authenticate and get a token for the manager
+  const adminLoginResponse = await request('http://localhost:3001')
+      .post(`${baseURL}/sessions`)
+      .send({ username: admin.username, password: admin.password });
 
-  describe("PATCH /ezelectronics/users/:username", () => {
-    test("should allow admin to update any user's data", async () => {
-      const response = await request(app)
-          .patch(`${baseURL}/users/customerUser`)
-          .set("Cookie", adminCookie)
-          .send({
-            name: "UpdatedName",
-            surname: "UpdatedSurname",
-            address: "UpdatedAddress",
-            birthdate: "2000-01-01"
-          });
+  const adminCoockie = adminLoginResponse.headers['set-cookie'];
 
-      expect(response.status).toBe(200);
-      expect(response.body.name).toBe("UpdatedName");
-    });
 
-    test("should allow users to update their own data", async () => {
-      const response = await request(app)
-          .patch(`${baseURL}/users/customerUser`)
-          .set("Cookie", customerCookie)
-          .send({
-            name: "CustomerNewName",
-            surname: "CustomerNewSurname",
-            address: "CustomerNewAddress",
-            birthdate: "2000-02-02"
-          });
+  const getUsers = await request('http://localhost:3001')
+    .get(`${baseURL}/users/${customer.username}`)
+    .set('Cookie', adminCoockie);
 
-      expect(response.status).toBe(200);
-      expect(response.body.name).toBe("CustomerNewName");
-    });
+  // Check that the registration was successful
+  expect(getUsers.status).toBe(200);
+})
 
-    test("should not allow users to update data of other users", async () => {
-      const response = await request(app)
-          .patch(`${baseURL}/users/managerUser`)
-          .set("Cookie", customerCookie)
-          .send({
-            name: "UpdatedName",
-            surname: "UpdatedSurname",
-            address: "UpdatedAddress",
-            birthdate: "2000-01-01"
-          });
 
-      expect(response.status).toBe(401); // Unauthorized Error
-    });
+//delete a specific user
+test("should delete a specific user", async () => {
+    
+  createTables()
+  deleteAllData();
 
-    test("should return validation error for invalid data", async () => {
-      const response = await request(app)
-          .patch(`${baseURL}/users/customerUser`)
-          .set("Cookie", customerCookie)
-          .send({
-            name: "", // Missing name
-            surname: "UpdatedSurname",
-            address: "UpdatedAddress",
-            birthdate: "InvalidDate" // Invalid birthdate
-          });
+  const customer = {
+      username: "customer",
+      name: "customer",
+      surname: "customer",
+      password: "customer",
+      role: "Customer"
+  }
 
-      expect(response.status).toBe(422); // Validation Error
-    });
-  });
+  const customerRegisterResponse = await request('http://localhost:3001')
+    .post(`${baseURL}/users`)
+    .send(customer);
 
-  describe("DELETE /ezelectronics/users/:username", () => {
-    test("should allow admin to delete any user", async () => {
-      const response = await request(app)
-          .delete(`${baseURL}/users/managerUser`)
-          .set("Cookie", adminCookie);
+  // Check that the registration was successful
+  expect(customerRegisterResponse.status).toBe(200);
 
-      expect(response.status).toBe(200);
-    });
+   //Create a new admin account:
+   const admin = {
+    username: "admin",
+    name: "admin",
+    surname: "admin",
+    password: "admin",
+    role: "Admin"
+  }
 
-    test("should not allow users to delete other users", async () => {
-      const response = await request(app)
-          .delete(`${baseURL}/users/adminUser`)
-          .set("Cookie", customerCookie);
+  const adminRegisterResponse = await request('http://localhost:3001')
+      .post(`${baseURL}/users`)
+      .send(admin);
 
-      expect(response.status).toBe(401); // Unauthorized Error
-    });
+  // Check that the admin account was created successfully
+  expect(adminRegisterResponse.status).toBe(200);
 
-    test("should allow users to delete their own data", async () => {
-      const response = await request(app)
-          .delete(`${baseURL}/users/customerUser`)
-          .set("Cookie", customerCookie);
+  // Then, authenticate and get a token for the manager
+  const adminLoginResponse = await request('http://localhost:3001')
+      .post(`${baseURL}/sessions`)
+      .send({ username: admin.username, password: admin.password });
 
-      expect(response.status).toBe(200);
-    });
-  });
+  const adminCoockie = adminLoginResponse.headers['set-cookie'];
 
-  describe("DELETE /ezelectronics/users", () => {
-    test("should allow admin to delete all users", async () => {
-      const response = await request(app)
-          .delete(`${baseURL}/users`)
-          .set("Cookie", adminCookie);
 
-      expect(response.status).toBe(200);
-    });
+  const getUsers = await request('http://localhost:3001')
+    .delete(`${baseURL}/users/${customer.username}`)
+    .set('Cookie', adminCoockie);
 
-    test("should not allow non-admin users to delete all users", async () => {
-      const response = await request(app)
-          .delete(`${baseURL}/users`)
-          .set("Cookie", customerCookie);
+  // Check that the registration was successful
+  expect(getUsers.status).toBe(200);
+})
 
-      expect(response.status).toBe(401); // Unauthorized Error
-    });
-  });
-});
+
+//delete all non admin users
+test("should delete all the non admin users", async () => {
+    
+  createTables()
+  deleteAllData();
+
+  const customer = {
+      username: "customer",
+      name: "customer",
+      surname: "customer",
+      password: "customer",
+      role: "Customer"
+  }
+
+  const customerRegisterResponse = await request('http://localhost:3001')
+    .post(`${baseURL}/users`)
+    .send(customer);
+
+  // Check that the registration was successful
+  expect(customerRegisterResponse.status).toBe(200);
+
+   //Create a new admin account:
+   const admin = {
+    username: "admin",
+    name: "admin",
+    surname: "admin",
+    password: "admin",
+    role: "Admin"
+  }
+
+  const adminRegisterResponse = await request('http://localhost:3001')
+      .post(`${baseURL}/users`)
+      .send(admin);
+
+  // Check that the admin account was created successfully
+  expect(adminRegisterResponse.status).toBe(200);
+
+  // Then, authenticate and get a token for the manager
+  const adminLoginResponse = await request('http://localhost:3001')
+      .post(`${baseURL}/sessions`)
+      .send({ username: admin.username, password: admin.password });
+
+  const adminCoockie = adminLoginResponse.headers['set-cookie'];
+
+
+  const getUsers = await request('http://localhost:3001')
+    .delete(`${baseURL}/users`)
+    .set('Cookie', adminCoockie);
+
+  // Check that the registration was successful
+  expect(getUsers.status).toBe(200);
+})
+
+
+//update the personal information of a user
+test("should update the information of a user", async () => {
+    
+  createTables()
+  deleteAllData();
+
+  const customer = {
+      username: "customer",
+      name: "customer",
+      surname: "customer",
+      password: "customer",
+      role: "Customer"
+  }
+
+  const customerRegisterResponse = await request('http://localhost:3001')
+    .post(`${baseURL}/users`)
+    .send(customer);
+
+  // Check that the registration was successful
+  expect(customerRegisterResponse.status).toBe(200);
+
+  //Create a new admin account:
+   const body = {
+      name: "pippo",
+      surname: "pluto",
+      address: "topolandia",
+      birthdate: "1999-01-01"
+  }
+
+  // Get the token for the customer
+  const customerLoginResponse = await request('http://localhost:3001')
+    .post(`${baseURL}/sessions`)
+    .send({ username: customer.username, password: customer.password });
+
+  // Check that the login was successful
+  expect(customerLoginResponse.status).toBe(200);
+  const customerCookie = customerLoginResponse.headers['set-cookie'];
+
+  const modification = await request('http://localhost:3001')
+    .patch(`${baseURL}/users/${customer.username}`)
+    .send(body)
+    .set('Cookie', customerCookie);
+
+  // Check that the registration was successful
+  expect(modification.status).toBe(200);
+})

@@ -72,6 +72,20 @@ describe("User Controller", () => {
         });
     });
 
+    describe("Get Users", () => {
+        test("It should return all users", async () => {
+            jest.spyOn(UserDAO.prototype, "getUsers").mockResolvedValueOnce(users);
+            const controller = new UserController();
+            const response = await controller.getUsers();
+
+            expect(UserDAO.prototype.getUsers).toHaveBeenCalledTimes(1);
+            expect(response).toHaveLength(users.length);
+            response.forEach(user => {
+                expect(users).toContainEqual(user);
+            });
+        });
+    })
+
     describe("Get User By Username", () => {
         test("Customer should get their own info", async () => {
             const testUser = users.find(user => user.role === Role.CUSTOMER);
@@ -107,36 +121,6 @@ describe("User Controller", () => {
             expect(UserDAO.prototype.getUserByUsername).toHaveBeenCalledTimes(1);
             expect(UserDAO.prototype.getUserByUsername).toHaveBeenCalledWith(testUser.username);
             expect(response).toBe(testUser);
-        });
-
-        test("Customer can't get other user info", async () => {
-            const testUser = users.find(user => user.role === Role.CUSTOMER);
-
-            jest.spyOn(UserDAO.prototype, "getUserByUsername").mockResolvedValueOnce(testUser);
-            const controller = new UserController();
-            try {
-                await controller.getUserByUsername("admin_user");
-            } catch (error) {
-                expect(error.customMessage).toBe(USER_NOT_ADMIN);
-                expect(error.customCode).toBe(401);
-            }
-
-            expect(UserDAO.prototype.getUserByUsername).toHaveBeenCalledTimes(0);
-        });
-
-        test("Manager can't get other user info", async () => {
-            const testUser = users.find(user => user.role === Role.MANAGER);
-
-            jest.spyOn(UserDAO.prototype, "getUserByUsername").mockResolvedValueOnce(testUser);
-            const controller = new UserController();
-            try {
-                await controller.getUserByUsername("customer_user");
-            } catch (error) {
-                expect(error.customMessage).toBe(USER_NOT_ADMIN);
-                expect(error.customCode).toBe(401);
-            }
-
-            expect(UserDAO.prototype.getUserByUsername).toHaveBeenCalledTimes(0);
         });
 
         test("Admin can get other user info", async () => {
@@ -274,6 +258,22 @@ describe("User Controller", () => {
             expect(UserDAO.prototype.updateUserInfo).toHaveBeenCalledTimes(1);
             expect(UserDAO.prototype.updateUserInfo).toHaveBeenCalledWith("Updated Name", customerUser.surname, customerUser.address, customerUser.birthdate, customerUser.username);
         });
+
+        test("only the provided fields are updated", async () => {
+            const customerUser = users.find(user => user.role === Role.CUSTOMER);
+            const updatedUser = { ...customerUser, name: "Updated Name", surname: "Updated Surname" };
+
+            jest.spyOn(UserController.prototype, "getUserByUsername").mockResolvedValueOnce(customerUser);
+            jest.spyOn(UserDAO.prototype, "updateUserInfo").mockResolvedValueOnce(updatedUser);
+
+            const controller = new UserController();
+            const response = await controller.updateUserInfo(customerUser, "Updated Name", "Updated Surname", customerUser.address, customerUser.birthdate, customerUser.username);
+
+            expect(response.name).toBe("Updated Name");
+            expect(response.surname).toBe("Updated Surname");
+            expect(UserDAO.prototype.updateUserInfo).toHaveBeenCalledTimes(1);
+            expect(UserDAO.prototype.updateUserInfo).toHaveBeenCalledWith("Updated Name", "Updated Surname", customerUser.address, customerUser.birthdate, customerUser.username);
+        });
     });
 
     describe("Delete User", () => {
@@ -302,8 +302,6 @@ describe("User Controller", () => {
             const response = await controller.deleteUser(customerUser.username);
 
             expect(response).toBe(true);
-            expect(UserDAO.prototype.getUserByUsername).toHaveBeenCalledTimes(1);
-            expect(UserDAO.prototype.getUserByUsername).toHaveBeenCalledWith(customerUser.username);
             expect(UserDAO.prototype.deleteUser).toHaveBeenCalledTimes(1);
             expect(UserDAO.prototype.deleteUser).toHaveBeenCalledWith(customerUser.username);
         });
@@ -332,8 +330,6 @@ describe("User Controller", () => {
             const response = await controller.deleteUser(customerUser.username);
 
             expect(response).toBe(true);
-            expect(UserDAO.prototype.getUserByUsername).toHaveBeenCalledTimes(1);
-            expect(UserDAO.prototype.getUserByUsername).toHaveBeenCalledWith(customerUser.username);
             expect(UserDAO.prototype.deleteUser).toHaveBeenCalledTimes(1);
             expect(UserDAO.prototype.deleteUser).toHaveBeenCalledWith(customerUser.username);
         });

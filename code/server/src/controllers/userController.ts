@@ -1,7 +1,7 @@
 import { User } from "../components/user"
 import UserDAO from "../dao/userDAO"
 import {Utility} from "../utilities";
-import {UnauthorizedUserError, UserIsAdminError, UserNotAdminError} from "../errors/userError";
+import { UserNotAdminError} from "../errors/userError";
 
 /**
  * Represents a controller for managing users.
@@ -31,7 +31,7 @@ class UserController {
      * Returns all users.
      * @returns A Promise that resolves to an array of users.
      */
-    async getUsers() /**:Promise<User[]> */ {
+    async getUsers(): Promise<User[]>  {
         return this.dao.getUsers()
     }
 
@@ -90,20 +90,8 @@ class UserController {
     async updateUserInfo(user: User, name: string, surname: string, address: string, birthdate: string, username: string): Promise<User> {
         if(user.username !== username && !Utility.isAdmin(user)) throw new UserNotAdminError();
         const userToUpdate = await this.getUserByUsername(username);
-    
         //We consider the change only if fields are not empty:
-        const updatedName = name || userToUpdate.name;
-        const updatedSurname = surname || userToUpdate.surname;
-        const updatedAddress = address || userToUpdate.address;
-        const updatedBirthdate = birthdate || userToUpdate.birthdate;
-    
-        // Aggiorna le informazioni dell'utente solo se sono state fornite nuove informazioni
-        return this.dao.updateUserInfo(
-            updatedName,
-            updatedSurname,
-            updatedAddress,
-            updatedBirthdate,
-            username
+        return this.dao.updateUserInfo(name ?? userToUpdate.name, surname ?? userToUpdate.surname, address ?? userToUpdate.address, birthdate ?? userToUpdate.birthdate, username
         );
     }
     
