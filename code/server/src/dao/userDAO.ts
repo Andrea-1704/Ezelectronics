@@ -1,7 +1,7 @@
 import db from "../db/db"
-import { User } from "../components/user"
+import {User} from "../components/user"
 import crypto from "crypto"
-import { UserAlreadyExistsError, UserNotFoundError } from "../errors/userError";
+import {UserAlreadyExistsError, UserNotFoundError} from "../errors/userError";
 
 /**
  * A class that implements the interaction with the database for all user-related operations.
@@ -78,26 +78,141 @@ class UserDAO {
      * @param username The username of the user to retrieve
      * @returns A Promise that resolves the information of the requested user
      */
-    getUserByUsername(username: string): Promise<User> {
-        return new Promise<User>((resolve, reject) => {
+    async getUserByUsername(username: string): Promise<User> {
+        const sql = "SELECT * FROM users WHERE username = ?";
+        const params = [username];
+
+        try {
+            const row = await new Promise<any>((resolve, reject) => {
+                db.get(sql, params, (err: Error | null, row: any) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    if (!row) {
+                        return reject(new UserNotFoundError());
+                    }
+                    resolve(row);
+                });
+            });
+
+            return new User(row.username, row.name, row.surname, row.role, row.address, row.birthdate);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
+     * gets all the users in the database
+     * @returns A Promise that resolves to an array of use objects
+     */
+    async getUsers(): Promise<User[]> {
+        const sql = "SELECT * FROM users";
+        try {
+            const rows = await new Promise<any[]>((resolve, reject) => {
+                db.all(sql, [], (err: Error | null, rows: any[]) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    resolve(rows);
+                });
+            });
+
+            const users: User[] = rows.map(row => new User(row.username, row.name, row.surname, row.role, row.address, row.birthdate));
+            return users;
+        } catch (error) {
+            throw error; // Rilancia l'errore in modo che possa essere gestito altrove
+        }
+    }
+
+    /**
+     * get all users in the database that have the specified role
+     * @param role
+     * @returns A Promise that resolves to an array of use objects
+     */
+    getUsersByRole(role: string) : Promise<User[]> {
+        return new Promise<User[]>( (resolve, reject) => {
             try {
-                const sql = "SELECT * FROM users WHERE username = ?"
-                db.get(sql, [username], (err: Error | null, row: any) => {
+                const sql = "SELECT * FROM users WHERE role = ?"
+                db.all(sql, [role], (err: Error | null, rows: any[]) => {
                     if (err) {
                         reject(err)
                         return
                     }
-                    if (!row) {
-                        reject(new UserNotFoundError())
-                        return
-                    }
-                    const user: User = new User(row.username, row.name, row.surname, row.role, row.address, row.birthdate)
-                    resolve(user)
+                    const users: User[] = rows.map(row => new User(row.username, row.name, row.surname, row.role, row.address, row.birthdate))
+                    resolve(users)
                 })
             } catch (error) {
-                reject(error)
+                throw error;
             }
+        })
+    }
 
+    /**
+     * delete a specific user from the database
+     * @param username
+     * @returns A promise that resolves to true if the user is deleted successfully
+     */
+    deleteUser(username: string) : Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            try {
+                const sql = "DELETE FROM users WHERE username = ?"
+                db.run(sql, [username], (err: Error | null) => {
+                    if (err) {
+                        reject(err)
+                        return
+                    }
+                    resolve(true)
+                })
+            } catch (error) {
+                throw error;
+            }
+        })
+    }
+
+    /**
+     * delete all non-admin users
+     * @returns A promise that resolves to true if all the non-admin users are deleted successfully
+     */
+    deleteAll() : Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            try {
+                const sql = "DELETE FROM users WHERE role != 'Admin'"
+                db.run(sql, [], (err: Error | null) => {
+                    if (err) {
+                        reject(err)
+                        return
+                    }
+                    resolve(true)
+                })
+            } catch (error) {
+                throw error
+            }
+        })
+    }
+
+    /**
+     * update user info
+     * @param name
+     * @param surname
+     * @param address
+     * @param birthdate
+     * @param username
+     * @returns a promise that resolves to the User that has been updated
+     */
+    updateUserInfo(name: string, surname: string, address: string, birthdate: string, username: string) : Promise<User> {
+        return new Promise<User>((resolve, reject) => {
+            try {
+                const sql = "UPDATE users SET name = ?, surname = ?, address = ?, birthdate = ? WHERE username = ?"
+                db.run(sql, [name, surname, address, birthdate, username], (err: Error | null) => {
+                    if (err) {
+                        reject(err)
+                        return
+                    }
+                    this.getUserByUsername(username).then((user: User) => resolve(user)).catch((err: Error) => reject(err))
+                })
+            } catch (error) {
+                throw error
+            }
         })
     }
 }

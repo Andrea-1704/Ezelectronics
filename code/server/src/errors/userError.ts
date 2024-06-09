@@ -64,6 +64,9 @@ class UserAlreadyExistsError extends Error {
     }
 }
 
+/**
+ * Represents an error that occurs when a user is not an admin.
+ */
 class UserNotAdminError extends Error {
     customMessage: String;
     customCode: Number;
@@ -75,6 +78,9 @@ class UserNotAdminError extends Error {
     }
 }
 
+/**
+ * Represents an error that occurs when a user is an admin.
+ */
 class UserIsAdminError extends Error {
     customMessage: String;
     customCode: Number;
@@ -86,6 +92,9 @@ class UserIsAdminError extends Error {
     }
 }
 
+/**
+ * Represents an error that occurs when a user is not authorized to perform an action.
+ */
 class UnauthorizedUserError extends Error {
     customMessage: String;
     customCode: Number;
@@ -97,4 +106,4 @@ class UnauthorizedUserError extends Error {
     }
 }
 
-export { UserNotFoundError, UserNotManagerError, UserNotCustomerError, UserAlreadyExistsError, UserNotAdminError, UserIsAdminError, UnauthorizedUserError }
+export { UserNotFoundError, UserNotManagerError, UserNotCustomerError, UserAlreadyExistsError, UserNotAdminError, UserIsAdminError, UnauthorizedUserError ,USER_NOT_FOUND,USER_NOT_MANAGER,USER_ALREADY_EXISTS,USER_NOT_CUSTOMER,USER_NOT_ADMIN,USER_IS_ADMIN,UNAUTHORIZED_USER }
