@@ -81,7 +81,7 @@ class UserRoutes {
             this.authService.isLoggedIn,
             this.authService.isAdmin,
             (req: any, res: any, next: any) => this.controller.getUsers()
-                .then((users: any /**User[] */) => res.status(200).json(users))
+                .then((users: User[]) => res.status(200).json(users))
                 .catch((err) => next(err))
         )
 
@@ -112,12 +112,13 @@ class UserRoutes {
             "/:username",
             this.authService.isLoggedIn,
             param("username").isString().isLength({ min: 1 }),
+            param("username").custom((value, { req }) => {
+                if(req.user.username !== value && !Utility.isAdmin(req.user)) throw new UserNotAdminError()
+                return true
+            }),
             this.errorHandler.validateRequest,
             (req: any, res: any, next: any) => {
-                if(req.user.username !== req.params.username && !Utility.isAdmin(req.user)) {
-                    throw new UserNotAdminError()
-                }
-                this.controller.getUserByUsername(req.params.username)
+                    this.controller.getUserByUsername(req.params.username)
                     .then((user: User) => res.status(200).json(user))
                     .catch((err) => next(err))
             }
@@ -133,11 +134,16 @@ class UserRoutes {
             "/:username",
             this.authService.isLoggedIn,
             param("username").isString().isLength({ min: 1 }),
+            param("username").custom((value, { req }) => {
+                if(req.user.username !== value && !Utility.isAdmin(req.user)) throw new UserNotAdminError()
+                return true
+            }),
+            param("username").custom((value, { req }) => {
+                if(Utility.isAdmin(req.user) && req.user.username === value) throw new UserIsAdminError()
+                return true
+            }),
             this.errorHandler.validateRequest,
             async (req: any, res: any, next: any) => {
-                if(req.user.username !== req.params.username && !Utility.isAdmin(req.user)) throw new UserNotAdminError()
-                const userToDelete = await this.controller.getUserByUsername(req.params.username)
-                if(Utility.isAdmin(userToDelete) && userToDelete.username !== req.params.username) throw new UserIsAdminError()
                 this.controller.deleteUser(req.params.username)
                     .then(() => res.status(200).end())
                     .catch((err: any) => next(err))

@@ -1,7 +1,7 @@
 import db from "../db/db"
-import { User } from "../components/user"
+import {User} from "../components/user"
 import crypto from "crypto"
-import { UserAlreadyExistsError, UserNotFoundError } from "../errors/userError";
+import {UserAlreadyExistsError, UserNotFoundError} from "../errors/userError";
 
 /**
  * A class that implements the interaction with the database for all user-related operations.
@@ -78,49 +78,50 @@ class UserDAO {
      * @param username The username of the user to retrieve
      * @returns A Promise that resolves the information of the requested user
      */
-    getUserByUsername(username: string): Promise<User> {
-        return new Promise<User>((resolve, reject) => {
-            try {
-                const sql = "SELECT * FROM users WHERE username = ?"
-                db.get(sql, [username], (err: Error | null, row: any) => {
+    async getUserByUsername(username: string): Promise<User> {
+        const sql = "SELECT * FROM users WHERE username = ?";
+        const params = [username];
+
+        try {
+            const row = await new Promise<any>((resolve, reject) => {
+                db.get(sql, params, (err: Error | null, row: any) => {
                     if (err) {
-                        reject(err)
-                        return
+                        return reject(err);
                     }
                     if (!row) {
-                        reject(new UserNotFoundError())
-                        return
+                        return reject(new UserNotFoundError());
                     }
-                    const user: User = new User(row.username, row.name, row.surname, row.role, row.address, row.birthdate)
-                    resolve(user)
-                })
-            } catch (error) {
-                reject(error)
-            }
+                    resolve(row);
+                });
+            });
 
-        })
+            return new User(row.username, row.name, row.surname, row.role, row.address, row.birthdate);
+        } catch (error) {
+            throw error;
+        }
     }
 
     /**
      * gets all the users in the database
      * @returns A Promise that resolves to an array of use objects
      */
-    getUsers() : Promise<User[]> {
-        return new Promise<User[]>( (resolve, reject) => {
-            try {
-                const sql = "SELECT * FROM users"
+    async getUsers(): Promise<User[]> {
+        const sql = "SELECT * FROM users";
+        try {
+            const rows = await new Promise<any[]>((resolve, reject) => {
                 db.all(sql, [], (err: Error | null, rows: any[]) => {
                     if (err) {
-                        reject(err)
-                        return
+                        return reject(err);
                     }
-                    const users: User[] = rows.map(row => new User(row.username, row.name, row.surname, row.role, row.address, row.birthdate))
-                    resolve(users)
-                })
-            } catch (error) {
-                reject(error)
-            }
-        })
+                    resolve(rows);
+                });
+            });
+
+            const users: User[] = rows.map(row => new User(row.username, row.name, row.surname, row.role, row.address, row.birthdate));
+            return users;
+        } catch (error) {
+            throw error; // Rilancia l'errore in modo che possa essere gestito altrove
+        }
     }
 
     /**
@@ -141,7 +142,7 @@ class UserDAO {
                     resolve(users)
                 })
             } catch (error) {
-                reject(error)
+                throw error;
             }
         })
     }
@@ -163,7 +164,7 @@ class UserDAO {
                     resolve(true)
                 })
             } catch (error) {
-                reject(error)
+                throw error;
             }
         })
     }
@@ -184,7 +185,7 @@ class UserDAO {
                     resolve(true)
                 })
             } catch (error) {
-                reject(error)
+                throw error
             }
         })
     }
@@ -210,7 +211,7 @@ class UserDAO {
                     this.getUserByUsername(username).then((user: User) => resolve(user)).catch((err: Error) => reject(err))
                 })
             } catch (error) {
-                reject(error)
+                throw error
             }
         })
     }
