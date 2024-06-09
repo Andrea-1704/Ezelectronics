@@ -1,4 +1,5 @@
 import { describe, test, expect, jest, beforeEach, afterEach } from '@jest/globals';
+// @ts-ignore
 import request from 'supertest';
 import Authenticator from "../../src/routers/auth";
 import ErrorHandler from "../../src/helper";
@@ -6,6 +7,7 @@ import UserController from "../../src/controllers/userController";
 import { User, Role } from "../../src/components/user";
 import { cleanup } from "../../src/db/cleanup";
 import { app } from "../../index";
+import {Utility} from "../../src/utilities";
 
 const baseURL = "/ezelectronics/users";
 
@@ -13,48 +15,16 @@ const baseURL = "/ezelectronics/users";
 jest.mock('../../src/routers/auth');
 jest.mock('../../src/controllers/userController');
 jest.mock('../../src/helper');
-// jest.mock('express-validator', () => {
-// '  const mockValidator = {
-//     body: jest.fn().mockImplementation(() => ({
-//       isString: jest.fn().mockReturnValue({
-//         isLength: jest.fn().mockReturnValue({
-//           isIn: jest.fn().mockReturnValue({
-//             isDate: jest.fn().mockReturnValue({
-//               custom: jest.fn().mockReturnValue({
-//                 notEmpty: jest.fn().mockReturnValue({
-//                   optional: jest.fn(),
-//                   isISO8601: jest.fn()
-//                 })
-//               })
-//             })
-//           })
-//         })
-//       }),
-//       isNumeric: jest.fn().mockReturnValue({ isInt: jest.fn() })
-//     })),
-//     param: jest.fn().mockReturnValue({
-//       isString: jest.fn().mockReturnValue({
-//         isLength: jest.fn().mockReturnValue({
-//           custom: jest.fn().mockReturnValue({})
-//         })
-//       })
-//     }),
-//     query: jest.fn().mockReturnValue({
-//       optional: jest.fn().mockReturnValue({
-//         isString: jest.fn().mockReturnValue({
-//           isIn: jest.fn().mockReturnValue({
-//             notEmpty: jest.fn()
-//           })
-//         })
-//       })
-//     })
-//   };
-//   return mockValidator;
-// });
 
-const testUser = new User("username123", "FirstName", "LastName", Role.CUSTOMER, "Address", "2000-01-01");
-const updatedUser = new User("username123", "UpdatedName", "UpdatedSurname", Role.CUSTOMER, "UpdatedAddress", "2000-01-01");
+const customerUser = new User("customerUser", "FirstName", "LastName", Role.CUSTOMER, "Address", "2000-01-01");
+const updatedUser = new User("updatedUser", "UpdatedName", "UpdatedSurname", Role.CUSTOMER, "UpdatedAddress", "2000-01-01");
+const managerUser = new User("managerUser", "Manager", "User", Role.MANAGER, "Address", "2000-01-01");
+const adminUser = new User("adminUser", "Admin", "User", Role.ADMIN, "Address", "2000-01-01");
 
+
+// const login = async (user: User) => {
+//
+// }
 describe('UserRoutes unit tests', () => {
   beforeEach(() => {
     cleanup();
@@ -111,12 +81,12 @@ describe('UserRoutes unit tests', () => {
     test("should allow admin to retrieve all users", async () => {
       jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
       jest.spyOn(Authenticator.prototype, "isAdmin").mockImplementation((req, res, next) => next());
-      jest.spyOn(UserController.prototype, "getUsers").mockResolvedValueOnce([testUser]);
+      jest.spyOn(UserController.prototype, "getUsers").mockResolvedValueOnce([customerUser]);
 
       const response = await request(app).get(baseURL).set("Cookie", "adminUserCookie");
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual([testUser]);
+      expect(response.body).toEqual([customerUser]);
     });
 
     test("should not allow non-admin users to retrieve all users", async () => {
@@ -134,15 +104,17 @@ describe('UserRoutes unit tests', () => {
       jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
       jest.spyOn(Authenticator.prototype, "isAdmin").mockImplementation((req, res, next) => next());
       jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
-      jest.spyOn(UserController.prototype, "getUsersByRole").mockResolvedValueOnce([testUser]);
+      jest.spyOn(UserController.prototype, "getUsersByRole").mockResolvedValueOnce([customerUser]);
 
       const response = await request(app).get(`${baseURL}/roles/Customer`).set("Cookie", "adminUserCookie");
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual([testUser]);
+      expect(response.body).toEqual([customerUser]);
     });
 
     test("should return validation error for invalid role", async () => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdmin").mockImplementation((req, res, next) => next());
       jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => {
         res.status(422).json({ error: "Validation Error" });
       });
@@ -155,24 +127,31 @@ describe('UserRoutes unit tests', () => {
   });
 
   describe("GET /users/:username", () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
     test("should allow admin to retrieve any user by username", async () => {
-      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+        req.user = { username: "adminUser", role: Role.ADMIN };
+        next();
+      });
+
       jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
-      jest.spyOn(UserController.prototype, "getUserByUsername").mockResolvedValueOnce(testUser);
+      jest.spyOn(UserController.prototype, "getUserByUsername").mockResolvedValueOnce(managerUser);
 
       const response = await request(app).get(`${baseURL}/managerUser`).set("Cookie", "adminUserCookie");
 
       expect(response.status).toBe(200);
-      expect(response.body.username).toBe("managerUser");
+      expect(response.body.username).toBe(managerUser.username);
     });
 
     test("should allow users to retrieve their own data by username", async () => {
       jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
-        req.user = { username: "customerUser" };
+        req.user = { username: "customerUser" , role: Role.CUSTOMER};
         next();
       });
       jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
-      jest.spyOn(UserController.prototype, "getUserByUsername").mockResolvedValueOnce(testUser);
+      jest.spyOn(UserController.prototype, "getUserByUsername").mockResolvedValueOnce(customerUser);
 
       const response = await request(app).get(`${baseURL}/customerUser`).set("Cookie", "customerUserCookie");
 
@@ -182,12 +161,20 @@ describe('UserRoutes unit tests', () => {
 
     test("should not allow users to retrieve data of other users", async () => {
       jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
-        req.user = { username: "customerUser" };
+        req.user = customerUser;
+        req.params.username="managerUser";
         next();
       });
 
-      const response = await request(app).get(`${baseURL}/managerUser`).set("Cookie", "customerUserCookie");
+      jest.spyOn(Utility, 'isAdmin').mockReturnValue(false);
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(UserController.prototype, "getUserByUsername").mockResolvedValueOnce(managerUser); // Optional, in caso il controllo venga fatto comunque
 
+      const response = await request(app)
+          .get(`${baseURL}/managerUser`)
+          .set("Cookie", "customerUserCookie");
+
+      expect(UserController.prototype.getUserByUsername).toHaveBeenCalledTimes(0);
       expect(response.status).toBe(401);
     });
   });
@@ -241,14 +228,19 @@ describe('UserRoutes unit tests', () => {
 
   describe("DELETE /users/:username", () => {
     test("should allow admin to delete any user", async () => {
-      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+          req.user = adminUser as User
+          req.params.username = managerUser.username;
+          next();
+      })
+      jest.spyOn(Authenticator.prototype, "isAdmin").mockImplementation((req, res, next) => next());
       jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
-      jest.spyOn(UserController.prototype, "getUserByUsername").mockResolvedValueOnce(testUser);
       jest.spyOn(UserController.prototype, "deleteUser").mockResolvedValueOnce(true);
 
       const response = await request(app).delete(`${baseURL}/managerUser`).set("Cookie", "adminUserCookie");
 
       expect(response.status).toBe(200);
+      expect(UserController.prototype.deleteUser).toHaveBeenCalledWith("managerUser");
     });
 
     test("should not allow users to delete other users", async () => {
@@ -257,7 +249,7 @@ describe('UserRoutes unit tests', () => {
         next();
       });
       jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
-      jest.spyOn(UserController.prototype, "getUserByUsername").mockResolvedValueOnce(testUser);
+      jest.spyOn(UserController.prototype, "deleteUser").mockRejectedValueOnce(new Error('Unauthorized'));
 
       const response = await request(app).delete(`${baseURL}/adminUser`).set("Cookie", "customerUserCookie");
 
@@ -269,17 +261,20 @@ describe('UserRoutes unit tests', () => {
         req.user = { username: "customerUser" };
         next();
       });
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
       jest.spyOn(UserController.prototype, "deleteUser").mockResolvedValueOnce(true);
 
       const response = await request(app).delete(`${baseURL}/customerUser`).set("Cookie", "customerUserCookie");
 
       expect(response.status).toBe(200);
+      expect(UserController.prototype.deleteUser).toHaveBeenCalledWith("customerUser");
     });
   });
 
   describe("DELETE /users", () => {
     test("should allow admin to delete all users", async () => {
       jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdmin").mockImplementation((req, res, next) => next());
       jest.spyOn(UserController.prototype, "deleteAll").mockResolvedValueOnce(true);
 
       const response = await request(app).delete(baseURL).set("Cookie", "adminUserCookie");
@@ -288,7 +283,10 @@ describe('UserRoutes unit tests', () => {
     });
 
     test("should not allow non-admin users to delete all users", async () => {
-      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => {
+          req.user = { username: "customerUser", role: Role.CUSTOMER };
+          next();
+      })
       jest.spyOn(Authenticator.prototype, "isAdmin").mockImplementation((req, res, next) => res.status(401).send());
 
       const response = await request(app).delete(baseURL).set("Cookie", "customerUserCookie");

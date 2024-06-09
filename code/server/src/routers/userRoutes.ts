@@ -98,7 +98,7 @@ class UserRoutes {
             param("role").isString().isIn(["Manager", "Customer", "Admin"]),
             this.errorHandler.validateRequest,
             (req: any, res: any, next: any) => this.controller.getUsersByRole(req.params.role)
-                .then((users: any /**User[] */) => res.status(200).json(users))
+                .then((users : User[]) => res.status(200).json(users))
                 .catch((err) => next(err))
         )
 
@@ -118,7 +118,7 @@ class UserRoutes {
                     throw new UserNotAdminError()
                 }
                 this.controller.getUserByUsername(req.params.username)
-                    .then((user: any /**User */) => res.status(200).json(user))
+                    .then((user: User) => res.status(200).json(user))
                     .catch((err) => next(err))
             }
         )
