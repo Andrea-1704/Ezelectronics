@@ -42,43 +42,6 @@ describe("Authenticator", () => {
         })
     })
     
-    // describe("login", () => {
-    //     test("Should log in a user and resolve with the logged in user", () => {
-    //         const req={ login: jest.fn() };
-    //         const res={};
-    //         const next=jest.fn();
-    //         authenticator.initAuth();
-    //         const user={ username: "testUser" };
-
-    //         jest.spyOn(passport, 'authenticate').mockImplementation((strategy: string, callback: any) => {
-    //             callback(null, user, null);
-    //         });
-
-    //         return authenticator.login(req, res, next).then((result: User) => {
-    //             expect(result).toEqual(user);
-    //         });
-
-    //     });
-    // })
-
-    // describe("logout", () => {
-    //     test("Should log in a user and resolve with the logged out user", () => {
-    //         const req={ logout: jest.fn() };
-    //         const res={};
-    //         const next=jest.fn();
-    //         authenticator.initAuth();
-    //         const user={ username: "testUser" };
-
-    //         jest.spyOn(passport, 'authenticate').mockImplementation((strategy: string, callback: any) => {
-    //             callback(null, user, null);
-    //         });
-
-    //         return authenticator.login(req, res, next).then((result: User) => {
-    //             expect(result).toEqual(user);
-    //         });
-
-    //     });
-    // })
 
     describe("Authentication of the user", () => {
         describe("isCustomer test", () => {
