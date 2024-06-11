@@ -241,7 +241,8 @@ class AuthRoutes {
             body("password").isString().isLength({ min: 1 }),
             this.errorHandler.validateRequest,
             (req, res, next) => this.authService.login(req, res, next)
-                .then((user: User) => res.status(200).json(user))
+                   
+                .then((user: User) => {res.status(200).json(user)})
                 .catch((err: any) => { res.status(401).json(err) })
         )
 
@@ -254,9 +255,10 @@ class AuthRoutes {
             "/current",
             this.authService.isLoggedIn,
             (req, res, next) => this.authService.logout(req, res, next)
-                .then(() => res.status(200).end())
-                .catch((err: any) => next(err))
+                .then(() => {res.status(200).end()})
+                .catch((err: any) =>{ next(err)})
         )
+        
 
         /**
          * Route for retrieving the currently logged in user.
@@ -266,7 +268,7 @@ class AuthRoutes {
         this.router.get(
             "/current",
             this.authService.isLoggedIn,
-            (req: any, res: any) => res.status(200).json(req.user)
+            (req: any, res: any) => {res.status(200).json(req.user);console.log(req.user)}
         )
     }
 }

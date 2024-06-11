@@ -14,7 +14,7 @@ const sqlite = require("sqlite3")
 
 //The environment variable is set in the package.json file in the test script.
 let env = process.env.NODE_ENV ? process.env.NODE_ENV.trim() : "test"
-
+//let env="test";
 // The database file path is determined based on the environment variable.
 const dbFilePath = env === "test" ? "./src/db/testdb.db" : "./src/db/db.db"
 //change line
@@ -68,7 +68,7 @@ function createTables() {
         if (err) {
             console.log('Error creating cart table', err);
         } else {
-            console.log('Cart table created successfully');
+            //console.log('Cart table created successfully');
         }
     });
 
@@ -84,7 +84,7 @@ function createTables() {
             console.log('Error creating product table', err);
         } 
         else {
-            console.log('Cart table created successfully');
+            //console.log('Cart table created successfully');
         }
     });
 
@@ -100,7 +100,7 @@ function createTables() {
             console.log('Error creating cart_product table', err);
         } 
         else {
-            console.log('Cart table created successfully');
+            //console.log('Cart table created successfully');
         }
     });
 
@@ -117,7 +117,7 @@ function createTables() {
             console.log('Error creating review table', err);
         } 
         else {
-            console.log('Cart table created successfully');
+            //console.log('Cart table created successfully');
         }
     });
 }
