@@ -112,7 +112,6 @@ class ProductRoutes {
             (req: any, res: any, next: any) => this.controller.sellProduct(req.params.model, req.body.quantity, req.body.sellingDate)
                 .then((quantity: any ) : number => res.status(200).json({ quantity: quantity }))
                 .catch((err) => {
-                    console.log(err)
                     next(err)
                 })
         )
@@ -137,7 +136,6 @@ class ProductRoutes {
             (req: any, res: any, next: any) => this.controller.getProducts(req.query.grouping, req.query.category, req.query.model)
                 .then((products: any ) : Product[] => res.status(200).json(products))
                 .catch((err) => {
-                    console.log(err)
                     next(err)
                 })
         )

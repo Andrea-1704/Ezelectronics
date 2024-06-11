@@ -7,6 +7,7 @@ import ProductController from "../../src/controllers/productController";
 import {Category, Product} from "../../src/components/product";
 import {cleanup} from "../../src/db/cleanup";
 import {app} from "../../index";
+import { afterEach } from 'node:test';
 const baseURL = "/ezelectronics/products";
 
 jest.mock('../../src/routers/auth');
@@ -20,7 +21,7 @@ const testProduct: Product = {
   quantity: 100,
   details: 'Latest model',
   sellingPrice: 999.99,
-  arrivalDate: undefined
+  arrivalDate: null
 };
 
 describe('ProductRoutes unit tests', () => {
@@ -64,6 +65,25 @@ describe('ProductRoutes unit tests', () => {
     }, 10000);
   });
 
+  describe("POST /products", () => {
+    test("It should return an error", async () => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+      jest.mock('express-validator', () => ({
+        body: jest.fn().mockImplementation(() => ({
+          isString: () => ({ notEmpty: () => ({}) }),
+          isIn: () => ({}),
+          optional: () => ({ isISO8601: () => ({ toDate: () => ({}) }) })
+        }))
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "registerProducts").mockRejectedValueOnce(new Error("Error"));
+
+      const response = await request(app).post(baseURL).send(testProduct);
+      expect(response.status).toBe(500);
+    }, 10000);
+  });
+
   describe("PATCH /products/:model", () => {
     test("It should register increase in product quantity", async () => {
       const updatedQuantity = 50;
@@ -84,6 +104,23 @@ describe('ProductRoutes unit tests', () => {
           updatedQuantity,
           undefined
       );
+    }, 10000);
+  });
+
+  describe("PATCH /products/:model", () => {
+    test("It should return an error", async () => {
+      const updatedQuantity = 50;
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+      jest.mock('express-validator', () => ({
+        param: jest.fn().mockImplementation(() => ({ isString: () => ({ notEmpty: () => ({}) }) })),
+        body: jest.fn().mockImplementation(() => ({ isNumeric: () => ({ isInt: () => ({}) }) }))
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "changeProductQuantity").mockRejectedValueOnce(new Error("Error"));
+
+      const response = await request(app).patch(`${baseURL}/${testProduct.model}`).send({ quantity: updatedQuantity });
+      expect(response.status).toBe(500);
     }, 10000);
   });
 
@@ -111,6 +148,24 @@ describe('ProductRoutes unit tests', () => {
     }, 10000);
   });
 
+  describe("PATCH /products/:model/sell", () => {
+    test("It should return an error", async () => {
+      const sellQuantity = 10;
+      const remainingQuantity = 90;
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+      jest.mock('express-validator', () => ({
+        param: jest.fn().mockImplementation(() => ({ isString: () => ({ notEmpty: () => ({}) }) })),
+        body: jest.fn().mockImplementation(() => ({ isNumeric: () => ({ isInt: () => ({}) }) }))
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "sellProduct").mockRejectedValueOnce(new Error("Error"));
+
+      const response = await request(app).patch(`${baseURL}/${testProduct.model}/sell`).send({ quantity: sellQuantity });
+      expect(response.status).toBe(500);
+    }, 10000);
+  });
+
   describe("GET /products", () => {
     test("It should retrieve all products", async () => {
       jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
@@ -130,15 +185,78 @@ describe('ProductRoutes unit tests', () => {
     }, 10000);
   });
 
+  describe("GET /products", () => {
+    test("It should return an error", async () => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+      jest.mock('express-validator', () => ({
+        query: jest.fn().mockImplementation(() => ({
+          optional: () => ({ isString: () => ({ isIn: () => ({}) }), notEmpty: () => ({}) })
+        }))
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "getProducts").mockRejectedValueOnce(new Error("Error"));
+
+      const response = await request(app).get(baseURL);
+      expect(response.status).toBe(500);
+    }, 10000);
+  });
+
+  describe("GET /products/available", () => {
+    test("It should retrieve all available products", async () => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.mock('express-validator', () => ({
+        query: jest.fn().mockImplementation(() => ({
+          optional: () => ({ isString: () => ({ isIn: () => ({}) }), notEmpty: () => ({}) })
+        }))
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "getAvailableProducts").mockResolvedValueOnce([testProduct]);
+
+      const response = await request(app).get(`${baseURL}/available`);
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual([testProduct]);
+      //expect(ProductController.prototype.getProducts).toHaveBeenCalledWith(undefined, undefined, true);
+    }, 10000);
+  });
+
+
+  describe("GET /products/available", () => {
+    test("It should return an error", async () => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.mock('express-validator', () => ({
+        query: jest.fn().mockImplementation(() => ({
+          optional: () => ({ isString: () => ({ isIn: () => ({}) }), notEmpty: () => ({}) })
+        }))
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "getAvailableProducts").mockRejectedValueOnce(new Error("Error"));
+
+      const response = await request(app).get(`${baseURL}/available`);
+      expect(response.status).toBe(500);
+    }, 10000);
+  });
+
   describe("DELETE /products", () => {
     test("It should delete all products", async () => {
       jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
       jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
-      jest.spyOn(ProductController.prototype, "deleteAllProducts").mockResolvedValueOnce(null);
+      jest.spyOn(ProductController.prototype, "deleteAllProducts").mockResolvedValueOnce(false);
 
       const response = await request(app).delete(baseURL);
       expect(response.status).toBe(200);
       expect(ProductController.prototype.deleteAllProducts).toHaveBeenCalled();
+    }, 10000);
+  });
+
+  describe("DELETE /products", () => {
+    test("It should return an error", async () => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "deleteAllProducts").mockRejectedValueOnce(new Error("Error"));
+
+      const response = await request(app).delete(baseURL);
+      expect(response.status).toBe(500);
     }, 10000);
   });
 
@@ -150,11 +268,28 @@ describe('ProductRoutes unit tests', () => {
         param: jest.fn().mockImplementation(() => ({ isString: () => ({ notEmpty: () => ({}) }) }))
       }));
       jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
-      jest.spyOn(ProductController.prototype, "deleteProduct").mockResolvedValueOnce(null);
+      jest.spyOn(ProductController.prototype, "deleteProduct").mockResolvedValueOnce(false);
 
       const response = await request(app).delete(`${baseURL}/${testProduct.model}`);
       expect(response.status).toBe(200);
       expect(ProductController.prototype.deleteProduct).toHaveBeenCalledWith(testProduct.model);
     }, 10000);
   });
+
+  describe("DELETE /products/:model", () => {
+    test("It should return an error", async () => {
+      jest.spyOn(Authenticator.prototype, "isLoggedIn").mockImplementation((req, res, next) => next());
+      jest.spyOn(Authenticator.prototype, "isAdminOrManager").mockImplementation((req, res, next) => next());
+      jest.mock('express-validator', () => ({
+        param: jest.fn().mockImplementation(() => ({ isString: () => ({ notEmpty: () => ({}) }) }))
+      }));
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(ProductController.prototype, "deleteProduct").mockRejectedValueOnce(new Error("Error"));
+
+      const response = await request(app).delete(`${baseURL}/${testProduct.model}`);
+      expect(response.status).toBe(500);
+    }, 10000);
+  });
+
+  
 });
