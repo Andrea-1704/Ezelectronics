@@ -8,8 +8,9 @@ import { User, Role } from "../../src/components/user";
 import { cleanup } from "../../src/db/cleanup";
 import { app } from "../../index";
 import express from 'express';
-import passport from 'passport';
+import passport, { use } from 'passport';
 import LocalStrategy from 'passport-local';
+import UserDAO from '../../src/dao/userDAO';
 
 
 describe("Authenticator", () => {
@@ -39,6 +40,32 @@ describe("Authenticator", () => {
             expect(passport.use).toHaveBeenCalledWith(
                 expect.any(LocalStrategy),
             );
+        })
+    })
+
+    describe("deserialize user test2", () => {
+        test("deserialization should catch errors", () => {
+            jest.spyOn(app, 'use');
+            jest.spyOn(passport, 'use');
+            jest.spyOn(passport, "serializeUser");    
+            jest.spyOn(passport, "deserializeUser");
+            
+            authenticator.initAuth();
+            
+            jest.spyOn(
+                UserDAO.prototype,
+                "getUserByUsername",
+            ).mockRejectedValue(new Error("Error"));
+
+            const done = jest.fn();
+
+            const user = {username: "test"};
+
+            try{
+                passport.deserializeUser(user, done);
+            }catch(e){
+                expect(1).toBe(2);
+            }
         })
     })
     

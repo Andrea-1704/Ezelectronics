@@ -45,7 +45,75 @@ describe('Integration test: Login (UC1)', () => {
 })
 
 
-describe('Integration test: Delete (UC1)', () => {
+
+describe('Integration test: Login error ', () => {
+    
+    test('Unsuccessful Login uncorrect password', async () => {
+        deleteAllData();
+        createTables();
+        // First, create a customer account
+        const customerTest = { //Define a test user object sent to the route
+            username: 'test',
+            name: 'test',
+            surname: 'test',
+            password: 'test',
+            role: 'Customer'
+        }
+
+        const registerResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/users`)
+        .send(customerTest);
+        expect(registerResponse.status).toBe(200);
+
+        // Then, authenticate and get a token
+        const loginResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/sessions`)
+        .send({ username: customerTest.username, password: "altro" });
+
+        // Check that the login was successful and a token was received
+        expect(loginResponse.status).toBe(401);
+        
+        deleteAllData();
+
+    })
+})
+
+
+
+describe('Integration test: Login error', () => {
+    
+    test('Uncorrect username', async () => {
+        deleteAllData();
+        createTables();
+        // First, create a customer account
+        const customerTest = { //Define a test user object sent to the route
+            username: 'test',
+            name: 'test',
+            surname: 'test',
+            password: 'test',
+            role: 'Customer'
+        }
+
+        const registerResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/users`)
+        .send(customerTest);
+        expect(registerResponse.status).toBe(200);
+
+        // Then, authenticate and get a token
+        const loginResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/sessions`)
+        .send({ username: "username_errato", password: customerTest.password });
+
+        // Check that the login was successful and a token was received
+        expect(loginResponse.status).toBe(401);
+        
+        deleteAllData();
+
+    })
+})
+
+
+describe('Integration test: Delete session (UC1)', () => {
     
     test('Logout (UC1.2)', async () => {
         deleteAllData();
@@ -80,7 +148,7 @@ describe('Integration test: Delete (UC1)', () => {
 
         // Then, logout
         const logoutResponse = await request('http://localhost:3001')
-        .delete(`${baseURL}/sessions`)
+        .delete(`${baseURL}/sessions/current`)
         .set('Cookie', loginResponse.headers['set-cookie']);
 
         // Check that the logout was successful
@@ -90,6 +158,58 @@ describe('Integration test: Delete (UC1)', () => {
 
     })
 })
+
+
+
+describe('Integration test: Delete admin session', () => {
+    
+    test('Logout (UC1.2)', async () => {
+        deleteAllData();
+        createTables();
+        // First, create a customer account
+        const customerTest = { //Define a test user object sent to the route
+            username: 'test',
+            name: 'test',
+            surname: 'test',
+            password: 'test',
+            role: 'Admin'
+        }
+
+        const registerResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/users`)
+        .send(customerTest);
+        expect(registerResponse.status).toBe(200);
+
+        // Then, authenticate and get a token
+        const loginResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/sessions`)
+        .send({ username: customerTest.username, password: customerTest.password });
+
+        // Check that the login was successful and a token was received
+        expect(loginResponse.status).toBe(200);
+        expect(loginResponse.body).toEqual({username: customerTest.username, 
+                                            name: customerTest.name,
+                                            surname: customerTest.surname,
+                                            role: customerTest.role,
+                                            birthdate: null,
+                                            address: null})
+
+        // Then, logout
+        const logoutResponse = await request('http://localhost:3001')
+        .delete(`${baseURL}/sessions/current`)
+        .set('Cookie', loginResponse.headers['set-cookie']);
+
+        // Check that the logout was successful
+        expect(logoutResponse.status).toBe(200);
+
+        deleteAllData();
+
+    })
+})
+
+
+
+
 
 
 describe('Integration test: get', () => {
@@ -122,7 +242,7 @@ describe('Integration test: get', () => {
         const customerCookie = customerLoginResponse.headers['set-cookie'];
 
         const response2 = await request('http://localhost:3001')
-            .get(`${baseURL}/users/current`) 
+            .get(`${baseURL}/sessions/current`) 
             .set('Cookie', customerCookie)
         
 
