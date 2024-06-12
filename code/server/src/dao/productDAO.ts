@@ -6,6 +6,7 @@ import {
   ProductAlreadyExistsError,
   ProductNotFoundError
 } from "../errors/productError";
+import { ProductNotInCartError } from "../errors/cartError";
 
 /**
  * A class that implements the interaction with the database for all product-related operations.
@@ -275,9 +276,16 @@ class ProductDAO {
           //console.log("sono dentro il product dao")
           db.get(sql, [model], (err: Error, row: Product) => {
             if (err) {
+              console.log("sono dentro il product dao ")
               reject(err)
               return
             }
+            // if (row===undefined) {
+            //   console.log("undefined ")
+            //   // Se row è undefined (nessun prodotto trovato), restituisci un errore 404
+            //   reject(new ProductNotInCartError());
+            //   return;
+            // }
             resolve(row)
           })
         } catch (error) {

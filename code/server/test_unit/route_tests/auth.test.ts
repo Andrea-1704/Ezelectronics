@@ -1,4 +1,4 @@
-import { describe, test, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import { describe, it, test, expect, jest, beforeEach, afterEach } from '@jest/globals';
 // @ts-ignore
 import request from 'supertest';
 import Authenticator from "../../src/routers/auth";
@@ -99,6 +99,20 @@ describe("Authenticator", () => {
                 const req = {
                     isAuthenticated: jest.fn().mockReturnValue(true),
                     user: {role: Role.MANAGER}
+                };
+
+                const res = {};
+                const next = jest.fn();
+
+                authenticator.isManager(req, res, next);
+
+                expect(req.isAuthenticated).toHaveBeenCalled();
+                expect(next).toHaveBeenCalled();
+            })
+
+            test("Should return 401 if user in not authenticated", async () => {
+                const req = {
+                    isAuthenticated: jest.fn().mockReturnValue(false)
                 };
 
                 const res = {};

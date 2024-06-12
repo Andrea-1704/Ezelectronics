@@ -30,6 +30,9 @@ class CartController {
      */
     async addToCart(user: User, productId: string) : Promise<Boolean> {
         const pro =  await this.productDao.getProductByModel(productId)
+        if(pro === undefined){
+            throw new ProductNotInCartError();
+        }
         if(pro.quantity <= 0){
             throw new LowProductStockError();
         }
