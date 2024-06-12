@@ -57,6 +57,22 @@ describe('UserRoutes unit tests', () => {
       );
     });
 
+    test("should return error for existing user", async () => {
+      jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => next());
+      jest.spyOn(UserController.prototype, "createUser").mockRejectedValueOnce(new Error("User already exists"));
+
+      const response = await request(app).post(baseURL).send({
+        username: "newUser",
+        name: "New",
+        surname: "User",
+        password: "password",
+        role: "Customer"
+      });
+
+      expect(response.status).toBe(409);
+      expect(response.body.error).toBe("User already exists");
+    });
+
     test("should return validation errors for missing fields", async () => {
       jest.spyOn(ErrorHandler.prototype, "validateRequest").mockImplementation((req, res, next) => {
         res.status(422).json({ error: "Validation Error" });
