@@ -62,6 +62,14 @@ class ProductController {
      * @returns A Promise that resolves to the new available quantity of the product.
      */
     async sellProduct(model: string, quantity: number, sellingDate: string | null): Promise<number>  {
+        if (sellingDate !== null) {
+            const arrival = new Date(sellingDate);
+            const now = new Date();
+    
+            if (arrival > now) {
+                throw new ArrivalDateAfterCurrent();
+            }
+        }
         return this.dao.sellProduct(model, quantity, sellingDate)
     }
 

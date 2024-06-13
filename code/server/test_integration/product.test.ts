@@ -618,6 +618,133 @@ test("Manager sells a product", async () => {
 });
 
 
+//Sell a product
+test("404 error: Model not in db", async () => {
+    deleteAllData();
+    createTables();
+  
+    // First, create a manager account
+    const manager = {
+        username: "manager",
+        name: "manager",
+        surname: "manager",
+        password: "manager",
+        role: "Manager"
+    }
+  
+    const managerRegisterResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/users`)
+        .send(manager);
+  
+    // Check that the manager account was created successfully
+    expect(managerRegisterResponse.status).toBe(200);
+  
+    // Then, authenticate and get a token for the manager
+    const managerLoginResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/sessions`)
+        .send({ username: manager.username, password: manager.password });
+  
+    const managerCookie = managerLoginResponse.headers['set-cookie'];
+  
+    const product = {
+        model: 'model',
+        category: 'Smartphone',
+        sellingPrice: 100,
+        arrivalDate: '2022-01-01',
+        details: 'Details about the product',
+        quantity: 10
+    }
+  
+    // Manager adds the product
+    const addProductResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/products`)
+        .set('Cookie', managerCookie)
+        .send(product);
+  
+    expect(addProductResponse.status).toBe(200);
+  
+    //manager sells the product:
+    const sell = {
+      model: 'model',
+      sellingDate: '2022-01-01',
+      quantity: 1
+    }
+  
+    // Manager sells the product
+    const sellProduct = await request('http://localhost:3001')
+        .patch(`${baseURL}/products/"erro_model"/sell`)
+        .set('Cookie', managerCookie)
+        .send(sell);
+  
+    expect(sellProduct.status).toBe(404);
+    
+    deleteAllData();
+  });
+
+
+//Sell a product
+test("400 error: selling date after current date", async () => {
+    deleteAllData();
+    createTables();
+  
+    // First, create a manager account
+    const manager = {
+        username: "manager",
+        name: "manager",
+        surname: "manager",
+        password: "manager",
+        role: "Manager"
+    }
+  
+    const managerRegisterResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/users`)
+        .send(manager);
+  
+    // Check that the manager account was created successfully
+    expect(managerRegisterResponse.status).toBe(200);
+  
+    // Then, authenticate and get a token for the manager
+    const managerLoginResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/sessions`)
+        .send({ username: manager.username, password: manager.password });
+  
+    const managerCookie = managerLoginResponse.headers['set-cookie'];
+  
+    const product = {
+        model: 'model',
+        category: 'Smartphone',
+        sellingPrice: 100,
+        arrivalDate: '2022-01-01',
+        details: 'Details about the product',
+        quantity: 10
+    }
+  
+    // Manager adds the product
+    const addProductResponse = await request('http://localhost:3001')
+        .post(`${baseURL}/products`)
+        .set('Cookie', managerCookie)
+        .send(product);
+  
+    expect(addProductResponse.status).toBe(200);
+  
+    //manager sells the product:
+    const sell = {
+      model: 'model',
+      sellingDate: '2040-01-01',
+      quantity: 1
+    }
+  
+    // Manager sells the product
+    const sellProduct = await request('http://localhost:3001')
+        .patch(`${baseURL}/products/${product.model}/sell`)
+        .set('Cookie', managerCookie)
+        .send(sell);
+  
+    expect(sellProduct.status).toBe(400);
+    
+    deleteAllData();
+  });
+
 
 //Get all products
 test("Manager gets all products", async () => {
