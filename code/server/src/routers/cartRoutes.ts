@@ -93,12 +93,10 @@ class CartRoutes {
             this.authenticator.isCustomer,
             (req: any, res: any, next: any) => this.controller.checkoutCart(req.user)
                 .then(() : void => {
-                    console.log("hey")
                     res.status(200).end();
                 })
                 
                 .catch((err) => {
-                    console.log("ciao");
                     next(err)
                 })
         )
