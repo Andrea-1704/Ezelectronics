@@ -119,6 +119,16 @@ class ProductDAO {
         throw new ProductNotFoundError();
       }
 
+      if (sellingDate !== null && product.arrivalDate !== null) {
+        // Converti il valore di arrivalDate in numero prima di creare un oggetto Date
+        const arrivalDate = new Date(parseInt(product.arrivalDate));
+        const changeDateObj = new Date(sellingDate);
+
+        if (arrivalDate > changeDateObj) {
+            throw new ArrivalDateAfterCurrent();
+        }
+    }
+
       const arrivalDate = new Date(product.arrivalDate);
       const today = new Date();
 
