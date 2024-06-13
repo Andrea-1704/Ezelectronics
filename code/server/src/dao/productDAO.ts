@@ -1,6 +1,7 @@
 import db from "../db/db";
 import {Product} from "../components/product";
 import {
+  ArrivalDateAfterCurrent,
   EmptyProductStockError,
   LowProductStockError,
   ProductAlreadyExistsError,
@@ -25,7 +26,6 @@ class ProductDAO {
      * @returns A Promise that resolves to nothing.
      */
     async registerProducts(model: string, category: string, quantity: number, details: string | null, sellingPrice: number, arrivalDate: string | null): Promise<void> {
-
       const product : Product = await this.getProductByModel(model)
       if(product){
         throw new ProductAlreadyExistsError()
@@ -61,6 +61,16 @@ class ProductDAO {
       if (!product) {
         throw new ProductNotFoundError();
       }
+      
+      if (changeDate !== null && product.arrivalDate !== null) {
+        // Converti il valore di arrivalDate in numero prima di creare un oggetto Date
+        const arrivalDate = new Date(parseInt(product.arrivalDate));
+        const changeDateObj = new Date(changeDate);
+
+        if (arrivalDate > changeDateObj) {
+            throw new ArrivalDateAfterCurrent();
+        }
+    }
 
       const _changeDate = new Date(changeDate);
       const arrivalDate = new Date(product.arrivalDate);
@@ -276,7 +286,7 @@ class ProductDAO {
           //console.log("sono dentro il product dao")
           db.get(sql, [model], (err: Error, row: Product) => {
             if (err) {
-              console.log("sono dentro il product dao ")
+              
               reject(err)
               return
             }

@@ -1,5 +1,6 @@
 import ProductDAO from "../dao/productDAO";
 import {Product} from "../components/product";
+import { ArrivalDateAfterCurrent } from "../errors/productError";
 
 /**
  * Represents a controller for managing products.
@@ -23,6 +24,14 @@ class ProductController {
      * @returns A Promise that resolves to nothing.
      */
     async registerProducts(model: string, category: string, quantity: number, details: string | null, sellingPrice: number, arrivalDate: string | null): Promise<void>  {
+        if (arrivalDate !== null) {
+            const arrival = new Date(arrivalDate);
+            const now = new Date();
+    
+            if (arrival > now) {
+                throw new ArrivalDateAfterCurrent();
+            }
+        }
         return this.dao.registerProducts(model, category, quantity, details, sellingPrice, arrivalDate)
     }
 
@@ -34,6 +43,14 @@ class ProductController {
      * @returns A Promise that resolves to the new available quantity of the product.
      */
     async changeProductQuantity(model: string, newQuantity: number, changeDate: string | null): Promise<number> {
+        if (changeDate !== null) {
+            const arrival = new Date(changeDate);
+            const now = new Date();
+    
+            if (arrival > now) {
+                throw new ArrivalDateAfterCurrent();
+            }
+        }
         return this.dao.changeProductQuantity(model, newQuantity, changeDate)
     }
 

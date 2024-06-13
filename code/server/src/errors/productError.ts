@@ -18,6 +18,17 @@ class ProductNotFoundError extends Error {
     }
 }
 
+class ArrivalDateAfterCurrent extends Error {
+    customMessage: string
+    customCode: number
+
+    constructor() {
+        super()
+        this.customMessage = PRODUCT_NOT_FOUND
+        this.customCode = 400
+    }
+}
+
 /**
  * Represents an error that occurs when a product id already exists.
  */
@@ -68,4 +79,4 @@ class LowProductStockError extends Error {
     }
 }
 
-export { ProductNotFoundError, ProductAlreadyExistsError, ProductSoldError, EmptyProductStockError, LowProductStockError }
+export { ProductNotFoundError, ProductAlreadyExistsError, ProductSoldError, EmptyProductStockError, LowProductStockError, ArrivalDateAfterCurrent }
