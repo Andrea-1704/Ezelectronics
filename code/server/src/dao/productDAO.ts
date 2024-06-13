@@ -196,6 +196,10 @@ class ProductDAO {
               reject(err)
               return
             }
+            if (rows.length === 0 && grouping === "model") {
+              reject (new ProductNotFoundError());
+              return ;
+            }
             resolve(rows)
           })
         } catch (error) {
@@ -228,6 +232,10 @@ class ProductDAO {
           db.all(sql, params, (err: Error, rows: any) => {
             if (err) {
               return reject(err);
+            }
+            if (rows.length === 0 && grouping === "model") {
+              reject (new ProductNotFoundError());
+              return ;
             }
             resolve(rows);
           });

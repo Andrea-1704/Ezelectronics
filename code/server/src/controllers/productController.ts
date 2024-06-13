@@ -1,6 +1,6 @@
 import ProductDAO from "../dao/productDAO";
 import {Product} from "../components/product";
-import { ArrivalDateAfterCurrent } from "../errors/productError";
+import { ArrivalDateAfterCurrent, GroupingError } from "../errors/productError";
 
 /**
  * Represents a controller for managing products.
@@ -81,11 +81,14 @@ class ProductController {
      * @returns A Promise that resolves to an array of Product objects.
      */
     async getProducts(grouping: string | null, category: string | null, model: string | null): Promise<Product[]>  {
-        if(grouping === "category" && !category){
-            throw new Error("Category is required")
+        if(!grouping && (model||category)){
+            throw new GroupingError();
         }
-        if(grouping === "model" && !model){
-            throw new Error("Model is required")
+        if(grouping === "category" && (!category||model)){
+            throw new GroupingError();
+        }
+        if(grouping === "model" && (!model||category)){
+            throw new GroupingError();
         }
         return this.dao.getProducts(grouping, category, model)
     }
@@ -98,11 +101,14 @@ class ProductController {
      * @returns A Promise that resolves to an array of Product objects.
      */
     async getAvailableProducts(grouping: string | null, category: string | null, model: string | null): Promise<Product[]>{
-        if(grouping === "category" && !category){
-            throw new Error("Category is required")
+        if(!grouping && (model||category)){
+            throw new GroupingError();
         }
-        if(grouping === "model" && !model){
-            throw new Error("Model is required")
+        if(grouping === "category" && (!category||model)){
+            throw new GroupingError();
+        }
+        if(grouping === "model" && (!model||category)){
+            throw new GroupingError();
         }
         return this.dao.getAvailableProducts(grouping, category, model)
     }

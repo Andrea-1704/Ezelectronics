@@ -18,6 +18,17 @@ class ProductNotFoundError extends Error {
     }
 }
 
+class GroupingError extends Error {
+    customMessage: string
+    customCode: number
+
+    constructor() {
+        super()
+        this.customMessage = PRODUCT_NOT_FOUND
+        this.customCode = 422
+    }
+}
+
 class ArrivalDateAfterCurrent extends Error {
     customMessage: string
     customCode: number
@@ -79,4 +90,4 @@ class LowProductStockError extends Error {
     }
 }
 
-export { ProductNotFoundError, ProductAlreadyExistsError, ProductSoldError, EmptyProductStockError, LowProductStockError, ArrivalDateAfterCurrent }
+export { GroupingError, ProductNotFoundError, ProductAlreadyExistsError, ProductSoldError, EmptyProductStockError, LowProductStockError, ArrivalDateAfterCurrent }
