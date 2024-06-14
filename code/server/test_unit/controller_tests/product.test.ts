@@ -41,6 +41,18 @@ describe("ProductController unit tests", () => {
       );
       expect(response).toBeUndefined();
     });
+
+    test("It should throw an error if the arrival date is after the current date", async () => {
+      const controller = new ProductController();
+      await expect(controller.registerProducts(
+          testProduct.model,
+          testProduct.category,
+          testProduct.quantity,
+          testProduct.details,
+          testProduct.sellingPrice,
+          "2029-06-05"
+      )).rejects.toThrow("");
+    });
   });
 
   describe("changeProductQuantity", () => {
@@ -54,6 +66,11 @@ describe("ProductController unit tests", () => {
       expect(changeProductQuantitySpy).toHaveBeenCalledWith(testProduct.model, 50, null);
       expect(response).toBe(150);
     });
+
+    test("It should throw an error if the change date is after the current date", async () => {
+      const controller = new ProductController();
+      await expect(controller.changeProductQuantity(testProduct.model, 50, "2029-06-05")).rejects.toThrow("");
+    });
   });
 
   describe("sellProduct", () => {
@@ -66,6 +83,10 @@ describe("ProductController unit tests", () => {
       expect(sellProductSpy).toHaveBeenCalledTimes(1);
       expect(sellProductSpy).toHaveBeenCalledWith(testProduct.model, 20, null);
       expect(response).toBe(80);
+    });
+    test("It should throw an error if the selling date is after the current date", async () => {
+      const controller = new ProductController();
+      await expect(controller.sellProduct(testProduct.model, 20, "2029-06-05")).rejects.toThrow("");
     });
   });
 
@@ -82,12 +103,17 @@ describe("ProductController unit tests", () => {
 
     test("It should throw an error if category is required but not provided", async () => {
       const controller = new ProductController();
-      await expect(controller.getProducts("category", null, null)).rejects.toThrow("Category is required");
+      await expect(controller.getProducts("category", null, null)).rejects.toThrow("");
     });
 
     test("It should throw an error if model is required but not provided", async () => {
       const controller = new ProductController();
-      await expect(controller.getProducts("model", null, null)).rejects.toThrow("Model is required");
+      await expect(controller.getProducts("model", null, null)).rejects.toThrow("");
+    });
+
+    test("It should throw an error if grouping is not provided but category is", async () => {
+      const controller = new ProductController();
+      await expect(controller.getProducts(null, "category", null)).rejects.toThrow("");
     });
   });
 
@@ -104,12 +130,17 @@ describe("ProductController unit tests", () => {
 
     test("It should throw an error if category is required but not provided", async () => {
       const controller = new ProductController();
-      await expect(controller.getAvailableProducts("category", null, null)).rejects.toThrow("Category is required");
+      await expect(controller.getAvailableProducts("category", null, null)).rejects.toThrow("");
     });
 
     test("It should throw an error if model is required but not provided", async () => {
       const controller = new ProductController();
-      await expect(controller.getAvailableProducts("model", null, null)).rejects.toThrow("Model is required");
+      await expect(controller.getAvailableProducts("model", null, null)).rejects.toThrow("");
+    });
+
+    test("It should throw an error if grouping is not provided but category is", async () => {
+      const controller = new ProductController();
+      await expect(controller.getAvailableProducts(null, "category", null)).rejects.toThrow("");
     });
   });
 

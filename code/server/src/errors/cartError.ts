@@ -49,7 +49,7 @@ class ProductNotInCartError extends Error {
 /**
  * Represents an error that occurs when a cart belongs to another user.
  */
-class WrongUserCartError extends Error {
+/*class WrongUserCartError extends Error {
     customMessage: string
     customCode: number
 
@@ -58,7 +58,7 @@ class WrongUserCartError extends Error {
         this.customMessage = WRONG_USER_CART
         this.customCode = 403
     }
-}
+}*/
 
 class EmptyCartError extends Error {
     customMessage: string
@@ -71,4 +71,4 @@ class EmptyCartError extends Error {
     }
 }
 
-export { CartNotFoundError, ProductInCartError, ProductNotInCartError, WrongUserCartError, EmptyCartError }
+export { CartNotFoundError, ProductInCartError, ProductNotInCartError/*, WrongUserCartError*/, EmptyCartError }
