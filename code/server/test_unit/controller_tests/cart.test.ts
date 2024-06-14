@@ -41,6 +41,16 @@ describe("controller unit tests", () => {
     });
   })
 
+
+  describe("CartController", () => {
+    test("Error cart not found error", async () => {
+      let testProduct= new Product(10, "iphone13", Category.SMARTPHONE, "10-04-2002"," " , -1);
+      const addToCartSpy = jest.spyOn(ProductDAO.prototype, "getProductByModel").mockResolvedValueOnce(null);
+      const controller = new CartController();
+      await expect(controller.addToCart(testCustomer, "test")).rejects.toThrow(ProductNotInCartError);
+    });
+  })
+
   describe("CartController", () => {
     let testCustomer = new User("customer2", "customer2", "customer2", Role.CUSTOMER, "", "")
 

@@ -108,8 +108,6 @@ class CartDAO {
             
             products.push(new ProductInCart(row1.model, row1.quantity, product.category, product.sellingPrice))
           }
-          console.log(row.id, row.customer, row.paid, row.paymentDate, row.total, products)
-          console.log(new Cart(row.id, row.customer, row.paid, row.paymentDate, row.total, products));
           resolve(new Cart(row.id, row.customer, row.paid, row.paymentDate, row.total, products))
         })
       })
