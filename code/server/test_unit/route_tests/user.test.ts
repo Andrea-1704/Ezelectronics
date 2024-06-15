@@ -768,6 +768,8 @@ describe('UserAuth unit tests', () => {
 
       const response = await request(app).get(`${baseURLsessions}/current`);
 
+
+      
       expect(response.status).toBe(401);
       expect(response.body.error).toBe("Not authenticated");
     });
