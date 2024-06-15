@@ -1,4 +1,5 @@
 const PRODUCT_NOT_FOUND = "Product not found"
+const ARRIVAL_DATE_AFTER_CURRENT = "ArrivalDateAfterCurrent"
 const PRODUCT_ALREADY_EXISTS = "The product already exists"
 const PRODUCT_SOLD = "Product already sold"
 const EMPTY_PRODUCT_STOCK = "Product stock is empty"
@@ -35,7 +36,7 @@ class ArrivalDateAfterCurrent extends Error {
 
     constructor() {
         super()
-        this.customMessage = PRODUCT_NOT_FOUND
+        this.customMessage = ARRIVAL_DATE_AFTER_CURRENT
         this.customCode = 400
     }
 }

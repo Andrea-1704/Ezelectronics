@@ -64,11 +64,12 @@ class ProductDAO {
       
       if (changeDate !== null && product.arrivalDate !== null) {
         // Converti il valore di arrivalDate in numero prima di creare un oggetto Date
+        console.log(product.arrivalDate)
         const arrivalDate = new Date(parseInt(product.arrivalDate));
         const changeDateObj = new Date(changeDate);
 
         if (arrivalDate > changeDateObj) {
-            throw new ArrivalDateAfterCurrent();
+            throw new ArrivalDateAfterCurrent()
         }
     }
 

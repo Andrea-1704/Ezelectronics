@@ -2,6 +2,7 @@ import { describe, test, expect, jest, afterEach, beforeEach } from "@jest/globa
 import ProductController from "../../src/controllers/productController";
 import { Category, Product } from "../../src/components/product";
 import ProductDAO from "../../src/dao/productDAO";
+import { GroupingError } from "../../src/errors/productError";
 
 jest.mock('../../src/dao/productDAO');
 
@@ -111,10 +112,29 @@ describe("ProductController unit tests", () => {
       await expect(controller.getProducts("model", null, null)).rejects.toThrow("");
     });
 
-    test("It should throw an error if grouping is not provided but category is", async () => {
-      const controller = new ProductController();
-      await expect(controller.getProducts(null, "category", null)).rejects.toThrow("");
+    test('should throw GroupingError when grouping is "category" and category is null', async () => {
+      expect.assertions(1);
+      try {
+          const controller = new ProductController();
+          await controller.getProducts('category', null, null);
+      } catch (e) {
+          expect(e).toBeInstanceOf(GroupingError);
+      }
+  });
+    test("shold throw GroupingError when grouping is not provided but model is", async () => {
+      expect.assertions(1);
+      try {
+          const controller = new ProductController();
+          await controller.getProducts(null, null, "model");
+      } catch (e) {
+          expect(e).toBeInstanceOf(GroupingError);
+      }
     });
+  });
+
+  test("getProducts should throw an error if gorouping is equal to category and category is not provided", async () => {
+    const controller = new ProductController();
+    await expect(controller.getProducts("category", null, null)).rejects.toThrow("");
   });
 
   describe("getAvailableProducts", () => {
@@ -142,6 +162,29 @@ describe("ProductController unit tests", () => {
       const controller = new ProductController();
       await expect(controller.getAvailableProducts(null, "category", null)).rejects.toThrow("");
     });
+
+    test("It should throw an error if grouping is category and category is not provided", async () => {
+      const controller = new ProductController();
+      //await expect(controller.getAvailableProducts("category", null, null)).rejects.toThrow("");
+      try {
+        const controller = new ProductController();
+        await controller.getAvailableProducts("category", null, null);
+      } catch (e) {
+          expect(e).toBeInstanceOf(GroupingError);
+      }
+   
+    });
+    test("It should throw an error if grouping is model and model is not provided", async () => {
+      const controller = new ProductController();
+      //await expect(controller.getAvailableProducts("model", null, null)).rejects.toThrow("");
+      try {
+        const controller = new ProductController();
+        await controller.getAvailableProducts("model", null, null);
+      } catch (e) {
+          expect(e).toBeInstanceOf(GroupingError);
+      }
+    });
+    
   });
 
   describe("deleteAllProducts", () => {

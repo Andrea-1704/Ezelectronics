@@ -99,6 +99,7 @@ test("Admin registers arrivals of new products", async () => {
       .send(product);
 
   expect(addProductResponse.status).toBe(200);
+  console.log(addProductResponse.body);
   
   deleteAllData();
 });

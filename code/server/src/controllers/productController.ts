@@ -102,12 +102,15 @@ class ProductController {
      */
     async getAvailableProducts(grouping: string | null, category: string | null, model: string | null): Promise<Product[]>{
         if(!grouping && (model||category)){
+            console.log("dentro primo errore")
             throw new GroupingError();
         }
         if(grouping === "category" && (!category||model)){
+            console.log("dentro secondo errore")
             throw new GroupingError();
         }
         if(grouping === "model" && (!model||category)){
+            console.log("dentro terzo errore")
             throw new GroupingError();
         }
         return this.dao.getAvailableProducts(grouping, category, model)

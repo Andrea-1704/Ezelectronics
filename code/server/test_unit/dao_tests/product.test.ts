@@ -212,6 +212,18 @@ describe("ProductDAO unit tests", () => {
     mockDBGet.mockRestore();
   });
 
+//   test("changeProductQuantity - ArrivalDateAfterCurrent error", async () => {
+//     const productDAO = new ProductDAO();
+//     const testProduct = new Product(10, "iPhone13", Category.SMARTPHONE, "2222-06-05", "Latest model", 100);
+  
+    
+//     jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+
+//     await expect(productDAO.changeProductQuantity(testProduct.model, 50, "2020-01-01"))
+//         .rejects
+//         .toThrow("ArrivalDateAfterCurrent");
+// });
+
   test("sellProduct - successful operation", async () => {
     const productDAO = new ProductDAO();
     jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
@@ -315,6 +327,15 @@ describe("ProductDAO unit tests", () => {
     mockDBGet.mockRestore();
   });
 
+  test("sellProduct - arrival date after current date", async () => {
+    const productDAO = new ProductDAO();
+    jest.spyOn(productDAO, 'getProductByModel').mockResolvedValueOnce(testProduct);
+
+    await expect(productDAO.sellProduct(testProduct.model, 20, "2100-01-01"))
+        .rejects
+        .toThrow("Invalid selling date");
+  });
+
   test("getProducts - successful operation", async () => {
     const productDAO = new ProductDAO();
     const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
@@ -384,6 +405,31 @@ describe("ProductDAO unit tests", () => {
     });
 
     await expect(productDAO.getProducts(null, null, null)).rejects.toThrow(errorMessage);
+
+    mockDBAll.mockRestore();
+  });
+
+  test("getProducts - grouping equal model and rows.length==0 error", async () => {
+    const productDAO = new ProductDAO();
+    const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+      callback(null, []);
+      return db;
+    });
+
+    await expect(productDAO.getProducts("model", null, "iPhone13")).rejects.toThrow("");
+
+    mockDBAll.mockRestore();
+  });
+
+  test("getProducts - first catch error", async () => {
+    const productDAO = new ProductDAO();
+    const errorMessage = "Database error";
+    const mockDBAll = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+      callback(new Error(errorMessage), null);
+      return db;
+    });
+
+    await expect(productDAO.getProducts("model", null, "iPhone13")).rejects.toThrow(errorMessage);
 
     mockDBAll.mockRestore();
   });
